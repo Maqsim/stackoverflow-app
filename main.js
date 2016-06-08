@@ -10,17 +10,18 @@ const debug = /--debug/.test(process.argv[2])
 
 var mainWindow = null
 
-function initialize () {
+function initialize() {
   var shouldQuit = makeSingleInstance()
   if (shouldQuit) return app.quit()
 
   loadDemos()
 
-  function createWindow () {
+  function createWindow() {
     var windowOptions = {
       width: 1080,
       minWidth: 680,
-      height: 840
+      height: 840,
+      titleBarStyle: 'hidden'
     }
 
     if (process.platform === 'linux') {
@@ -42,7 +43,7 @@ function initialize () {
   }
 
   app.on('ready', function () {
-    createWindow()
+    createWindow();
     autoUpdater.initialize()
   });
 
@@ -50,7 +51,7 @@ function initialize () {
     if (process.platform !== 'darwin') {
       app.quit()
     }
-  })
+  });
 
   app.on('activate', function () {
     if (mainWindow === null) {
@@ -66,7 +67,7 @@ function initialize () {
 //
 // Returns true if the current version of the app should quit instead of
 // launching.
-function makeSingleInstance () {
+function makeSingleInstance() {
   if (process.mas) return false
 
   return app.makeSingleInstance(function () {
@@ -78,26 +79,33 @@ function makeSingleInstance () {
 }
 
 // Require each JS file in the main-process dir
-function loadDemos () {
+function loadDemos() {
   var files = glob.sync(path.join(__dirname, 'main-process/**/*.js'))
   files.forEach(function (file) {
     require(file)
-  })
+  });
+
   autoUpdater.updateMenu()
 }
 
 // Handle Squirrel on Windows startup events
 switch (process.argv[1]) {
   case '--squirrel-install':
-    autoUpdater.createShortcut(function () { app.quit() })
-    break
+    autoUpdater.createShortcut(function () {
+      app.quit();
+    });
+
+    break;
   case '--squirrel-uninstall':
-    autoUpdater.removeShortcut(function () { app.quit() })
-    break
+    autoUpdater.removeShortcut(function () {
+      app.quit();
+    });
+
+    break;
   case '--squirrel-obsolete':
   case '--squirrel-updated':
-    app.quit()
-    break
+    app.quit();
+    break;
   default:
     initialize()
 }

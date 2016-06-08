@@ -2,33 +2,38 @@ const storage = require('electron-json-storage')
 
 // Default to the view that was active the last time the app was open
 storage.get('activeSectionButtonId', function (err, id) {
-  if (err) return console.error(err)
+  if (err) return console.error(err);
 
   if (id && id.length) {
-    showMainContent()
-    const section = document.getElementById(id)
+    showMainContent();
+    const section = document.getElementById(id);
     if (section) section.click()
   } else {
-    activateDefaultSection()
+    activateDefaultSection();
     displayAbout()
   }
-})
+});
+
+// Register button click handlers to switch views
+Array.prototype.forEach.call(document.querySelectorAll('.nav-button'), function (button) {
+  button.addEventListener('click', handleSectionTrigger);
+});
 
 document.body.addEventListener('click', function (event) {
-  if (event.target.dataset.section) {
-    handleSectionTrigger(event)
-  } else if (event.target.dataset.modal) {
+  if (event.target.dataset.modal) {
     handleModalTrigger(event)
   } else if (event.target.classList.contains('modal-hide')) {
     hideAllModals()
   }
-})
+});
 
 function handleSectionTrigger (event) {
-  hideAllSectionsAndDeselectButtons()
+  console.log(event);
+  
+  hideAllSectionsAndDeselectButtons();
 
   // Highlight clicked button and show view
-  event.target.classList.add('is-selected')
+  event.target.classList.add('is-selected');
 
   // Display the current section
   const sectionId = event.target.dataset.section + '-section'

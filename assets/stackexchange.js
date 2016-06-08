@@ -1,3 +1,5 @@
+return;
+
 var authWindow = window.open('https://stackexchange.com/oauth/dialog?redirect_uri=https://stackexchange.com/oauth/login_success&client_id=7276&scope=write_access');
 var access_token;
 var expires;
@@ -12,12 +14,6 @@ setTimeout(() => {
 
   authWindow.close();
 
-  //fetch(apiUrl + '/me?key=bdFSxniGkNbU3E*jsj*28w((&site=stackoverflow&order=desc&sort=reputation&access_token=' + access_token).then(function (response) {
-  //  response.json().then(function(data) {
-  //    console.log(data);
-  //  });
-  //});
-
   fetch(apiUrl + '/posts/19452895/comments/add', {
     method: 'POST',
     headers: {
@@ -30,6 +26,4 @@ setTimeout(() => {
       console.log(data);
     });
   });
-
-
-}, 0);
+}, 100);
