@@ -21,9 +21,8 @@ function initialize() {
     var windowOptions = {
       width: 1080,
       minWidth: 680,
-      height: 840,
-      titleBarStyle: 'hidden'
-    }
+      height: 840
+    };
 
     if (process.platform === 'linux') {
       windowOptions.icon = path.join(__dirname, '/assets/app-icon/png/512.png')
@@ -39,8 +38,11 @@ function initialize() {
     }
 
     // StackExchange authenticate
-    stackexchange.auth((access_token, expires) => {
-      mainWindow.webContents.send('stackexchange:login', { access_token: access_token, expires: expires });
+    mainWindow.webContents.on('dom-ready', () => {
+      stackexchange.auth((access_token, expires) => {
+        console.log('send ipc package');
+        mainWindow.webContents.send('stackexchange:login', { access_token: access_token, expires: expires });
+      });
     });
 
     mainWindow.on('closed', function () {

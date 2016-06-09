@@ -1,6 +1,6 @@
 const moment = require('moment');
 
-fetch('https://api.stackexchange.com/2.2/questions?order=desc&sort=creation&site=stackoverflow').then(function (response) {
+fetch('https://api.stackexchange.com/2.2/questions?order=desc&sort=creation&site=stackoverflow&tagged=html;css').then(function (response) {
   response.json().then(function (data) {
     let questions = data.items;
 
@@ -24,5 +24,7 @@ fetch('https://api.stackexchange.com/2.2/questions?order=desc&sort=creation&site
       
       document.querySelector('#answer-questions-section').appendChild(div);
     });
+
+    require('../assets/ex-links').optimizeLinks();
   });
 });

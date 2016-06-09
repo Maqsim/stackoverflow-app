@@ -21,15 +21,7 @@
 <body>
 
   <nav class="nav js-nav">
-    <header class="nav-header">
-      <div class="nav-logo">
-        <svg class="nav-header-icon"><use xlink:href="assets/img/icons.svg#icon-electron"></use></svg>
-      </div>
-      <div class="nav-name">
-        <div class="nav-title">Max</div>
-        <div class="nav-rep">999 reputation</div>
-      </div>
-    </header>
+    <header class="nav-header"></header>
 
     <div class="nav-item u-category-windows">
       <button type="button" id="answer-questions" data-section="answer-questions" class="nav-button">
@@ -53,10 +45,12 @@
 
   <script>
     require('./assets/imports');
-    require('./assets/ex-links');
+    require('./assets/ex-links').optimizeLinks();
     require('./assets/nav');
     require('./assets/code-blocks');
     require('./assets/normalize-shortcuts');
+    require('./renderer-process/sidebar-controller');
+    require('./renderer-process/stackexchange');
   </script>
 </body>
 </html>
