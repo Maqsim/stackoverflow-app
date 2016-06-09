@@ -2,6 +2,7 @@ const path = require('path')
 const glob = require('glob')
 const electron = require('electron')
 const autoUpdater = require('./auto-updater')
+const stackexchange = require('./main-process/stackexchange-auth');
 
 const BrowserWindow = electron.BrowserWindow
 const app = electron.app
@@ -36,6 +37,11 @@ function initialize() {
       mainWindow.webContents.openDevTools()
       mainWindow.maximize()
     }
+
+    // StackExchange authenticate
+    stackexchange.auth((access_token, expires) => {
+      mainWindow.webContents.send('stackexchange:login', { access_token: access_token, expires: expires });
+    });
 
     mainWindow.on('closed', function () {
       mainWindow = null
