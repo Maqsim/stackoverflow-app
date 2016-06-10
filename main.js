@@ -1,7 +1,8 @@
-const path = require('path')
-const glob = require('glob')
-const electron = require('electron')
-const autoUpdater = require('./auto-updater')
+const path = require('path');
+const glob = require('glob');
+const electron = require('electron');
+const ipcMain = electron.ipcMain;
+const autoUpdater = require('./auto-updater');
 const stackexchange = require('./main-process/stackexchange-auth');
 
 const BrowserWindow = electron.BrowserWindow
@@ -40,7 +41,12 @@ function initialize() {
     // StackExchange authenticate
     mainWindow.webContents.on('dom-ready', () => {
       stackexchange.auth((access_token, expires) => {
-        console.log('send ipc package');
+        mainWindow.webContents.send('stackexchange:login', { access_token: access_token, expires: expires });
+      });
+    });
+
+    ipcMain.on('stackexchange:show-login-form', () => {
+      stackexchange.auth((access_token, expires) => {
         mainWindow.webContents.send('stackexchange:login', { access_token: access_token, expires: expires });
       });
     });

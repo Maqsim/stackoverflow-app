@@ -21,24 +21,18 @@
 <body>
 
   <nav class="nav js-nav">
-    <header class="nav-header"></header>
+    <header class="nav-header">
+      <div class="nav-header-content"></div>
+    </header>
 
     <div class="nav-item u-category-windows">
       <button type="button" id="answer-questions" data-section="answer-questions" class="nav-button">
         Answer questions...
-        <small class="nav-button-hint">Actual questions with no answer</small>
         <span class="nav-button-counter">175</span>
       </button>
       <button type="button" id="my-answers" data-section="my-answers" class="nav-button">My answers</button>
       <button type="button" id="my-questions" data-section="my-questions" class="nav-button">My questions</button>
     </div>
-
-    <footer class="nav-footer" style="display: none;">
-      <button type="button" id="button-about" data-modal="about" class="nav-footer-button">About</button>
-      <a class="nav-footer-logo" href="https://github.com">
-        <svg class="nav-footer-icon"><use xlink:href="assets/img/icons.svg#icon-love"></use></svg>
-      </a>
-    </footer>
   </nav>
 
   <main class="content js-content"></main>
