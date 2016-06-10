@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="assets/css/variables.css">
   <link rel="stylesheet" href="assets/css/nativize.css">
   <link rel="stylesheet" href="assets/css/global.css">
-  <link rel="stylesheet" href="assets/css/about.css">
   <link rel="stylesheet" href="assets/css/nav.css">
   <link rel="stylesheet" href="assets/css/question.css">
   <link rel="stylesheet" href="assets/css/section.css">
@@ -20,7 +19,7 @@
 </head>
 <body>
 
-  <nav class="nav js-nav">
+  <nav class="nav">
     <header class="nav-header">
       <div class="nav-header-content"></div>
     </header>
@@ -35,7 +34,12 @@
     </div>
   </nav>
 
-  <main class="content js-content"></main>
+  <!-- Main view: list of answers, questions etc -->
+  <main class="content"></main>
+
+  <!-- Question popup. Is shown when user clicks on question to open it -->
+  <div class="question-screen"></div>
+  <div class="question-screen-backdrop"></div>
 
   <script>
     require('./assets/imports');
@@ -44,7 +48,6 @@
     require('./assets/code-blocks');
     require('./assets/normalize-shortcuts');
     require('./renderer-process/sidebar-controller');
-    require('./renderer-process/stackexchange');
   </script>
 </body>
 </html>

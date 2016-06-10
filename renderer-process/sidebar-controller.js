@@ -1,13 +1,13 @@
 const ipcRenderer = require('electron').ipcRenderer;
+const stackexchange = require('./stackexchange-api');
 
 ipcRenderer.on('stackexchange:login', (event, data) => {
-  fetch('https://api.stackexchange.com/2.2/me?order=desc&sort=reputation&site=stackoverflow&key=bdFSxniGkNbU3E*jsj*28w((&access_token=' + data.access_token).then((response) => {
-    response.json().then((json) => {
-      let profile = json.items[0];
-      let headerElement = document.querySelector('.nav-header-content');
-      let headerContainer = headerElement.parentNode;
+  stackexchange.fetch('me', { access_token: data.token }).then((response) => {
+    let profile = response.items[0];
+    let headerElement = document.querySelector('.nav-header-content');
+    let headerContainer = headerElement.parentNode;
 
-      headerElement.innerHTML = `
+    headerElement.innerHTML = `
         <div class="nav-avatar">
           <img class="nav-avatar-img" src="${profile.profile_image}" alt="profile image"/>
         </div>
@@ -20,23 +20,16 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         </div>
       `;
 
-      headerContainer.style.opacity = 1;
-      headerContainer.style.height = '87px';
+    headerContainer.style.opacity = 1;
+    headerContainer.style.height = '87px';
 
-      // Register event handler on Logout click
-      document.querySelector('.nav-logout').addEventListener('click', () => {
-        fetch('https://api.stackexchange.com/2.2/apps/' + data.access_token + '/de-authenticate?key=bdFSxniGkNbU3E*jsj*28w((').then((response) => {
-          response.json().then((json) => {
-            let isLogout = json.items.length;
+    // Register event handler on Logout click
+    document.querySelector('.nav-logout').addEventListener('click', () => {
+      stackexchange.logout(data.token).then(() => {
+        headerContainer.style.opacity = 0;
+        headerContainer.style.height = 0;
 
-            if (isLogout) {
-              headerContainer.style.opacity = 0;
-              headerContainer.style.height = 0;
-
-              ipcRenderer.send('stackexchange:show-login-form');
-            }
-          });
-        });
+        ipcRenderer.send('stackexchange:show-login-form');
       });
     });
   });

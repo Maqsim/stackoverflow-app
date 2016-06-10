@@ -12,7 +12,11 @@ exports.auth = (scb) => {
     }
   });
 
-  authWindow.loadURL('https://stackexchange.com/oauth/dialog?redirect_uri=https://stackexchange.com/oauth/login_success&client_id=7276&scope=write_access');
+  const loadAuthUrl = () => {
+    authWindow.loadURL('https://stackexchange.com/oauth/dialog?redirect_uri=https://stackexchange.com/oauth/login_success&client_id=7276&scope=write_access');
+  };
+
+  loadAuthUrl();
 
   // Extract `did-finish-load` handler to own function so we can unbind it later
   const showAuthWindowIfNotLoggedIn = () => {
@@ -25,17 +29,26 @@ exports.auth = (scb) => {
   };
 
   authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
-    if (newUrl.indexOf('error') !== -1) {
-      return unloadAndCloseAuthWindow();
+    var isMainPage = !/[a-zA-Z]+/.test(newUrl.replace(/(https|http)/, '').replace('//stackexchange.com', ''));
+
+    if (isMainPage) {
+      return loadAuthUrl();
+    }
+
+    const isError = newUrl.indexOf('error') >= 0;
+    const hasToken = newUrl.indexOf('access_token') >= 0;
+
+    if (isError || !hasToken) {
+      return;
     }
 
     // Success authentication
     let hashPosition = newUrl.indexOf('#') + 1;
-    let [access_token, expires] = newUrl.substring(hashPosition).split('&');
-    access_token = access_token.split('=')[1];
+    let [token, expires] = newUrl.substring(hashPosition).split('&');
+    token = token.split('=')[1];
     expires = expires.split('=')[1];
     
-    scb(access_token, expires);
+    scb(token, expires);
 
     unloadAndCloseAuthWindow();
   });

@@ -26,11 +26,11 @@ function initialize() {
     };
 
     if (process.platform === 'linux') {
-      windowOptions.icon = path.join(__dirname, '/assets/app-icon/png/512.png')
+      windowOptions.icon = path.join(__dirname, '/assets/app-icon/png/512.png');
     }
 
-    mainWindow = new BrowserWindow(windowOptions)
-    mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
+    mainWindow = new BrowserWindow(windowOptions);
+    mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
 
     // Launch fullscreen with DevTools open, usage: npm run debug
     if (debug) {
@@ -40,14 +40,14 @@ function initialize() {
 
     // StackExchange authenticate
     mainWindow.webContents.on('dom-ready', () => {
-      stackexchange.auth((access_token, expires) => {
-        mainWindow.webContents.send('stackexchange:login', { access_token: access_token, expires: expires });
+      stackexchange.auth((token, expires) => {
+        mainWindow.webContents.send('stackexchange:login', { token: token, expires: expires });
       });
     });
 
     ipcMain.on('stackexchange:show-login-form', () => {
-      stackexchange.auth((access_token, expires) => {
-        mainWindow.webContents.send('stackexchange:login', { access_token: access_token, expires: expires });
+      stackexchange.auth((token, expires) => {
+        mainWindow.webContents.send('stackexchange:login', { token: token, expires: expires });
       });
     });
 

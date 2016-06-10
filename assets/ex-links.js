@@ -8,6 +8,7 @@ exports.optimizeLinks = () => {
     if (url.indexOf('http') === 0) {
       link.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
 
         shell.openExternal(url);
       });

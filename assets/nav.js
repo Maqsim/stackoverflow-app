@@ -1,8 +1,5 @@
 const storage = require('electron-json-storage')
 
-document.querySelector('.js-nav').classList.add('is-shown')
-document.querySelector('.js-content').classList.add('is-shown')
-
 // Register button click handlers to switch views
 Array.prototype.forEach.call(document.querySelectorAll('.nav-button'), function (button) {
   button.addEventListener('click', (event) => {
