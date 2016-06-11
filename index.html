@@ -10,8 +10,6 @@
   <link rel="stylesheet" href="assets/css/nav.css">
   <link rel="stylesheet" href="assets/css/question.css">
   <link rel="stylesheet" href="assets/css/section.css">
-  <link rel="stylesheet" href="assets/css/demo.css">
-  <link rel="stylesheet" href="assets/css/github.css">
 
   <link rel="import" href="sections/answer-questions.html">
   <link rel="import" href="sections/my-answers.html">
@@ -21,12 +19,14 @@
 
   <nav class="nav">
     <header class="nav-header">
+      <!-- Header render by JS (when SO responds) -->
       <div class="nav-header-content"></div>
     </header>
 
     <div class="nav-item u-category-windows">
       <button type="button" id="answer-questions" data-section="answer-questions" class="nav-button">
         Answer questions...
+        <!-- TODO make counter live -->
         <span class="nav-button-counter">175</span>
       </button>
       <button type="button" id="my-answers" data-section="my-answers" class="nav-button">My answers</button>

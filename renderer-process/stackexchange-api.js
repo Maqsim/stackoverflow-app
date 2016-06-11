@@ -1,7 +1,6 @@
 var win = require('electron').remote.getCurrentWindow();
 const noop = () => {};
 
-
 exports.buildStackOverflowUrl = (url, parameters) => {
   url = 'https://api.stackexchange.com/2.2/' + url;
 

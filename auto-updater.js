@@ -1,3 +1,5 @@
+// TODO format this code
+
 const app = require('electron').app
 const autoUpdater = require('electron').autoUpdater
 const ChildProcess = require('child_process')

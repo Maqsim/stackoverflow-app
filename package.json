@@ -1,8 +1,8 @@
 {
-  "name": "ElectronAPIDemos",
-  "productName": "Electron API Demos",
-  "version": "1.0.1",
-  "description": "Electron interactive API demos",
+  "name": "stackoverflow-app",
+  "productName": "Stack Overflow",
+  "version": "1.0.0",
+  "description": "Stack Overflow Desktop Client",
   "private": true,
   "main": "main.js",
   "scripts": {
@@ -24,19 +24,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron/electron-api-demos.git"
+    "url": "git+https://github.com/Maqsim/stackoverflow-app.git"
   },
   "keywords": [
-    "Electron",
-    "API",
-    "demo"
+    "Stackoverflow",
+    "Desktop",
+    "App"
   ],
-  "author": "GitHub",
+  "author": "Max Diachenko",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/electron/electron-api-demos/issues"
+    "url": "https://github.com/Maqsim/stackoverflow-app/issues"
   },
-  "homepage": "https://github.com/electron/electron-api-demos#readme",
+  "homepage": "https://github.com/Maqsim/stackoverflow-app#readme",
   "devDependencies": {
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",

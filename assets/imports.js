@@ -6,10 +6,11 @@ const importLinkTo = (link, element) => {
 };
 
 // Import and add each page to the DOM
-Array.prototype.forEach.call(pages, function (link) {
+Array.prototype.forEach.call(pages, (link) => {
   importLinkTo(link, document.querySelector('.content'));
 });
 
+// Import and add question screen popup
 const questionScreenLink = document.querySelector('.question-screen link[rel="import"]');
 importLinkTo(questionScreenLink, document.querySelector('.question-screen'));
 
