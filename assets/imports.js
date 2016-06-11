@@ -13,5 +13,3 @@ Array.prototype.forEach.call(pages, (link) => {
 // Import and add question screen popup
 const questionScreenLink = document.querySelector('.question-screen link[rel="import"]');
 importLinkTo(questionScreenLink, document.querySelector('.question-screen'));
-
-

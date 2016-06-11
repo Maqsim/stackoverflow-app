@@ -12,6 +12,13 @@
   font-weight: bold;
 }
 
+/* Use bigger title on question page */
+.question-screen-content .question-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+
 .question-info {
   color: #919191;
   font-size: 12px;

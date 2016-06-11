@@ -20,7 +20,8 @@ function initialize() {
     let windowOptions = {
       width: 1080,
       minWidth: 680,
-      height: 840
+      height: 840,
+      title: 'Stack Overflow'
     };
 
     if (process.platform === 'linux') {
@@ -70,7 +71,7 @@ function initialize() {
     if (mainWindow === null) {
       createWindow();
     }
-  })
+  });
 }
 
 // Make this app a single instance app.
