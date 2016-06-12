@@ -51,6 +51,10 @@ a:focus {
   border-bottom: none;
 }
 
+a * {
+  pointer-events: none;
+}
+
 
 /* Images */
 

@@ -90,14 +90,10 @@
 }
 
 .nav-button.is-selected {
-  background-color: var(--color-accent);
+  background-color: #4b73a8;
 }
 
 .nav-button.is-selected,
 .nav-button.is-selected em {
   color: #fff;
-}
-
-.nav-button.is-selected:focus {
-  opacity: .8;
 }

@@ -1,10 +1,18 @@
 .question {
   position: relative;
+  padding-bottom: 12px;
+  padding-top: 10px;
+}
+
+.question:first-child {
+  padding-top: 0;
+}
+
+.question:last-child {
+  padding-bottom: 0;
 }
 
 .question + .question {
-  margin-top: 12px;
-  padding-top: 10px;
   border-top: 1px solid #eaeaea;
 }
 
@@ -50,7 +58,7 @@
 .question-time {
   position: absolute;
   right: 10px;
-  bottom: 0px;
+  bottom: 14px;
   font-size: 11px;
   color: #aaa;
 }

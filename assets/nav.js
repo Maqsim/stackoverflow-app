@@ -1,4 +1,5 @@
 const storage = require('electron-json-storage');
+const shell = require('electron').shell;
 
 // Register button click handlers to switch views
 Array.prototype.forEach.call(document.querySelectorAll('.nav-button'), (button) => {
@@ -36,3 +37,15 @@ function hideAllSectionsAndDeselectButtons() {
     button.classList.remove('is-selected');
   });
 }
+
+// External links
+document.body.addEventListener('click', (event) => {
+  const url = event.target.href;
+
+  if (event.target.tagName === 'A' && (url.indexOf('http://') === 0 || url.indexOf('https://') === 0)) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    shell.openExternal(url);
+  }
+});

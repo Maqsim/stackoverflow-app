@@ -8,7 +8,7 @@
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  color: var(--color-accent);
+  color: black;
   padding: 15px;
 
   /* Hide */

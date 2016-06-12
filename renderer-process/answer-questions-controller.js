@@ -18,13 +18,14 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       let questions = response.items;
       let questionsElements = [];
 
+      document.querySelector('#answer-questions-section').innerHTML = '';
+
       questions.forEach((question) => {
         const timeAgo = moment(question.creation_date * 1000).fromNow();
         let questionElement = document.createElement('div');
         questionElement.classList.add('question');
         questionElement.question = question;
         questionElement.innerHTML = `
-        <div class="question">
           <div class="question-title">${question.title}</div>
           <div class="question-info">2 paraghaphs, 1 code-block, 1 JSFiddle</div>
           <ul class="question-tags">
@@ -32,9 +33,8 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
           </ul>
           <span class="question-time">
             ${timeAgo}
-            <a href="${question.owner.link}">${question.owner.display_name}</a>
+            <a tabindex="-1" href="${question.owner.link}">${question.owner.display_name}</a>
           </span>
-        </div>
       `;
 
         document.querySelector('#answer-questions-section').appendChild(questionElement);
@@ -56,7 +56,5 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         questionScreen.classList.remove('is-shown');
         questionScreenService.clearScreen();
       });
-
-      require('../assets/ex-links').optimizeLinks();
     });
 });
