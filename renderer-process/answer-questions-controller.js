@@ -6,6 +6,19 @@ const questionScreenService = require('./question-screen-service');
 let questionScreenBackdrop = document.querySelector('.question-screen-backdrop');
 let questionScreen = document.querySelector('.question-screen');
 
+const countInString = (needly, haystack) => {
+  var results = 0;
+  var a = haystack.indexOf(needly);
+
+  while (a != -1) {
+    haystack = haystack.slice(a * 1 + needly.length);
+    results++;
+    a = haystack.indexOf(needly);
+  }
+
+  return results;
+};
+
 ipcRenderer.on('stackexchange:login', (event, data) => {
   stackexchange
     .fetch('questions/unanswered/my-tags', {
@@ -25,9 +38,26 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         let questionElement = document.createElement('div');
         questionElement.classList.add('question');
         questionElement.question = question;
+
+        // TODO generate question short info
+        const paragraphs = countInString('</p>', question.body);
+        const codeBlocks = countInString('</pre>', question.body);
+        const fiddles = countInString('jsfiddle.net', question.body);
+        const images = countInString('i.stack.imgur.com', question.body);
+        // Reduce fiddles and images count because they counts like links
+        const links = countInString('</a>', question.body) - fiddles - images;
+
+        let questionInfo = `${paragraphs ? paragraphs + ' paragraphs, ' : ''}` +
+          `${codeBlocks ? codeBlocks + ' code-blocks, ' : ''}` +
+          `${links ? links + ' links, ' : ''}` +
+          `${fiddles ? fiddles + ' JS Fiddle, ' : ''}`;
+
+        // Clear ', ' in the end
+        questionInfo = questionInfo.substring(0, questionInfo.length - 2);
+
         questionElement.innerHTML = `
           <div class="question-title">${question.title}</div>
-          <div class="question-info">2 paraghaphs, 1 code-block, 1 JSFiddle</div>
+          <div class="question-info">${questionInfo}</div>
           <ul class="question-tags">
             ${question.tags.map((tag, last) => `<li>${tag}</li>`).join(' ')}
           </ul>

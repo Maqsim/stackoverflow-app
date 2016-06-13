@@ -7,7 +7,6 @@
   src: local('Source Code Pro'), local('SourceCodePro'), url(fonts/SourceCodePro-Regular.ttf) format('truetype');
 }
 
-
 /* Global ---------------------------- */
 
 * {
@@ -58,16 +57,18 @@ h3 {
 
 table {
   width: 100%;
-  border: 1px solid hsla(0,0%,0%,.08);
+  border: 1px solid hsla(0, 0%, 0%, .08);
   border-spacing: 0;
   border-width: 0 1px 1px 0;
 }
+
 th {
-  background-color: hsla(0,0%,50%,.06);
+  background-color: hsla(0, 0%, 50%, .06);
 }
+
 th,
 td {
-  border: 1px solid hsla(0,0%,0%,.08);
+  border: 1px solid hsla(0, 0%, 0%, .08);
   border-width: 1px 0 0 1px;
   text-align: center;
 }
@@ -81,8 +82,8 @@ svg {
 code, kbd {
   padding: 1px 4px;
   border-radius: 4px;
-  background-color: hsla(0,0%,60%,.15);
-  color: hsl(0,0%,36%);
+  background-color: hsla(0, 0%, 60%, .15);
+  color: hsl(0, 0%, 36%);
   white-space: nowrap;
   font-family: 'Source Code Pro', monospace;
 }
@@ -102,15 +103,13 @@ pre code {
   white-space: pre;
 }
 
-pre > .hljs {
-  background-color: white;
-  color: var(--color-subtle);
+pre + pre {
+  margin-top: 10px;
 }
 
 kbd {
   padding: 0.5em;
 }
-
 
 /* Utilities ---------------------------- */
 
@@ -130,70 +129,10 @@ kbd {
   border: 0;
 }
 
-
 /* Content ------------------ */
 
 .content {
   position: relative;
   overflow: hidden;
   flex: 1;
-}
-
-.question-screen-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  display: none;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, .8);
-}
-
-.question-screen {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  display: none;
-  overflow-y: auto;
-  padding: 15px 30px 40px 20px;
-  width: calc(100% - 350px); /* 300px - sidebar, 50px - offset */
-  height: 100%;
-  background: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
-}
-
-.question-screen.is-shown {
-  display: block;
-  animation: slide-left 250ms ease-out;
-}
-
-.question-screen-backdrop.is-shown {
-  display: block;
-  animation: fade-in 600ms;
-}
-
-@keyframes slide-left {
-  0% { opacity: 0; transform: translate(30px); }
-  100% { opacity: 1; transform: translate(0); }
-}
-
-@keyframes fade-in {
-  0% { opacity: 0;}
-  100% { opacity: 1;}
-}
-
-
-/* Hacks ---------------------------- */
-
-/* Fixes horizontal scrolling in code blocks on OS X El Cap (10.11.3), retina screen
- *
- * By adding an invisible outline property, it will force a repaint
- * which enables the scrolling.
- */
-
-.hljs:hover,
-.hljs:active {
-  outline: 1px solid transparent;
 }
