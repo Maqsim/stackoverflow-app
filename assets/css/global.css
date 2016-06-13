@@ -136,3 +136,7 @@ kbd {
   overflow: hidden;
   flex: 1;
 }
+
+.text-muted {
+  color: #bbb;
+}

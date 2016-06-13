@@ -43,7 +43,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         const paragraphs = countInString('</p>', question.body);
         const codeBlocks = countInString('</pre>', question.body);
         const fiddles = countInString('jsfiddle.net', question.body);
-        const images = countInString('i.stack.imgur.com', question.body);
+        const images = countInString('i.stack.imgur.com', question.body) / 2; // Divide by 2 because images are wrapped to <a> with the same url
         // Reduce fiddles and images count because they counts like links
         const links = countInString('</a>', question.body) - fiddles - images;
 

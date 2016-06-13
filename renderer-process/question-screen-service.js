@@ -1,3 +1,4 @@
+const moment = require('moment');
 const stackexchange = require('./stackexchange-api');
 
 // This function is needed for performance
@@ -17,11 +18,14 @@ function asyncInnerHTML(HTML, callback) {
 }
 
 function createCommentLayout(comment) {
+  const timeAgo = moment(comment.creation_date * 1000).fromNow();
+
   return `
     <div class="question-comments-list-item">
       ${comment.body}
       –
       <a href="${comment.owner.link}">${comment.owner.display_name}</a>
+      <span class="text-muted">${timeAgo}</span>
     </div>
   `;
 }
@@ -45,7 +49,7 @@ exports.renderQuestion = (question, token) => {
     // Load and render comments
     stackexchange
       .fetch(`questions/${question.question_id}/comments`, {
-        order: 'desc',
+        order: 'asc',
         sort: 'creation',
         filter: '!*Ju*loZ-vYZpgswx'
       })
