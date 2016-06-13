@@ -35,7 +35,6 @@ button{
 a {
   cursor: pointer;
   text-decoration: none;
-  border-bottom: 1px dashed;
   outline: none;
 }
 
@@ -43,12 +42,12 @@ a {
 a[target],
 a[href^="https://"],
 a[href^="http://"] {
-  border-bottom: 1px solid;
+  border-bottom: none;
 }
 
 a:hover,
 a:focus {
-  border-bottom: none;
+  border-bottom: 1px solid;
 }
 
 a * {
@@ -60,4 +59,18 @@ a * {
 
 img {
   -webkit-user-drag: none; /* disable dragging */
+}
+
+/* Inputs */
+
+input[type="text"] {
+  padding: 7px;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+input[type="text"]:focus {
+  outline: 0;
+  border-color: #bbb;
 }

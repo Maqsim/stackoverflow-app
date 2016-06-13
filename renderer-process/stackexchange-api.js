@@ -18,13 +18,13 @@ exports.buildStackOverflowUrl = (url, parameters) => {
   return url;
 };
 
-exports.fetch = (url, parameters) => {
+exports.fetch = (url, parameters, options) => {
   if (parameters) {
     parameters.site = 'stackoverflow';
     parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
   }
 
-  return fetch(exports.buildStackOverflowUrl(url, parameters)).then((response) => {
+  return fetch(exports.buildStackOverflowUrl(url, parameters), options).then((response) => {
     return response.json();
   });
 };

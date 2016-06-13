@@ -25,7 +25,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       order: 'desc',
       sort: 'creation',
       access_token: data.token,
-      filter: '!.Iwe-BCqkNewR)ZWx-7zZL5XRf(Y4'
+      filter: '!.Iwe-BCqk3L4jlmCTCqYbursXuIE_'
     })
     .then((response) => {
       let questions = response.items;
@@ -59,7 +59,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
           <div class="question-title">${question.title}</div>
           <div class="question-info">${questionInfo}</div>
           <ul class="question-tags">
-            ${question.tags.map((tag, last) => `<li>${tag}</li>`).join(' ')}
+            ${question.tags.map((tag) => `<li>${tag}</li>`).join(' ')}
           </ul>
           <span class="question-time">
             ${timeAgo}
@@ -76,7 +76,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         questionElement.addEventListener('click', () => {
           questionScreenBackdrop.classList.add('is-shown');
           questionScreen.classList.add('is-shown');
-          questionScreenService.renderQuestion(questionElement.question);
+          questionScreenService.renderQuestion(questionElement.question, data.token);
         });
       });
 

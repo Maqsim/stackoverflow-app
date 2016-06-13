@@ -1,5 +1,6 @@
-// Configure Renderer process
+/**
+ * Configure Renderer process
+ */
 
-const {webFrame} = require('electron');
-
-webFrame.setZoomLevelLimits(1, 1);
+// Disable zooming
+require('electron').webFrame.setZoomLevelLimits(1, 1);
