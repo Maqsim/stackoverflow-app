@@ -1,21 +1,6 @@
 const moment = require('moment');
 const stackexchange = require('./stackexchange-api');
-
-// This function is needed for performance
-function asyncInnerHTML(HTML, callback) {
-  let temp = document.createElement('div');
-  let frag = document.createDocumentFragment();
-  temp.innerHTML = HTML;
-
-  (function () {
-    if (temp.firstChild) {
-      frag.appendChild(temp.firstChild);
-      setTimeout(arguments.callee, 0);
-    } else {
-      callback(frag);
-    }
-  })();
-}
+const {asyncInnerHTML} = require('./utils');
 
 function createCommentLayout(comment) {
   const timeAgo = moment(comment.creation_date * 1000).fromNow();

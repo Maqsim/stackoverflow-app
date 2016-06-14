@@ -5,6 +5,7 @@ const questionScreenService = require('./question-screen-service');
 
 let questionScreenBackdrop = document.querySelector('.question-screen-backdrop');
 let questionScreen = document.querySelector('.question-screen');
+let answerQuestionSection = document.querySelector('#answer-questions-section');
 
 const countInString = (needly, haystack) => {
   var results = 0;
@@ -29,17 +30,10 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
     })
     .then((response) => {
       let questions = response.items;
-      let questionsElements = [];
-
-      document.querySelector('#answer-questions-section').innerHTML = '';
+      let questionsParts = [];
 
       questions.forEach((question) => {
         const timeAgo = moment(question.creation_date * 1000).fromNow();
-        let questionElement = document.createElement('div');
-        questionElement.classList.add('question');
-        questionElement.question = question;
-
-        // TODO generate question short info
         const paragraphs = countInString('</p>', question.body);
         const codeBlocks = countInString('</pre>', question.body);
         const fiddles = countInString('jsfiddle.net', question.body);
@@ -55,29 +49,32 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         // Clear ', ' in the end
         questionInfo = questionInfo.substring(0, questionInfo.length - 2);
 
-        questionElement.innerHTML = `
-          <div class="question-title">${question.title}</div>
-          <div class="question-info">${questionInfo}</div>
-          <ul class="question-tags">
-            ${question.tags.map((tag) => `<li>${tag}</li>`).join(' ')}
-          </ul>
-          <span class="question-time">
-            ${timeAgo}
-            <a tabindex="-1" href="${question.owner.link}">${question.owner.display_name}</a>
-          </span>
-      `;
-
-        document.querySelector('#answer-questions-section').appendChild(questionElement);
-        questionsElements.push(questionElement);
+        questionsParts.push(`
+          <div class="question" data-id="${question.question_id}">
+            <div class="question-title">${question.title}</div>
+            <div class="question-info">${questionInfo}</div>
+            <ul class="question-tags">
+              ${question.tags.map((tag) => `<li>${tag}</li>`).join(' ')}
+            </ul>
+            <span class="question-time">
+              ${timeAgo}
+              <a tabindex="-1" href="${question.owner.link}">${question.owner.display_name}</a>
+            </span>
+          </div>
+        `);
       });
 
-      // Open question on click
-      questionsElements.forEach((questionElement) => {
-        questionElement.addEventListener('click', () => {
-          questionScreenBackdrop.classList.add('is-shown');
-          questionScreen.classList.add('is-shown');
-          questionScreenService.renderQuestion(questionElement.question, data.token);
-        });
+      answerQuestionSection.innerHTML = questionsParts.join('');
+
+      // Open question on click – delegated event
+      answerQuestionSection.addEventListener('click', event => {
+        // Get question div
+        let questionElement = event.path.find(element => element.classList.contains('question'));
+        let question = questions.find(question => question.question_id === +questionElement.dataset.id);
+        
+        questionScreenBackdrop.classList.add('is-shown');
+        questionScreen.classList.add('is-shown');
+        questionScreenService.renderQuestion(question, data.token);
       });
 
       // Close question screen on click outside
