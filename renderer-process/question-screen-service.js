@@ -57,7 +57,7 @@ exports.renderQuestion = (question, token) => {
         let formErrors = document.querySelector('.question-comments-form-errors');
 
         // When you press Enter on comment form
-        document.querySelector('.question-screen-content form').addEventListener('submit', (event) => {
+        document.querySelector('.question-screen-content form').addEventListener('submit', event => {
           event.preventDefault();
 
           // Clear errors

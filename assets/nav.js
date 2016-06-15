@@ -3,7 +3,7 @@ const shell = require('electron').shell;
 
 // Register button click handlers to switch views
 Array.prototype.forEach.call(document.querySelectorAll('.nav-button'), (button) => {
-  button.addEventListener('click', (event) => {
+  button.addEventListener('click', event => {
     hideAllSectionsAndDeselectButtons();
 
     // Highlight clicked button and show view
@@ -39,7 +39,7 @@ function hideAllSectionsAndDeselectButtons() {
 }
 
 // External links
-document.body.addEventListener('click', (event) => {
+document.body.addEventListener('click', event => {
   const url = event.target.href;
 
   if (event.target.tagName === 'A' && (url.indexOf('http://') === 0 || url.indexOf('https://') === 0)) {
