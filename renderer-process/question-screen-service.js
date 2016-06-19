@@ -1,9 +1,6 @@
 const moment = require('moment');
 const delegate = require('delegate');
 const SimpleMDE = require('simplemde');
-
-console.log(SimpleMDE);
-
 const stackexchange = require('./stackexchange-api');
 const {asyncInnerHTML} = require('./utils');
 
@@ -48,13 +45,14 @@ exports.renderQuestion = (question, token) => {
         <div class="question-comments-list"></div>
         <form class="question-comments-form">
           <input type="text" placeholder="Add your comment here. Avoid answering questions in comments">
-          <small class="text-muted">Shift + Enter – start answering</small>
+          <small class="question-comments-form-tip" style="margin-left: 4px;">Shift + Enter – start answering</small>
         </form>
         <div class="question-comments-form-errors"></div>
       </div>
     `;
 
     const commentForm = document.querySelector('.question-screen-content form');
+    const formTip = document.querySelector('.question-comments-form-tip');
 
     // Load and render comments
     stackexchange
@@ -112,12 +110,25 @@ exports.renderQuestion = (question, token) => {
         });
     });
 
-    commentForm.addEventListener('keydown', event => {
+    commentForm.addEventListener('keydown', function (event) {
       if (event.shiftKey && event.which === 13) {
         event.preventDefault();
 
-        // Expand form to start answering
-        new SimpleMDE({ element: commentInput });
+        // Expand form to start answering – init SimpleMDE
+        new SimpleMDE({
+          element: commentInput,
+          autofocus: true,
+          status: false,
+          toolbarTips: false,
+          toolbar: ['bold', 'italic', '|', 'link', 'quote', 'code', 'image', '|', 'ordered-list', 'unordered-list', 'heading', 'horizontal-rule'],
+          placeholder: 'Your answer'
+        });
+
+        // Remove Shift + Enter tip
+        formTip.parentNode.removeChild(formTip);
+
+        // Unbind the handler
+        this.removeEventListener('keydown', arguments.callee);
       }
     });
 
