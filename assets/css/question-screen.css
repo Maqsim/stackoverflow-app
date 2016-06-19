@@ -96,6 +96,18 @@
   /* TODO make darken */
 }
 
+.question-comments-list-item.__my-comment .question-comments-profile-link {
+  color: #A71D5D;
+}
+
+.question-comments-list-item:not(.__my-comment) .question-comments-controls {
+  display: none;
+}
+
+.question-comments-controls {
+  white-space: nowrap;
+}
+
 .question-comments-form {
   margin-top: 8px;
 }

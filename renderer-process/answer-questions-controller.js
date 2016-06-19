@@ -74,6 +74,8 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         
         questionScreenBackdrop.classList.add('is-shown');
         questionScreen.classList.add('is-shown');
+
+        // TODO do not pass token through function
         questionScreenService.renderQuestion(question, data.token);
       });
 

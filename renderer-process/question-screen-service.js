@@ -1,16 +1,28 @@
 const moment = require('moment');
+const delegate = require('delegate');
+const SimpleMDE = require('simplemde');
+
+console.log(SimpleMDE);
+
 const stackexchange = require('./stackexchange-api');
 const {asyncInnerHTML} = require('./utils');
 
 function createCommentLayout(comment) {
   const timeAgo = moment(comment.creation_date * 1000).fromNow();
+  const loggedInUserId = Number(localStorage.userId);
 
   return `
-    <div class="question-comments-list-item">
+    <div class="question-comments-list-item ${loggedInUserId === comment.owner.user_id ? '__my-comment' : ''}" data-id="${comment.comment_id}">
       ${comment.body}
       –
-      <a href="${comment.owner.link}">${comment.owner.display_name}</a>
+      <a class="question-comments-profile-link" href="${comment.owner.link}">${comment.owner.display_name}</a>
       <span class="text-muted">${timeAgo}</span>
+      <span class="question-comments-controls">
+        &nbsp;
+        <a class="question-comments-controls-edit" href="#">edit</a>
+        <span class="text-muted">·</span>
+        <a class="question-comments-controls-remove" href="#">remove</a>
+      </span>
     </div>
   `;
 }
@@ -31,6 +43,19 @@ exports.renderQuestion = (question, token) => {
 
     prettyPrint();
 
+    document.querySelector('.question-screen-content').innerHTML += `
+      <div class="question-comments">
+        <div class="question-comments-list"></div>
+        <form class="question-comments-form">
+          <input type="text" placeholder="Add your comment here. Avoid answering questions in comments">
+          <small class="text-muted">Shift + Enter – start answering</small>
+        </form>
+        <div class="question-comments-form-errors"></div>
+      </div>
+    `;
+
+    const commentForm = document.querySelector('.question-screen-content form');
+
     // Load and render comments
     stackexchange
       .fetch(`questions/${question.question_id}/comments`, {
@@ -39,65 +64,89 @@ exports.renderQuestion = (question, token) => {
         filter: '!*Ju*loZ-vYZpgswx'
       })
       .then((response) => {
-        let comments = response.items;
+        document.querySelector('.question-comments-list').innerHTML = response.items.map(createCommentLayout).join('');
+      });
 
-        document.querySelector('.question-screen-content').innerHTML += `
-          <div class="question-comments">
-            <div class="question-comments-list">
-              ${comments.map(createCommentLayout).join('')}
-            </div>
-            <form class="question-comments-form">
-              <input type="text" placeholder="Add your comment here. Avoid answering questions in comments">
-            </form>
-            <div class="question-comments-form-errors"></div>
-          </div>
-        `;
+    let commentInput = document.querySelector('.question-comments-form input');
+    let formErrors = document.querySelector('.question-comments-form-errors');
 
-        let commentInput = document.querySelector('.question-comments-form input');
-        let formErrors = document.querySelector('.question-comments-form-errors');
+    // When you press Enter on comment form
+    commentForm.addEventListener('submit', event => {
+      event.preventDefault();
 
-        // When you press Enter on comment form
-        document.querySelector('.question-screen-content form').addEventListener('submit', event => {
-          event.preventDefault();
+      // Clear errors
+      formErrors.innerHTML = '';
 
-          // Clear errors
-          formErrors.innerHTML = '';
+      const commentText = commentInput.value.trim();
 
-          const commentText = commentInput.value.trim();
+      // Client-side validation
+      if (!commentText) {
+        return;
+      } else if (commentText.length < 15) {
+        return formErrors.innerHTML = 'Comments must be at least 15 characters in length.';
+      }
 
-          // Client-side validation
-          if (!commentText) {
-            return;
-          } else if (commentText.length < 15) {
-            return formErrors.innerHTML = 'Comments must be at least 15 characters in length.';
+      stackexchange
+        .fetch(`posts/${question.question_id}/comments/add`, null, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: encodeURI(`access_token=${token}&key=bdFSxniGkNbU3E*jsj*28w((&body=${commentText}&preview=false&site=stackoverflow`)
+        })
+        .then((response) => {
+          // Server-side validation (if not pass)
+          if (response.error_id) {
+            return formErrors.innerHTML = response.error_message;
           }
 
-          stackexchange
-            .fetch(`posts/${question.question_id}/comments/add`, null, {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: encodeURI(`access_token=${token}&key=bdFSxniGkNbU3E*jsj*28w((&body=${commentText}&preview=false&site=stackoverflow`)
-            })
-            .then((response) => {
-              // Server-side validation (if not pass)
-              if (response.error_id) {
-                return formErrors.innerHTML = response.error_message;
-              }
+          // Render successfully added comment
+          let savedComment = response.items[0];
+          savedComment.body = commentText;
 
-              // Render successfully added comment
-              let savedComment = response.items[0];
-              savedComment.body = commentText;
+          document.querySelector('.question-comments-list').innerHTML += createCommentLayout(savedComment);
 
-              document.querySelector('.question-comments-list').innerHTML += createCommentLayout(savedComment);
+          // Clear input
+          commentInput.value = '';
+        });
+    });
 
-              // Clear input
-              commentInput.value = '';
-            });
+    commentForm.addEventListener('keydown', event => {
+      if (event.shiftKey && event.which === 13) {
+        event.preventDefault();
+
+        // Expand form to start answering
+        new SimpleMDE({ element: commentInput });
+      }
+    });
+
+    // Remove comment
+    delegate(document.querySelector('.question-comments-list'), '.question-comments-controls-remove', 'click', event => {
+      const commentElement = event.target.closest('.question-comments-list-item');
+      const commentId = commentElement.dataset.id;
+
+      stackexchange
+        .fetch(`comments/${commentId}/delete`, null, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: encodeURI(`access_token=${token}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow`)
         })
-      });
+        .then(() => {
+          commentElement.parentNode.removeChild(commentElement);
+        });
+    });
+
+    // Edit comment
+    delegate(document.querySelector('.question-comments-list'), '.question-comments-controls-edit', 'click', event => {
+      const commentElement = event.target.closest('.question-comments-list-item');
+      const commentId = commentElement.dataset.id;
+
+      // TODO implement comment editing
+    });
 
     // TODO Load answers
   });

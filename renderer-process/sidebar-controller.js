@@ -2,10 +2,12 @@ const ipcRenderer = require('electron').ipcRenderer;
 const stackexchange = require('./stackexchange-api');
 
 ipcRenderer.on('stackexchange:login', (event, data) => {
-  stackexchange.fetch('me', { access_token: data.token }).then((response) => {
+  stackexchange.fetch('me', { access_token: data.token }).then(response => {
     let profile = response.items[0];
     let headerElement = document.querySelector('.nav-header-content');
     let headerContainer = headerElement.parentNode;
+    
+    localStorage.userId = profile.user_id;
 
     headerElement.innerHTML = `
         <div class="nav-avatar">
