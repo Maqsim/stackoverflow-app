@@ -121,6 +121,7 @@ exports.renderQuestion = (question, token) => {
           status: false,
           toolbarTips: false,
           toolbar: ['bold', 'italic', '|', 'link', 'quote', 'code', 'image', '|', 'ordered-list', 'unordered-list', 'heading', 'horizontal-rule'],
+          autoDownloadFontAwesome: false,
           placeholder: 'Your answer'
         });
 
