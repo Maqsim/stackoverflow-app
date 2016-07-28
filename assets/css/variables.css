@@ -1,12 +1,13 @@
-
 /* Custom Properties */
 
 :root {
-  --color:          hsl(0,0%,22%);
-  --color-subtle:   hsl(0,0%,44%);
-  --color-strong:   hsl(0,0%,11%);
-  --color-link:     #4b73a8;
+  --color: hsl(0, 0%, 22%);
+  --color-subtle: hsl(0, 0%, 44%);
+  --color-strong: hsl(0, 0%, 11%);
+  --color-link: #4b73a8;
 
-  --color-border:   hsl(0,0%,88%);
-  --color-bg:       #252E3A;
+  --color-border: hsl(0, 0%, 88%);
+  --color-bg: #252E3A;
+
+  --question-screen-width: 100% - 350px;
 }

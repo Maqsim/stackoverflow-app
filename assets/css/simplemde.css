@@ -1,3 +1,7 @@
+.CodeMirror {
+  height: 300px;
+}
+
 .CodeMirror, .editor-toolbar {
   border-width: 2px;
 }

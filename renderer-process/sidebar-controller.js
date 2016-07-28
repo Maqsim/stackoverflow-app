@@ -3,9 +3,9 @@ const stackexchange = require('./stackexchange-api');
 
 ipcRenderer.on('stackexchange:login', (event, data) => {
   stackexchange.fetch('me', { access_token: data.token }).then(response => {
-    let profile = response.items[0];
-    let headerElement = document.querySelector('.nav-header-content');
-    let headerContainer = headerElement.parentNode;
+    const profile = response.items[0];
+    const headerElement = document.querySelector('.nav-header-content');
+    const headerContainer = headerElement.parentNode;
 
     localStorage.userId = profile.user_id;
 

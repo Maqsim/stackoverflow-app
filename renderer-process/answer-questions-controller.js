@@ -3,11 +3,11 @@ const ipcRenderer = require('electron').ipcRenderer;
 const stackexchange = require('./stackexchange-api');
 const questionScreenService = require('./question-screen-service');
 
-let questionScreenBackdrop = document.querySelector('.question-screen-backdrop');
-let questionScreen = document.querySelector('.question-screen');
-let answerQuestionSection = document.querySelector('#answer-questions-section');
+const questionScreenBackdrop = document.querySelector('.question-screen-backdrop');
+const questionScreen = document.querySelector('.question-screen');
+const answerQuestionSection = document.querySelector('#answer-questions-section');
 
-const countInString = (needly, haystack) => {
+function countInString(needly, haystack) {
   var results = 0;
   var a = haystack.indexOf(needly);
 
@@ -18,9 +18,10 @@ const countInString = (needly, haystack) => {
   }
 
   return results;
-};
+}
 
 ipcRenderer.on('stackexchange:login', (event, data) => {
+  // Load unanswered questions
   stackexchange
     .fetch('questions/unanswered/my-tags', {
       order: 'desc',
@@ -29,8 +30,8 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       filter: '!.Iwe-BCqk3L4jlmCTCqYbursXuIE_'
     })
     .then((response) => {
-      let questions = response.items;
-      let questionsParts = [];
+      const questions = response.items;
+      const questionsParts = [];
 
       questions.forEach((question) => {
         const timeAgo = moment(question.creation_date * 1000).fromNow();
@@ -69,8 +70,8 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       // Open question on click – delegated event
       answerQuestionSection.addEventListener('click', event => {
         // Get question div
-        let questionElement = event.path.find(element => element.classList.contains('question'));
-        let question = questions.find(question => question.question_id === +questionElement.dataset.id);
+        const questionElement = event.path.find(element => element.classList.contains('question'));
+        const question = questions.find(question => question.question_id === +questionElement.dataset.id);
 
         questionScreenBackdrop.classList.add('is-shown');
         questionScreen.classList.add('is-shown');

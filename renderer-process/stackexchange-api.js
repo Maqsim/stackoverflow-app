@@ -1,17 +1,17 @@
-var win = require('electron').remote.getCurrentWindow();
+const win = require('electron').remote.getCurrentWindow();
 const noop = () => {};
 
 exports.buildStackOverflowUrl = (url, parameters) => {
   url = 'https://api.stackexchange.com/2.2/' + url;
 
-  var queryString = '';
-  for (var key in parameters) {
-    var value = parameters[key];
-    queryString += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
-  }
+  let queryString = Object.keys(parameters)
+    .map(function (key) {
+      var value = parameters[key];
+      return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+    })
+    .join('&');
 
-  if (queryString.length > 0) {
-    queryString = queryString.substring(0, queryString.length - 1); // Chop off last '&'
+  if (queryString) {
     url = url + '?' + queryString;
   }
 
@@ -30,7 +30,7 @@ exports.fetch = (url, parameters, options) => {
 };
 
 exports.logout = (token) => {
-  let logoutPromise = fetch(exports.buildStackOverflowUrl('apps/' + token + '/de-authenticate', {
+  const logoutPromise = fetch(exports.buildStackOverflowUrl('apps/' + token + '/de-authenticate', {
     key: 'bdFSxniGkNbU3E*jsj*28w(('
   }));
 

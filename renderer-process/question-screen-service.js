@@ -46,12 +46,14 @@ function createAnswerLayout(answer) {
 }
 
 exports.renderQuestion = (question, token) => {
+  const questionScreenContentElement = document.querySelector('.question-screen-content');
+
   asyncInnerHTML(question.body, (questionBodyHtml) => {
-    document.querySelector('.question-screen-content').innerHTML = `
+    questionScreenContentElement.innerHTML = `
       <div class="question-title"><a href="${question.link}">${question.title}</a></div>
     `;
 
-    document.querySelector('.question-screen-content').appendChild(questionBodyHtml);
+    questionScreenContentElement.appendChild(questionBodyHtml);
 
     // Beautify code
     const codeBlocks = document.querySelectorAll('pre code');
@@ -61,12 +63,12 @@ exports.renderQuestion = (question, token) => {
 
     prettyPrint();
 
-    document.querySelector('.question-screen-content').innerHTML += `
+    questionScreenContentElement.innerHTML += `
       <div class="question-comments">
+        <div class="question-status-bar">4 answers and 2 comments</div>
         <div class="question-comments-list"></div>
         <form class="question-comments-form">
-          <input type="text" placeholder="Add your comment here. Avoid answering questions in comments">
-          <small class="question-comments-form-tip" style="margin-left: 2px;">Shift + Enter – start answering</small>
+          <input type="text" placeholder="Your comment. Press Shift + Enter to start answer">
           <div class="question-answer-buttons">
             <button type="button" class="button __success post-answer">Post</button>
             <button type="button" class="button discard-changes">Cancel</button>
@@ -75,9 +77,6 @@ exports.renderQuestion = (question, token) => {
         <div class="question-comments-form-errors"></div>
       </div>
     `;
-
-    const commentForm = document.querySelector('.question-screen-content form');
-    const formTip = document.querySelector('.question-comments-form-tip');
 
     // Load and render comments
     stackexchange
@@ -89,14 +88,37 @@ exports.renderQuestion = (question, token) => {
       .then((response) => {
         document.querySelector('.question-comments-list').innerHTML = response.items.map(createCommentLayout).join('');
 
-        const mockAnswerData = JSON.parse('{"owner":{"reputation":989,"user_id":1453833,"user_type":"registered","profile_image":"https://www.gravatar.com/avatar/cc814c87d49cffb16bd3785ed8a1fb1d?s=128&d=identicon&r=PG","display_name":"Max","link":"http://stackoverflow.com/users/1453833/max"},"comment_count":0,"is_accepted":false,"score":0,"creation_date":1469662633,"answer_id":38624870,"question_id":38624835,"link":"http://stackoverflow.com/questions/38624835//38624870#38624870","body":"<p>!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9</p>"}');
-        document.querySelector('.question-comments-list').innerHTML = createAnswerLayout(mockAnswerData);
+        // const mockAnswerData = JSON.parse('{"owner":{"reputation":989,"user_id":1453833,"user_type":"registered","profile_image":"https://www.gravatar.com/avatar/cc814c87d49cffb16bd3785ed8a1fb1d?s=128&d=identicon&r=PG","display_name":"Max","link":"http://stackoverflow.com/users/1453833/max"},"comment_count":0,"is_accepted":false,"score":0,"creation_date":1469662633,"answer_id":38624870,"question_id":38624835,"link":"http://stackoverflow.com/questions/38624835//38624870#38624870","body":"<p>!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9</p>"}');
+        // document.querySelector('.question-comments-list').innerHTML = createAnswerLayout(mockAnswerData);
       });
 
-    let commentInput = document.querySelector('.question-comments-form input');
-    let formErrors = document.querySelector('.question-comments-form-errors');
+    // Make status bar sticky
+    const questionScreenElement = document.querySelector('.question-screen');
+    const statusBarElement = document.querySelector('.question-status-bar');
+    const statusBarElementTop = statusBarElement.offsetTop;
+    const statusBarElementHeight = statusBarElement.offsetHeight;
+    let lastKnownScrollPosition = 0;
+    let ticking = false;
+
+    questionScreenElement.addEventListener('scroll', function () {
+      lastKnownScrollPosition = questionScreenElement.scrollTop;
+
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          const statusBarOffset = statusBarElementTop + statusBarElementHeight - (questionScreenElement.offsetHeight + lastKnownScrollPosition);
+          statusBarElement.classList.toggle('__sticky', statusBarOffset > 0);
+          ticking = false;
+        });
+      }
+
+      ticking = true;
+    });
 
     // When you press Enter on comment form
+    const commentForm = document.querySelector('.question-screen-content form');
+    const commentInput = document.querySelector('.question-comments-form input');
+    const formErrors = document.querySelector('.question-comments-form-errors');
+
     commentForm.addEventListener('submit', event => {
       event.preventDefault();
 
@@ -128,7 +150,7 @@ exports.renderQuestion = (question, token) => {
           }
 
           // Render successfully added comment
-          let savedComment = response.items[0];
+          const savedComment = response.items[0];
           savedComment.body = commentText;
 
           document.querySelector('.question-comments-list').innerHTML += createCommentLayout(savedComment);
@@ -138,11 +160,11 @@ exports.renderQuestion = (question, token) => {
         });
     });
 
-    commentForm.addEventListener('keydown', event => {
+    // Expand form to start answering – init SimpleMDE
+    commentForm.addEventListener('keydown', function (event) {
       if (event.shiftKey && event.which === 13) {
         event.preventDefault();
 
-        // Expand form to start answering – init SimpleMDE
         const simpleMDE = new SimpleMDE({
           element: commentInput,
           autofocus: true,
@@ -153,14 +175,14 @@ exports.renderQuestion = (question, token) => {
           placeholder: 'Your answer'
         });
 
-        // Remove Shift + Enter hint
-        formTip.parentNode.removeChild(formTip);
-
         // Show answer buttons
         document.querySelector('.question-answer-buttons').style.display = 'block';
 
         // Unbind the handler
         this.removeEventListener('keydown', arguments.callee);
+
+        // Scroll to form
+        commentForm.scrollIntoView(true);
 
         // Posting answer
         document.querySelector('.button.post-answer').addEventListener('click', () => {
@@ -171,10 +193,10 @@ exports.renderQuestion = (question, token) => {
 
           // answerText.replace(/```/g, '');
 
-          console.log(answerText.match('```\s\S(.*)\s\S```'));
+          // console.log(answerText.match('```\s\S(.*)\s\S```'));
 
 
-          return;
+          // return;
 
           stackexchange
             .fetch(`questions/${question.question_id}/answers/add`, null, {

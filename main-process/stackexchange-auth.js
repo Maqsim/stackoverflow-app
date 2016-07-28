@@ -43,7 +43,7 @@ exports.auth = (scb) => {
     }
 
     // Success authentication
-    let hashPosition = newUrl.indexOf('#') + 1;
+    const hashPosition = newUrl.indexOf('#') + 1;
     let [token, expires] = newUrl.substring(hashPosition).split('&');
     token = token.split('=')[1];
     expires = expires.split('=')[1];

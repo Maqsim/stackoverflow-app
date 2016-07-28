@@ -1,3 +1,4 @@
+
 .question-screen-backdrop {
   position: fixed;
   top: 0;
@@ -16,8 +17,8 @@
   z-index: 2;
   display: none;
   overflow-y: auto;
-  padding: 25px 40px 50px 30px;
-  width: calc(100% - 300px); /* 300px - sidebar, 0px - offset */
+  padding: 25px 60px 50px 30px;
+  width: calc(var(--question-screen-width)); /* 300px - sidebar, 50px - offset */
   height: 100%;
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
@@ -71,15 +72,42 @@
 }
 
 .question-comments {
-  margin: 20px -40px 0 -30px;
-  padding: 10px 40px 30px 30px;
-  border-top: 2px solid #ddd;
+  margin-top: 20px;
   background-color: #FFFFFF;
   font-size: 12px;
 }
 
+.question-status-bar {
+  margin: 0 -60px 10px -30px;
+  padding: 4px 7px;
+  background: #3964dd;
+  color: white;
+  transform: translate3D(0, 0, 0);
+  will-change: transform;
+}
+
+.question-status-bar.__sticky {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  width: calc(var(--question-screen-width));
+}
+
+.question-status-bar.__accepted {
+  background: #3aa340;
+}
+
+.question-status-bar.__answered {
+  background: #E69C38;
+}
+
 .question-comments-title {
   font-weight: bold;
+}
+
+.question-comments-list {
+  min-height: 1px; /* This is needed to summarize margins of closest siblings */
 }
 
 .question-comments-list-item {
