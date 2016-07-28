@@ -1,0 +1,24 @@
+.button {
+  padding: 7px 9px;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  background-color: white;
+  color: #ADADAD;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.button.__success {
+  border-color: #7cc576;
+  background-color: #7cc576;
+  color: white;
+}
+
+.button:active {
+  position: relative;
+  top: 1px;
+}
+
+.button:focus {
+  outline: 0;
+}

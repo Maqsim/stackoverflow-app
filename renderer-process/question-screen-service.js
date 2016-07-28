@@ -9,10 +9,31 @@ function createCommentLayout(comment) {
   const loggedInUserId = Number(localStorage.userId);
 
   return `
-    <div class="question-comments-list-item ${loggedInUserId === comment.owner.user_id ? '__my-comment' : ''}" data-id="${comment.comment_id}">
+    <div class="question-comments-list-item ${loggedInUserId === comment.owner.user_id ? '__my' : ''}" data-id="${comment.comment_id}">
       ${comment.body}
       –
       <a class="question-comments-profile-link" href="${comment.owner.link}">${comment.owner.display_name}</a>
+      <span class="text-muted">${timeAgo}</span>
+      <span class="question-comments-controls">
+        &nbsp;
+        <a class="question-comments-controls-edit" href="#">edit</a>
+        <span class="text-muted">·</span>
+        <a class="question-comments-controls-remove" href="#">remove</a>
+      </span>
+    </div>
+  `;
+}
+
+// TODO make answers look more sick and figure out how to show comments to the answers
+function createAnswerLayout(answer) {
+  const timeAgo = moment(answer.creation_date * 1000).fromNow();
+  const loggedInUserId = Number(localStorage.userId);
+
+  return `
+    <div class="question-comments-list-item question-comments-answer ${loggedInUserId === answer.owner.user_id ? '__my' : ''}" data-id="${answer.answer_id}">
+      ${answer.body}
+      –
+      <a class="question-comments-profile-link" href="${answer.owner.link}">${answer.owner.display_name}</a>
       <span class="text-muted">${timeAgo}</span>
       <span class="question-comments-controls">
         &nbsp;
@@ -45,7 +66,11 @@ exports.renderQuestion = (question, token) => {
         <div class="question-comments-list"></div>
         <form class="question-comments-form">
           <input type="text" placeholder="Add your comment here. Avoid answering questions in comments">
-          <small class="question-comments-form-tip" style="margin-left: 4px;">Shift + Enter – start answering</small>
+          <small class="question-comments-form-tip" style="margin-left: 2px;">Shift + Enter – start answering</small>
+          <div class="question-answer-buttons">
+            <button type="button" class="button __success post-answer">Post</button>
+            <button type="button" class="button discard-changes">Cancel</button>
+          </div>
         </form>
         <div class="question-comments-form-errors"></div>
       </div>
@@ -63,6 +88,9 @@ exports.renderQuestion = (question, token) => {
       })
       .then((response) => {
         document.querySelector('.question-comments-list').innerHTML = response.items.map(createCommentLayout).join('');
+
+        const mockAnswerData = JSON.parse('{"owner":{"reputation":989,"user_id":1453833,"user_type":"registered","profile_image":"https://www.gravatar.com/avatar/cc814c87d49cffb16bd3785ed8a1fb1d?s=128&d=identicon&r=PG","display_name":"Max","link":"http://stackoverflow.com/users/1453833/max"},"comment_count":0,"is_accepted":false,"score":0,"creation_date":1469662633,"answer_id":38624870,"question_id":38624835,"link":"http://stackoverflow.com/questions/38624835//38624870#38624870","body":"<p>!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9</p>"}');
+        document.querySelector('.question-comments-list').innerHTML = createAnswerLayout(mockAnswerData);
       });
 
     let commentInput = document.querySelector('.question-comments-form input');
@@ -115,7 +143,7 @@ exports.renderQuestion = (question, token) => {
         event.preventDefault();
 
         // Expand form to start answering – init SimpleMDE
-        new SimpleMDE({
+        const simpleMDE = new SimpleMDE({
           element: commentInput,
           autofocus: true,
           status: false,
@@ -125,11 +153,45 @@ exports.renderQuestion = (question, token) => {
           placeholder: 'Your answer'
         });
 
-        // Remove Shift + Enter tip
+        // Remove Shift + Enter hint
         formTip.parentNode.removeChild(formTip);
+
+        // Show answer buttons
+        document.querySelector('.question-answer-buttons').style.display = 'block';
 
         // Unbind the handler
         this.removeEventListener('keydown', arguments.callee);
+
+        // Posting answer
+        document.querySelector('.button.post-answer').addEventListener('click', () => {
+          const answerText = simpleMDE.value();
+
+
+
+
+          // TODO make code blocks work on SO
+
+          // answerText.replace(/```/g, '');
+
+          console.log(answerText.match('```\s\S(.*)\s\S```'));
+
+
+
+          return;
+
+          stackexchange
+            .fetch(`questions/${question.question_id}/answers/add`, null, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: encodeURI(`access_token=${token}&body=${answerText}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow&filter=!)s0G2lBkPFy_lEEcsfX9`)
+            })
+            .then(savedAnswer => {
+              document.querySelector('.question-comments-list').innerHTML += createAnswerLayout(savedAnswer);
+            });
+        });
       }
     });
 
