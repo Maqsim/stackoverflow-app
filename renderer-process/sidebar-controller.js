@@ -6,7 +6,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
     let profile = response.items[0];
     let headerElement = document.querySelector('.nav-header-content');
     let headerContainer = headerElement.parentNode;
-    
+
     localStorage.userId = profile.user_id;
 
     headerElement.innerHTML = `

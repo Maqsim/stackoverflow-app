@@ -2,7 +2,7 @@ const moment = require('moment');
 const delegate = require('delegate');
 const SimpleMDE = require('simplemde');
 const stackexchange = require('./stackexchange-api');
-const {asyncInnerHTML} = require('./utils');
+const { asyncInnerHTML } = require('./utils');
 
 function createCommentLayout(comment) {
   const timeAgo = moment(comment.creation_date * 1000).fromNow();
@@ -138,7 +138,7 @@ exports.renderQuestion = (question, token) => {
         });
     });
 
-    commentForm.addEventListener('keydown', function (event) {
+    commentForm.addEventListener('keydown', event => {
       if (event.shiftKey && event.which === 13) {
         event.preventDefault();
 
@@ -167,14 +167,11 @@ exports.renderQuestion = (question, token) => {
           const answerText = simpleMDE.value();
 
 
-
-
           // TODO make code blocks work on SO
 
           // answerText.replace(/```/g, '');
 
           console.log(answerText.match('```\s\S(.*)\s\S```'));
-
 
 
           return;

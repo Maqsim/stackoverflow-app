@@ -71,7 +71,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         // Get question div
         let questionElement = event.path.find(element => element.classList.contains('question'));
         let question = questions.find(question => question.question_id === +questionElement.dataset.id);
-        
+
         questionScreenBackdrop.classList.add('is-shown');
         questionScreen.classList.add('is-shown');
 
