@@ -2,14 +2,14 @@ const ipcRenderer = require('electron').ipcRenderer;
 const stackexchange = require('./stackexchange-api');
 
 ipcRenderer.on('stackexchange:login', (event, data) => {
-  stackexchange.fetch('me', { access_token: data.token }).then(response => {
-    const profile = response.items[0];
-    const headerElement = document.querySelector('.nav-header-content');
-    const headerContainer = headerElement.parentNode;
+  localStorage.token = data.token;
+});
 
-    localStorage.userId = profile.user_id;
+function init(profile) {
+  const headerElement = document.querySelector('.nav-header-content');
+  localStorage.userId = profile.user_id;
 
-    headerElement.innerHTML = `
+  headerElement.innerHTML = `
         <div class="nav-avatar">
           <img class="nav-avatar-img" src="${profile.profile_image}" alt="profile image"/>
         </div>
@@ -22,17 +22,41 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         </div>
       `;
 
-    headerContainer.style.opacity = 1;
-    headerContainer.style.height = '87px';
+  // Register event handler on Logout click
+  document.querySelector('.nav-logout').addEventListener('click', () => {
+    stackexchange.logout(localStorage.token).then(() => {
+      delete localStorage.profile;
+      delete localStorage.token;
 
-    // Register event handler on Logout click
-    document.querySelector('.nav-logout').addEventListener('click', () => {
-      stackexchange.logout(data.token).then(() => {
-        headerContainer.style.opacity = 0;
-        headerContainer.style.height = 0;
-
-        ipcRenderer.send('stackexchange:show-login-form');
-      });
+      ipcRenderer.send('stackexchange:show-login-form');
     });
   });
-});
+
+  // Listen reputation change via sockets
+  stackexchange.socket.on(`1-${profile.user_id}-reputation`, data => {
+    // Update reputation counter
+    document.querySelector('.nav-rep').innerHTML = `${data} reputation`;
+
+    // Show notification
+    new Notification('Reputation earned!', {
+      title: 'Reputation earned!',
+      body: `You reputation now is ${data}`
+    });
+  });
+}
+
+const cachedProfile = localStorage.profile && JSON.parse(localStorage.profile);
+
+if (cachedProfile) {
+  init(cachedProfile);
+} else {
+  ipcRenderer.on('stackexchange:login', (event, data) => {
+    // Load info about logged in user
+    stackexchange.fetch('me', { access_token: data.token }).then(response => {
+      const profile = response.items[0];
+      localStorage.profile = JSON.stringify(profile);
+
+      init(profile, true);
+    });
+  });
+}

@@ -10,11 +10,8 @@
 }
 
 .nav-header {
-  opacity: 0;
-  height: 0;
+  height: 87px;
   color: white;
-
-  transition: all 300ms ease-in-out;
 }
 
 .nav-header-content {

@@ -78,9 +78,10 @@
 }
 
 .question-status-bar {
+  overflow: hidden;
   margin: 0 -60px 10px -30px;
-  padding: 4px 7px;
-  background: #3964dd;
+  padding: 0 7px;
+  background: #3986dd;
   color: white;
   transform: translate3D(0, 0, 0);
   will-change: transform;
@@ -100,6 +101,22 @@
 
 .question-status-bar.__answered {
   background: #E69C38;
+}
+
+.question-status-bar-action {
+  padding: 4px 7px;
+  color: white;
+  text-decoration: none;
+  float: left;
+}
+
+.question-status-bar-action.__right {
+  float: right;
+}
+
+.question-status-bar-action:hover, .question-status-bar-action:hover {
+  border-bottom: 0;
+  background-color: rgba(255, 255, 255, .1);
 }
 
 .question-comments-title {

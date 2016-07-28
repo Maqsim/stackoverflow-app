@@ -65,7 +65,12 @@ exports.renderQuestion = (question, token) => {
 
     questionScreenContentElement.innerHTML += `
       <div class="question-comments">
-        <div class="question-status-bar">4 answers and 2 comments</div>
+        <div class="question-status-bar">
+          <a class="question-status-bar-action">1 answer and 4 comments</a>
+          <a class="question-status-bar-action"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+          
+          <a class="question-status-bar-action __right" href="${question.owner.link}">${question.owner.display_name}</a>
+        </div>
         <div class="question-comments-list"></div>
         <form class="question-comments-form">
           <input type="text" placeholder="Your comment. Press Shift + Enter to start answer">
@@ -100,7 +105,7 @@ exports.renderQuestion = (question, token) => {
     let lastKnownScrollPosition = 0;
     let ticking = false;
 
-    questionScreenElement.addEventListener('scroll', function () {
+    function checkStatusBarPosition() {
       lastKnownScrollPosition = questionScreenElement.scrollTop;
 
       if (!ticking) {
@@ -112,7 +117,10 @@ exports.renderQuestion = (question, token) => {
       }
 
       ticking = true;
-    });
+    }
+
+    questionScreenElement.addEventListener('scroll', checkStatusBarPosition);
+    checkStatusBarPosition();
 
     // When you press Enter on comment form
     const commentForm = document.querySelector('.question-screen-content form');
@@ -171,7 +179,6 @@ exports.renderQuestion = (question, token) => {
           status: false,
           toolbarTips: false,
           toolbar: ['bold', 'italic', '|', 'link', 'quote', 'code', 'image', '|', 'ordered-list', 'unordered-list', 'heading', 'horizontal-rule'],
-          autoDownloadFontAwesome: false,
           placeholder: 'Your answer'
         });
 

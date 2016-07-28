@@ -41,3 +41,41 @@ exports.logout = (token) => {
 
   return logoutPromise;
 };
+
+
+// Creating a promise of web socket connection
+var socketConnectionPromise = new Promise(function (resolve, reject) {
+  const connection = new WebSocket('wss://qa.sockets.stackexchange.com/');
+
+  connection.onopen = function () {
+    resolve(connection);
+  };
+
+  connection.onerror = reject;
+});
+
+var onMessagePromise = new Promise(function (resolve) {
+  socketConnectionPromise.then(function (connection) {
+    connection.onmessage = resolve;
+  });
+});
+
+exports.socket = {
+  on: function (message, callback) {
+    socketConnectionPromise.then(function (connection) {
+      connection.send(message);
+
+      onMessagePromise.then(response => {
+        if (response.action === message) {
+          let json;
+
+          try {
+            json = JSON.parse(response.data);
+          } catch (ignore) {}
+
+          callback(json || response.data);
+        }
+      })
+    });
+  }
+};
