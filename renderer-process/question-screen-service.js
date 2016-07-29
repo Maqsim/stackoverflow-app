@@ -1,8 +1,10 @@
 const moment = require('moment');
 const delegate = require('delegate');
 const SimpleMDE = require('simplemde');
-const stackexchange = require('./stackexchange-api');
-const { asyncInnerHTML } = require('./utils');
+const stackexchange = require('./stackexchange-api-service');
+const pinnedQuestions = require('./pinned-questions-service');
+const { asyncInnerHTML, colorize } = require('./utils');
+const $ = require('jquery');
 
 function createCommentLayout(comment) {
   const timeAgo = moment(comment.creation_date * 1000).fromNow();
@@ -10,9 +12,10 @@ function createCommentLayout(comment) {
 
   return `
     <div class="question-comments-list-item ${loggedInUserId === comment.owner.user_id ? '__my' : ''}" data-id="${comment.comment_id}">
-      ${comment.body}
-      –
-      <a class="question-comments-profile-link" href="${comment.owner.link}">${comment.owner.display_name}</a>
+      <nobr>
+        <span class="question-comments-profile-color" style="background: ${colorize(comment.owner.user_id)}"></span>
+        <a class="question-comments-profile-link" href="${comment.owner.link}">${comment.owner.display_name}</a>
+      </nobr> ${comment.body}
       <span class="text-muted">${timeAgo}</span>
       <span class="question-comments-controls">
         &nbsp;
@@ -63,13 +66,24 @@ exports.renderQuestion = (question, token) => {
 
     prettyPrint();
 
+    const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
+    const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : 'Add your comment...';
+    const scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
+
     questionScreenContentElement.innerHTML += `
-      <div class="question-comments">
+      <div class="question-comments" id="scroll-to-comments">
         <div class="question-status-bar">
-          <a class="question-status-bar-action">1 answer and 4 comments</a>
-          <a class="question-status-bar-action"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+          <a class="question-status-bar-action" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
+          <a class="question-status-bar-action"><i class="fa fa-refresh"></i></a>
+          <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></i></a>
+          <a class="question-status-bar-action"><i class="fa fa-share-square"></i></i></a>
+          <a class="question-status-bar-action"><i class="fa fa-jsfiddle"></i></a>
+          <a class="question-status-bar-action"><i class="fa fa-github"></i></i></a>
           
-          <a class="question-status-bar-action __right" href="${question.owner.link}">${question.owner.display_name}</a>
+          <a class="question-status-bar-action __right" href="${question.owner.link}">
+            <img class="question-status-bar-profile-image" src="${question.owner.profile_image}" alt="">
+            ${question.owner.display_name}
+          </a>
         </div>
         <div class="question-comments-list"></div>
         <form class="question-comments-form">
@@ -82,6 +96,16 @@ exports.renderQuestion = (question, token) => {
         <div class="question-comments-form-errors"></div>
       </div>
     `;
+
+    $('.pin').click(function () {
+      if (pinnedQuestions.isPinned(question)) {
+        $('.fa', this).addClass('rotate-45');
+        pinnedQuestions.unpin(question);
+      } else {
+        $('.fa', this).removeClass('rotate-45');
+        pinnedQuestions.pin(question);
+      }
+    });
 
     // Load and render comments
     stackexchange
@@ -98,20 +122,25 @@ exports.renderQuestion = (question, token) => {
       });
 
     // Make status bar sticky
-    const questionScreenElement = document.querySelector('.question-screen');
-    const statusBarElement = document.querySelector('.question-status-bar');
-    const statusBarElementTop = statusBarElement.offsetTop;
-    const statusBarElementHeight = statusBarElement.offsetHeight;
+    const $questionScreen = $('.question-screen');
+    const $statusBar = $('.question-status-bar');
+    // const $statusBarClone = $statusBar
+    //   .clone()
+    //   .hide()
+    //   .addClass('__sticky')
+    //   .insertAfter($statusBar);
+    const statusBarElementTop = $statusBar.offset().top;
+    const statusBarElementHeight = $statusBar.outerHeight();
     let lastKnownScrollPosition = 0;
     let ticking = false;
 
     function checkStatusBarPosition() {
-      lastKnownScrollPosition = questionScreenElement.scrollTop;
+      lastKnownScrollPosition = $questionScreen.scrollTop();
 
       if (!ticking) {
         window.requestAnimationFrame(function () {
-          const statusBarOffset = statusBarElementTop + statusBarElementHeight - (questionScreenElement.offsetHeight + lastKnownScrollPosition);
-          statusBarElement.classList.toggle('__sticky', statusBarOffset > 0);
+          const statusBarOffset = statusBarElementTop + statusBarElementHeight - ($questionScreen.outerHeight() + lastKnownScrollPosition);
+          $statusBar.toggleClass('__sticky', statusBarOffset > 0);
           ticking = false;
         });
       }
@@ -119,10 +148,9 @@ exports.renderQuestion = (question, token) => {
       ticking = true;
     }
 
-    questionScreenElement.addEventListener('scroll', checkStatusBarPosition);
+    $questionScreen.on('scroll', checkStatusBarPosition);
     checkStatusBarPosition();
-
-    // When you press Enter on comment form
+// When you press Enter on comment form
     const commentForm = document.querySelector('.question-screen-content form');
     const commentInput = document.querySelector('.question-comments-form input');
     const formErrors = document.querySelector('.question-comments-form-errors');
@@ -195,7 +223,6 @@ exports.renderQuestion = (question, token) => {
         document.querySelector('.button.post-answer').addEventListener('click', () => {
           const answerText = simpleMDE.value();
 
-
           // TODO make code blocks work on SO
 
           // answerText.replace(/```/g, '');
@@ -216,7 +243,7 @@ exports.renderQuestion = (question, token) => {
             })
             .then(savedAnswer => {
               document.querySelector('.question-comments-list').innerHTML += createAnswerLayout(savedAnswer);
-            });
+            })
         });
       }
     });
@@ -253,5 +280,8 @@ exports.renderQuestion = (question, token) => {
 };
 
 exports.clearScreen = () => {
-  document.querySelector('.question-screen-content').innerHTML = '';
+  $('.question-screen-content').empty();
+
+  // Remove all event listeners
+  $('.question-screen').off('scroll');
 };

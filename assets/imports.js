@@ -10,7 +10,3 @@ function importLinkTo (link, element) {
 Array.prototype.forEach.call(pages, (link) => {
   importLinkTo(link, document.querySelector('.content'));
 });
-
-// Import question screen popup
-const questionScreenLink = document.querySelector('.question-screen link[rel="import"]');
-importLinkTo(questionScreenLink, document.querySelector('.question-screen'));

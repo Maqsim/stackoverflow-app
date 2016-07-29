@@ -1,6 +1,6 @@
 const moment = require('moment');
 const ipcRenderer = require('electron').ipcRenderer;
-const stackexchange = require('./stackexchange-api');
+const stackexchange = require('./stackexchange-api-service');
 const questionScreenService = require('./question-screen-service');
 
 const questionScreenBackdrop = document.querySelector('.question-screen-backdrop');
@@ -27,7 +27,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       order: 'desc',
       sort: 'creation',
       access_token: data.token,
-      filter: '!.Iwe-BCqk3L4jlmCTCqYbursXuIE_'
+      filter: '!teUCY0lNt1ZcAuRUK_5FCK1B_GkoLJW'
     })
     .then((response) => {
       const questions = response.items;
@@ -57,6 +57,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
             <ul class="question-tags">
               ${question.tags.map((tag) => `<li>${tag}</li>`).join(' ')}
             </ul>
+            <span></span>
             <span class="question-time">
               ${timeAgo}
               <a tabindex="-1" href="${question.owner.link}">${question.owner.display_name}</a>

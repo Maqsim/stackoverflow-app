@@ -1,5 +1,5 @@
 const ipcRenderer = require('electron').ipcRenderer;
-const stackexchange = require('./stackexchange-api');
+const stackexchange = require('./stackexchange-api-service');
 
 ipcRenderer.on('stackexchange:login', (event, data) => {
   localStorage.token = data.token;
@@ -33,7 +33,7 @@ function init(profile) {
   });
 
   // Listen reputation change via sockets
-  stackexchange.socket.on(`1-${profile.user_id}-reputation`, data => {
+  stackexchange.socketClient.on(`1-${profile.user_id}-reputation`, data => {
     // Update reputation counter
     document.querySelector('.nav-rep').innerHTML = `${data} reputation`;
 
@@ -42,6 +42,10 @@ function init(profile) {
       title: 'Reputation earned!',
       body: `You reputation now is ${data}`
     });
+  });
+
+  stackexchange.socketClient.on(`1-${profile.user_id}-topbar`, data => {
+    // TODO
   });
 }
 
