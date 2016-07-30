@@ -48,6 +48,12 @@
   font-weight: bold;
 }
 
+.question-comment-count {
+  color: #919191;
+  font-size: 12px;
+  margin-left: 3px;
+}
+
 .question-time {
   position: absolute;
   right: 10px;

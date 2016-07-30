@@ -49,6 +49,7 @@ function createAnswerLayout(answer) {
 }
 
 exports.renderQuestion = (question, token) => {
+  const questionUpdates = []; // Updates coming from socket server
   const questionScreenContentElement = document.querySelector('.question-screen-content');
 
   asyncInnerHTML(question.body, (questionBodyHtml) => {
@@ -67,14 +68,15 @@ exports.renderQuestion = (question, token) => {
     prettyPrint();
 
     const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
-    const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : 'Add your comment...';
-    const scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
+    const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : '';
+    let scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
+    scrollToCommentsTitle = scrollToCommentsTitle || 'Add your comment...';
 
     questionScreenContentElement.innerHTML += `
       <div class="question-comments" id="scroll-to-comments">
         <div class="question-status-bar">
           <a class="question-status-bar-action" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
-          <a class="question-status-bar-action"><i class="fa fa-refresh"></i></a>
+          <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
           <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></i></a>
           <a class="question-status-bar-action"><i class="fa fa-share-square"></i></i></a>
           <a class="question-status-bar-action"><i class="fa fa-jsfiddle"></i></a>
@@ -85,6 +87,7 @@ exports.renderQuestion = (question, token) => {
             ${question.owner.display_name}
           </a>
         </div>
+        <div class="question-status-bar-placeholder"></div>
         <div class="question-comments-list"></div>
         <form class="question-comments-form">
           <input type="text" placeholder="Your comment. Press Shift + Enter to start answer">
@@ -97,7 +100,7 @@ exports.renderQuestion = (question, token) => {
       </div>
     `;
 
-    $('.pin').click(function () {
+    $('.question-status-bar-action.pin').click(function () {
       if (pinnedQuestions.isPinned(question)) {
         $('.fa', this).addClass('rotate-45');
         pinnedQuestions.unpin(question);
@@ -105,6 +108,10 @@ exports.renderQuestion = (question, token) => {
         $('.fa', this).removeClass('rotate-45');
         pinnedQuestions.pin(question);
       }
+    });
+
+    $('.question-status-bar-action.update').click(function () {
+      $('.fa', this).toggleClass('__spin');
     });
 
     // Load and render comments
@@ -116,19 +123,11 @@ exports.renderQuestion = (question, token) => {
       })
       .then((response) => {
         document.querySelector('.question-comments-list').innerHTML = response.items.map(createCommentLayout).join('');
-
-        // const mockAnswerData = JSON.parse('{"owner":{"reputation":989,"user_id":1453833,"user_type":"registered","profile_image":"https://www.gravatar.com/avatar/cc814c87d49cffb16bd3785ed8a1fb1d?s=128&d=identicon&r=PG","display_name":"Max","link":"http://stackoverflow.com/users/1453833/max"},"comment_count":0,"is_accepted":false,"score":0,"creation_date":1469662633,"answer_id":38624870,"question_id":38624835,"link":"http://stackoverflow.com/questions/38624835//38624870#38624870","body":"<p>!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9!)s0G2lBkPFy_lEEcsfX9</p>"}');
-        // document.querySelector('.question-comments-list').innerHTML = createAnswerLayout(mockAnswerData);
       });
 
     // Make status bar sticky
     const $questionScreen = $('.question-screen');
     const $statusBar = $('.question-status-bar');
-    // const $statusBarClone = $statusBar
-    //   .clone()
-    //   .hide()
-    //   .addClass('__sticky')
-    //   .insertAfter($statusBar);
     const statusBarElementTop = $statusBar.offset().top;
     const statusBarElementHeight = $statusBar.outerHeight();
     let lastKnownScrollPosition = 0;
@@ -150,7 +149,8 @@ exports.renderQuestion = (question, token) => {
 
     $questionScreen.on('scroll', checkStatusBarPosition);
     checkStatusBarPosition();
-// When you press Enter on comment form
+
+    // When you press Enter on comment form
     const commentForm = document.querySelector('.question-screen-content form');
     const commentInput = document.querySelector('.question-comments-form input');
     const formErrors = document.querySelector('.question-comments-form-errors');
@@ -276,6 +276,11 @@ exports.renderQuestion = (question, token) => {
     });
 
     // TODO Load answers
+
+    stackexchange.socketClient.on(`1-question-${question.question_id}`, data => {
+      questionUpdates.push(data);
+      $('.question-status-bar-action.update').addClass('__new');
+    });
   });
 };
 

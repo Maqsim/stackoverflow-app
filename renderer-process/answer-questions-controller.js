@@ -50,6 +50,10 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         // Clear ', ' in the end
         questionInfo = questionInfo.substring(0, questionInfo.length - 2);
 
+        const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
+        const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : '';
+        const scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
+
         questionsParts.push(`
           <div class="question" data-id="${question.question_id}">
             <div class="question-title">${question.title}</div>
@@ -57,6 +61,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
             <ul class="question-tags">
               ${question.tags.map((tag) => `<li>${tag}</li>`).join(' ')}
             </ul>
+            <span class="question-comment-count">${scrollToCommentsTitle}</span>
             <span></span>
             <span class="question-time">
               ${timeAgo}
