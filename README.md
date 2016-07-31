@@ -11,6 +11,7 @@ Follow [@me](twitter.com/max_diachenko) on Twitter for important announcements a
 ## Features (Why?)
 
 - Faster ([learn why]() – TBD)
+- Better editor (tabs are working now 😉)
 - Prettier design
 - Native notifications of rep changing, new inbox and achievemts etc.
 - Improved userflow for answerers
