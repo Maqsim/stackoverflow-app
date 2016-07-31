@@ -7,7 +7,7 @@
   display: none;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, .9);
+  background: rgba(0, 0, 0, .4);
 }
 
 .question-screen {
@@ -22,6 +22,11 @@
   height: 100%;
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+}
+
+.question-screen-content {
+  opacity: 1;
+  transition: opacity 300ms;
 }
 
 /* Use bigger title on question page */
@@ -216,6 +221,10 @@
   animation: fadein 600ms;
 }
 
+.question-status-bar-action.like.__liked .fa {
+  color: #DA5B5B;
+}
+
 @keyframes fadein {
   from {
     opacity: 0;
@@ -228,4 +237,6 @@
   }
 }
 
-
+.__outdated {
+  opacity: .3;
+}

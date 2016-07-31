@@ -148,3 +148,7 @@ kbd {
 .rotate-45 {
   transform: rotate(45deg);
 }
+
+.pull-right {
+  float: right;
+}
