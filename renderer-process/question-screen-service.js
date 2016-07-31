@@ -91,7 +91,7 @@ exports.renderQuestion = (question, token) => {
 
     questionScreenElement.innerHTML += `
       <div class="question-comments" id="scroll-to-comments">
-        <div class="question-status-bar">
+        <div class="question-status-bar ${question.answer_count && '__answered'}">
           <a class="question-status-bar-action" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
           <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
           <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></i></a>
