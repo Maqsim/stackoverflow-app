@@ -5,10 +5,12 @@ const stackexchange = require('./stackexchange-api-service');
 const pinnedQuestions = require('./pinned-questions-service');
 const { asyncInnerHTML, colorize } = require('./utils');
 const $ = require('jquery');
+const loggedInUserId = Number(localStorage.userId);
+const loggedInAccountId = Number(localStorage.accountId);
+let questionId;
 
 function createCommentLayout(comment) {
   const timeAgo = moment(comment.creation_date * 1000).fromNow();
-  const loggedInUserId = Number(localStorage.userId);
 
   return `
     <div class="question-comments-list-item ${loggedInUserId === comment.owner.user_id ? '__my' : ''}" data-id="${comment.comment_id}">
@@ -30,7 +32,6 @@ function createCommentLayout(comment) {
 // TODO make answers look more sick and figure out how to show comments to the answers
 function createAnswerLayout(answer) {
   const timeAgo = moment(answer.creation_date * 1000).fromNow();
-  const loggedInUserId = Number(localStorage.userId);
 
   return `
     <div class="question-comments-list-item question-comments-answer ${loggedInUserId === answer.owner.user_id ? '__my' : ''}" data-id="${answer.answer_id}">
@@ -48,15 +49,31 @@ function createAnswerLayout(answer) {
   `;
 }
 
+function updateScore(score) {
+  $('.question-status-bar-action.like .like-count').html(score || '');
+}
+
+function loadAndRenderComment(commentId) {
+  stackexchange
+    .fetch(`comments/${commentId}`, { filter: '!*Ju*loZ-vYZpgswx' })
+    .then((response) => {
+      document.querySelector('.question-comments-list').innerHTML += createCommentLayout(response.items[0]);
+    });
+}
+
 exports.renderQuestion = (question, token) => {
+  questionId = question.question_id;
   const questionUpdates = []; // Updates coming from socket server
-  const questionScreenContentElement = document.querySelector('.question-screen-content');
+  const questionScreenElement = document.querySelector('.question-screen');
 
   asyncInnerHTML(question.body, (questionBodyHtml) => {
-    questionScreenContentElement.innerHTML = `
-      <div class="question-title"><a href="${question.link}">${question.title}</a></div>
+    questionScreenElement.innerHTML = `
+      <div class="question-screen-content">
+        <div class="question-title"><a href="${question.link}">${question.title}</a></div>
+      </div>
     `;
 
+    const questionScreenContentElement = document.querySelector('.question-screen-content');
     questionScreenContentElement.appendChild(questionBodyHtml);
 
     // Beautify code
@@ -72,15 +89,14 @@ exports.renderQuestion = (question, token) => {
     let scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
     scrollToCommentsTitle = scrollToCommentsTitle || 'Add your comment...';
 
-    questionScreenContentElement.innerHTML += `
+    questionScreenElement.innerHTML += `
       <div class="question-comments" id="scroll-to-comments">
         <div class="question-status-bar">
           <a class="question-status-bar-action" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
           <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
           <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></i></a>
-          <a class="question-status-bar-action"><i class="fa fa-share-square"></i></i></a>
           <a class="question-status-bar-action"><i class="fa fa-jsfiddle"></i></a>
-          <a class="question-status-bar-action"><i class="fa fa-github"></i></i></a>
+          <a class="question-status-bar-action like ${question.upvoted ? '__liked' : ''}"><i class="fa fa-heart"></i> <span class="like-count">${question.score || ''}</span></a>
           
           <a class="question-status-bar-action __right" href="${question.owner.link}">
             <img class="question-status-bar-profile-image" src="${question.owner.profile_image}" alt="">
@@ -112,6 +128,30 @@ exports.renderQuestion = (question, token) => {
 
     $('.question-status-bar-action.update').click(function () {
       $('.fa', this).toggleClass('__spin');
+    });
+
+    $('.question-status-bar-action.like').click(function () {
+      const $this = $(this);
+      const undoUpvote = $this.hasClass('__liked');
+
+      if (undoUpvote) {
+        updateScore(--question.score);
+        $this.removeClass('__liked');
+      } else {
+        updateScore(++question.score);
+        $this.addClass('__liked');
+      }
+
+      // Save to server
+      stackexchange
+        .fetch(`questions/${question.question_id}/upvote${undoUpvote ? '/undo' : ''}`, null, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: encodeURI(`access_token=${token}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow`)
+        });
     });
 
     // Load and render comments
@@ -151,7 +191,7 @@ exports.renderQuestion = (question, token) => {
     checkStatusBarPosition();
 
     // When you press Enter on comment form
-    const commentForm = document.querySelector('.question-screen-content form');
+    const commentForm = document.querySelector('.question-comments-form');
     const commentInput = document.querySelector('.question-comments-form input');
     const formErrors = document.querySelector('.question-comments-form-errors');
 
@@ -278,15 +318,29 @@ exports.renderQuestion = (question, token) => {
     // TODO Load answers
 
     stackexchange.socketClient.on(`1-question-${question.question_id}`, data => {
-      questionUpdates.push(data);
-      $('.question-status-bar-action.update').addClass('__new');
+      switch (data.a) {
+        case 'score':
+          updateScore(data.score);
+          break;
+        case 'comment-add':
+          if (data.acctid !== loggedInAccountId) {
+            loadAndRenderComment(data.commentid);
+          }
+          break;
+        default:
+          if (data.a === 'post-edit') {
+            questionScreenContentElement.classList.add('__outdated');
+          }
+
+          questionUpdates.push(data);
+          $('.question-status-bar-action.update').addClass('__new');
+      }
     });
   });
 };
 
 exports.clearScreen = () => {
-  $('.question-screen-content').empty();
-
   // Remove all event listeners
-  $('.question-screen').off('scroll');
+  $('.question-screen').empty().off('scroll');
+  stackexchange.socketClient.off(`1-question-${questionId}`);
 };

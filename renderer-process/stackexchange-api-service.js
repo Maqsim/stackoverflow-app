@@ -4,11 +4,11 @@ exports.buildStackOverflowUrl = (url, parameters) => {
   url = 'https://api.stackexchange.com/2.2/' + url;
 
   let queryString = parameters && Object.keys(parameters)
-    .map(function (key) {
-      var value = parameters[key];
-      return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-    })
-    .join('&');
+      .map(function (key) {
+        var value = parameters[key];
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      })
+      .join('&');
 
   if (queryString) {
     url = url + '?' + queryString;
@@ -46,6 +46,7 @@ exports.logout = (token) => {
 class StackOverflowSocketClient {
   constructor() {
     this.subscribedActions = [];
+    this.unsubscribedActions = [];
 
     this.socketConnectionPromise = new Promise((socketConnectionPromiseResolve, socketConnectionPromiseReject) => {
       const connection = new WebSocket('wss://qa.sockets.stackexchange.com');
@@ -62,28 +63,44 @@ class StackOverflowSocketClient {
     });
   }
 
-  on(message, callback) {
+  on(action, callback) {
     this.socketConnectionPromise.then(connection => {
-      if (!this.subscribedActions.includes(message)) {
-        connection.send(message);
-        this.subscribedActions.push(message)
+      if (!this.subscribedActions.includes(action)) {
+        connection.send(action);
+        this.subscribedActions.push(action)
       }
 
       this.onMessagePromise.then(event => {
+        // Stack Overflow doesn't allow us to unsubscribe from actions we subscribed
+        // so emulate unsubscribing by ignoring onMessage event
+        if (this.unsubscribedActions.includes(action)) {
+          return;
+        }
+
         const response = JSON.parse(event.data);
 
-        if (response.action === message) {
+        if (response.action === action) {
           let json;
 
           try {
             json = JSON.parse(response.data);
-          } catch (ignore) {
-          }
+          } catch (ignore) {}
 
           callback(json || event.data);
         }
       })
-    })
+    });
+  }
+
+  off(action) {
+    if (!this.unsubscribedActions.includes(action)) {
+      this.unsubscribedActions.push(action);
+
+      const index = this.subscribedActions.indexOf(action);
+      if (index !== -1) {
+        this.subscribedActions.splice(index, 1);
+      }
+    }
   }
 }
 

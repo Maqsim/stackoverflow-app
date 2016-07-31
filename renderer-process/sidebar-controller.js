@@ -8,6 +8,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
 function init(profile) {
   const headerElement = document.querySelector('.nav-header-content');
   localStorage.userId = profile.user_id;
+  localStorage.accountId = profile.account_id;
 
   headerElement.innerHTML = `
         <div class="nav-avatar">

@@ -27,7 +27,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       order: 'desc',
       sort: 'creation',
       access_token: data.token,
-      filter: '!teUCY0lNt1ZcAuRUK_5FCK1B_GkoLJW'
+      filter: '!7qBwspwo)2I5hUCyGqdJFhQa_SpsBZJ.cl'
     })
     .then((response) => {
       const questions = response.items;
@@ -49,10 +49,13 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
 
         // Clear ', ' in the end
         questionInfo = questionInfo.substring(0, questionInfo.length - 2);
-
+        
         const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
         const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : '';
-        const scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
+        let likeCountString = question.score ? `<i class="fa fa-heart"></i> ${question.score}` : '';
+        likeCountString = (answerCountString || commentCountString) && likeCountString ? '&nbsp;&nbsp;&nbsp;' + likeCountString : '';
+
+        const scrollToCommentsTitle = (answerCountString + ' ' + commentCountString + ' ' + likeCountString).trim();
 
         questionsParts.push(`
           <div class="question" data-id="${question.question_id}">

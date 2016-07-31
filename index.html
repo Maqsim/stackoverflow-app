@@ -30,10 +30,17 @@
     <header class="nav-header">
       <!-- Header render by JS (when SO responds) -->
       <div class="nav-header-content"></div>
+      <input class="nav-search" type="search" placeholder="Search">
     </header>
 
     <div class="nav-item u-category-menu">
-      <button type="button" id="answer-questions" data-section="answer-questions" class="nav-button">Answer questions...</button>
+      <button type="button" id="pinned-questions" data-section="pinned-questions" class="nav-button">
+        Pinned questions
+        <span class="pull-right">
+          <i class="fa fa-thumb-tack"></i> 25
+        </span>
+      </button>
+      <button type="button" id="answer-questions" data-section="answer-questions" class="nav-button">Unanswered questions</button>
       <button type="button" id="my-answers" data-section="my-answers" class="nav-button">My answers</button>
       <button type="button" id="my-questions" data-section="my-questions" class="nav-button">My questions</button>
     </div>
