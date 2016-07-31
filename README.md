@@ -8,7 +8,7 @@ Visit [stackoverflowapp.com]() for more details (TDB).
 
 Follow [@me](twitter.com/max_diachenko) on Twitter for important announcements and launch date. Use hashtag [#stackoverflowapp](https://twitter.com/search?q=%23stackoverflowapp&src=typd) to spread news
 
-## Features
+## Features (Why?)
 
 - Faster ([learn why]() – TBD)
 - Prettier design
