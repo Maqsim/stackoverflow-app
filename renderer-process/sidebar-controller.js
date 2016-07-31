@@ -1,4 +1,5 @@
 const ipcRenderer = require('electron').ipcRenderer;
+const pinnedQuestions = require('./pinned-questions-service');
 const stackexchange = require('./stackexchange-api-service');
 
 ipcRenderer.on('stackexchange:login', (event, data) => {
@@ -15,11 +16,11 @@ function init(profile) {
           <img class="nav-avatar-img" src="${profile.profile_image}" alt="profile image"/>
         </div>
         <div class="nav-name">
-          <div class="nav-title">${profile.display_name}</div>
+          <div class="nav-title">
+            ${profile.display_name}
+            <span class="nav-logout">&nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i></span>
+          </div>
           <div class="nav-rep">${profile.reputation} reputation</div>
-        </div>
-        <div class="nav-logout">
-          <img src="assets/icons/logout.svg" alt=""/>
         </div>
       `;
 
@@ -65,3 +66,6 @@ if (cachedProfile) {
     });
   });
 }
+
+// Update pinned questions menu item
+pinnedQuestions.updateMenuItem();

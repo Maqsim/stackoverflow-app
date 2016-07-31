@@ -38,29 +38,20 @@
 .nav-avatar-img {
   margin-right: 10px;
   width: 50px;
-  border-radius: 50%;
+  border-radius: 3px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.3);
 }
 
 .nav-name {
   padding-top: 6px;
 }
 
-.nav-logout {
-  position: absolute;
-  top: 30px;
-  right: 10px;
-}
-
-.nav-logout img {
-  width: 24px;
-}
-
 .nav-button {
   position: relative;
   display: block;
   padding: 2px;
-  padding-left: 18px;
   padding-right: 10px;
+  padding-left: 18px;
   width: 100%;
   outline: none;
   border: none;
@@ -87,8 +78,8 @@
 }
 
 .nav-button.is-selected {
-  background-color: rgba(0, 0, 0, .2);
   border-left: 3px solid red;
+  background-color: rgba(0, 0, 0, .2);
 }
 
 .nav-button.is-selected,
@@ -100,7 +91,7 @@
   margin-right: 10px;
   margin-bottom: 10px;
   margin-left: 10px;
-  padding: 5px 10px;
+  padding: 5px 7px;
   width: calc(100% - 20px);
   outline: 0;
   border: 0;

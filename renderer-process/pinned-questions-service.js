@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const $ = require('jquery');
+
 let pinnedQuestions = [];
 try {
   pinnedQuestions = JSON.parse(localStorage.pinnedQuestions);
@@ -17,6 +19,17 @@ function syncLocalStorage() {
     pinnedQuestions = JSON.parse(localStorage.pinnedQuestions);
   } catch (ignore) {}
 }
+
+exports.updateMenuItem = function () {
+  $('#pinned-questions')
+    .toggle(Boolean(pinnedQuestions.length))
+    .find('.pinned-questions-counter')
+    .html(pinnedQuestions.length);
+};
+
+exports.get = function () {
+  return pinnedQuestions;
+};
 
 exports.pin = function (question) {
   pinnedQuestions.push(question);
