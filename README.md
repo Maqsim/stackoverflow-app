@@ -2,7 +2,7 @@
 
 Stack Overflow App is a desktop client of [stackoverflow.com]() with fancy design and quick UI, build on [Electron](https://github.com/electron/electron). I love answer questions and help community, but I don't really like the overloaded UI of original website, also I would like to introduce new and useful features.
 
-It's an absolutely hobby project so no deadlines, no commercial.
+**IMPORTANT NOTE:** This App is under development. See the development process here [livecoding.tv/max_diachenko](https://www.livecoding.tv/max_diachenko/). It's an absolutely hobby project so no deadlines, no commercial.
 
 Visit [stackoverflowapp.com]() for more details (TDB).
 
