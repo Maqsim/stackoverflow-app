@@ -8,6 +8,18 @@ Visit [stackoverflowapp.com]() for more details (TDB).
 
 Follow [@me](twitter.com/max_diachenko) on Twitter for important announcements and launch date. Use hashtag [#stackoverflowapp](https://twitter.com/search?q=%23stackoverflowapp&src=typd) to spread news
 
+## Features
+
+- Faster ([learn why]() – TBD)
+- Prettier design
+- Native notifications of rep changing, new inbox and achievemts etc.
+- Improved userflow for answerers
+- Pinned questions (not favorite)
+- Likes instead of Upvotes and Downvotes (world peace ✌️)
+- Better comments flow
+- Creating JSFiddle right on the question screen
+- ...more
+
 ## Screenshots
 ![screen](http://content.screencast.com/users/Maqsim/folders/Jing/media/3f151010-80c6-4e64-8143-2049e01af76b/00000139.png)
 ![screen2](http://content.screencast.com/users/Maqsim/folders/Jing/media/54a7a619-0121-4968-8914-48eb7a84e6de/00000140.png)
