@@ -5,6 +5,7 @@ const stackexchange = require('./stackexchange-api-service');
 const pinnedQuestions = require('./pinned-questions-service');
 const { asyncInnerHTML, colorize } = require('./utils');
 const $ = require('jquery');
+const { map } = require('lodash');
 const loggedInUserId = Number(localStorage.userId);
 const loggedInAccountId = Number(localStorage.accountId);
 let questionId;
@@ -14,16 +15,19 @@ function createCommentLayout(comment) {
 
   return `
     <div class="question-comments-list-item ${loggedInUserId === comment.owner.user_id ? '__my' : ''}" data-id="${comment.comment_id}">
-      <nobr>
+      <nobr class="question-comments-profile-link">
         <span class="question-comments-profile-color" style="background: ${colorize(comment.owner.user_id)}"></span>
-        <a class="question-comments-profile-link" href="${comment.owner.link}">${comment.owner.display_name}</a>
-      </nobr> ${comment.body}
-      <span class="text-muted">${timeAgo}</span>
-      <span class="question-comments-controls">
-        &nbsp;
-        <a class="question-comments-controls-edit" href="#">edit</a>
-        <span class="text-muted">·</span>
-        <a class="question-comments-controls-remove" href="#">remove</a>
+        <a href="${comment.owner.link}">${comment.owner.display_name}</a>
+      </nobr>
+      <span class="question-comments-list-item-body">
+        ${comment.body}
+        <span class="text-muted">${timeAgo}</span>
+        <span class="question-comments-controls">
+          &nbsp;
+          <a class="question-comments-controls-edit" href="#">edit</a>
+          <span class="text-muted">·</span>
+          <a class="question-comments-controls-remove" href="#">remove</a>
+        </span>
       </span>
     </div>
   `;
@@ -53,18 +57,21 @@ function updateScore(score) {
   $('.question-status-bar-action.like .like-count').html(score || '');
 }
 
-function loadAndRenderComment(commentId) {
-  stackexchange
-    .fetch(`comments/${commentId}`, { filter: '!*Ju*loZ-vYZpgswx' })
-    .then((response) => {
-      document.querySelector('.question-comments-list').innerHTML += createCommentLayout(response.items[0]);
-    });
-}
-
 exports.renderQuestion = (question, token) => {
   questionId = question.question_id;
   const questionUpdates = []; // Updates coming from socket server
   const questionScreenElement = document.querySelector('.question-screen');
+
+  function loadAndRenderComment(commentId) {
+    stackexchange
+      .fetch(`comments/${commentId}`, { filter: '!*Ju*loZ-vYZpgswx' })
+      .then(response => {
+        const comment = response.items[0];
+        question.comments = question.comments || [];
+        question.comments.push(comment);
+        document.querySelector('.question-comments-list').innerHTML += createCommentLayout(comment);
+      });
+  }
 
   asyncInnerHTML(question.body, (questionBodyHtml) => {
     questionScreenElement.innerHTML = `
@@ -92,16 +99,21 @@ exports.renderQuestion = (question, token) => {
     questionScreenElement.innerHTML += `
       <div class="question-comments" id="scroll-to-comments">
         <div class="question-status-bar ${question.answer_count && '__answered'}">
-          <a class="question-status-bar-action" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
-          <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
-          <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></i></a>
-          <a class="question-status-bar-action"><i class="fa fa-jsfiddle"></i></a>
-          <a class="question-status-bar-action like ${question.upvoted ? '__liked' : ''}"><i class="fa fa-heart"></i> <span class="like-count">${question.score || ''}</span></a>
-          
-          <a class="question-status-bar-action __right" href="${question.owner.link}">
-            <img class="question-status-bar-profile-image" src="${question.owner.profile_image}" alt="">
-            ${question.owner.display_name}
-          </a>
+          <div class="question-status-bar-content">
+            <a class="question-status-bar-action scroll-to-comments" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
+            <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
+            <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></i></a>
+            <a class="question-status-bar-action"><i class="fa fa-jsfiddle"></i></a>
+            <a class="question-status-bar-action like ${question.upvoted ? '__liked' : ''}"><i class="fa fa-heart"></i> <span class="like-count">${question.score || ''}</span></a>
+            
+            <a class="question-status-bar-action __right" href="${question.owner.link}">
+              <img class="question-status-bar-profile-image" src="${question.owner.profile_image}" alt="">
+              ${question.owner.display_name}
+            </a>
+          </div>
+          <div class="question-status-bar-tip">
+            Choose comment you want to reply and <b>hit Enter</b> or <b>Esc</b> to cancel.
+          </div>
         </div>
         <div class="question-status-bar-placeholder"></div>
         <div class="question-comments-list"></div>
@@ -115,6 +127,12 @@ exports.renderQuestion = (question, token) => {
         <div class="question-comments-form-errors"></div>
       </div>
     `;
+
+    $('.question-status-bar-action.scroll-to-comments').click(function () {
+      setTimeout(function () {
+        commentInput.focus();
+      }, 0);
+    });
 
     $('.question-status-bar-action.pin').click(function () {
       if (pinnedQuestions.isPinned(question)) {
@@ -163,8 +181,9 @@ exports.renderQuestion = (question, token) => {
         sort: 'creation',
         filter: '!*Ju*loZ-vYZpgswx'
       })
-      .then((response) => {
-        document.querySelector('.question-comments-list').innerHTML = response.items.map(createCommentLayout).join('');
+      .then(response => {
+        question.comments = response.items;
+        document.querySelector('.question-comments-list').innerHTML = question.comments.map(createCommentLayout).join('');
       });
 
     // Make status bar sticky
@@ -238,8 +257,58 @@ exports.renderQuestion = (question, token) => {
         });
     });
 
-    // Expand form to start answering – init SimpleMDE
+    let mentionsShown = false;
+    let mentionData = [];
+
+    function hideMentions() {
+      mentionsShown = false;
+      $('.question-status-bar').removeClass('__show-tip');
+      $('.question-comments-list').removeClass('__show-mentions');
+      $('.question-comments-list-item.__highlighted').removeClass('__highlighted');
+    }
+
     commentForm.addEventListener('keydown', function (event) {
+      // Show mentions on '@'
+      if (event.shiftKey && event.which === 50) {
+        // Update mention data on each show
+        mentionData = map(question.comments, 'owner.user_id');
+
+        if (mentionData.length) {
+          mentionsShown = true;
+          $('.question-status-bar').addClass('__show-tip');
+          $('.question-comments-list')
+            .addClass('__show-mentions')
+            .find('.question-comments-list-item:not(.__my):last')
+            .addClass('__highlighted');
+        }
+      }
+
+      // Hide mentions on Esc
+      if (mentionsShown && event.which === 27) {
+        hideMentions()
+      }
+
+      // Switch between mentions on Tab
+      if (mentionsShown && event.which === 9) {
+        event.preventDefault();
+
+        $('.question-comments-list-item.__highlighted')
+          [event.shiftKey ? 'nextAll' : 'prevAll'](':not(.__my):first')
+          .addClass('__highlighted')
+          .siblings()
+          .removeClass('__highlighted');
+      }
+
+      // Choose mention on Enter
+      if (mentionsShown && event.which === 13) {
+        event.preventDefault();
+
+        // TODO
+        console.log($('.question-comments-list-item.__highlighted'));
+        hideMentions();
+      }
+
+      //  Expand form to start answering on Shift + Enter
       if (event.shiftKey && event.which === 13) {
         event.preventDefault();
 

@@ -26,7 +26,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
   stackexchange
     .fetch('questions/unanswered/my-tags', {
       order: 'desc',
-      sort: 'creation',
+      sort: 'votes',
       access_token: data.token,
       filter: '!7qBwspwo)2I5hUCyGqdJFhQa_SpsBZJ.cl'
     })
