@@ -1,4 +1,5 @@
 const win = require('electron').remote.getCurrentWindow();
+const $ = require('jquery');
 
 exports.buildStackOverflowUrl = (url, parameters) => {
   url = 'https://api.stackexchange.com/2.2/' + url;
@@ -23,9 +24,11 @@ exports.fetch = (url, parameters, options) => {
     parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
   }
 
-  return fetch(exports.buildStackOverflowUrl(url, parameters), options).then((response) => {
-    return response.json();
-  });
+  return fetch(exports.buildStackOverflowUrl(url, parameters), options).then(response => response.json());
+};
+
+exports.post = (url, data) => {
+  return $.post(exports.buildStackOverflowUrl(url), data);
 };
 
 exports.logout = (token) => {

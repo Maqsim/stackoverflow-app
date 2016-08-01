@@ -1,4 +1,5 @@
 const moment = require('moment');
+const _ = require('lodash');
 const ipcRenderer = require('electron').ipcRenderer;
 const stackexchange = require('./stackexchange-api-service');
 const questionScreenService = require('./question-screen-service');
@@ -33,7 +34,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       const questions = response.items;
       const questionsParts = [];
 
-      questions.forEach((question) => {
+      questions.forEach(question => {
         const timeAgo = moment(question.creation_date * 1000).fromNow();
         const paragraphs = countInString('</p>', question.body);
         const codeBlocks = countInString('</pre>', question.body);

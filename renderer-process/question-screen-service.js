@@ -124,6 +124,8 @@ exports.renderQuestion = (question, token) => {
         $('.fa', this).removeClass('rotate-45');
         pinnedQuestions.pin(question);
       }
+
+      pinnedQuestions.updateMenuItem();
     });
 
     $('.question-status-bar-action.update').click(function () {
@@ -261,27 +263,40 @@ exports.renderQuestion = (question, token) => {
 
         // Posting answer
         document.querySelector('.button.post-answer').addEventListener('click', () => {
-          const answerText = simpleMDE.value();
+          let doAddSpaces = false;
+          let answerText = simpleMDE.value();
 
-          // TODO make code blocks work on SO
+          // Change code-block format so SO can handle it
+          answerText = answerText
+            .split('\n')
+            .map(line => {
+              if (line === '```') {
+                doAddSpaces = !doAddSpaces;
+                return ''; // Remove this line
+              }
 
-          // answerText.replace(/```/g, '');
-
-          // console.log(answerText.match('```\s\S(.*)\s\S```'));
-
-
-          // return;
+              return doAddSpaces ? '    ' + line : line;
+            })
+            .join('\n');
 
           stackexchange
-            .fetch(`questions/${question.question_id}/answers/add`, null, {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: encodeURI(`access_token=${token}&body=${answerText}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow&filter=!)s0G2lBkPFy_lEEcsfX9`)
+            .post(`questions/${question.question_id}/answers/add`, {
+              access_token: token,
+              body: answerText,
+              key: 'bdFSxniGkNbU3E*jsj*28w((',
+              preview: false,
+              site: 'stackoverflow',
+              filter: '!)s0G2lBkPFy_lEEcsfX9'
             })
-            .then(savedAnswer => {
+            .then(response => {
+              // Server-side validation (if not pass)
+              if (response.error_id) {
+                return formErrors.innerHTML = response.error_message;
+              }
+
+              // Render successfully added comment
+              const savedAnswer = response.items[0];
+
               document.querySelector('.question-comments-list').innerHTML += createAnswerLayout(savedAnswer);
             })
         });
