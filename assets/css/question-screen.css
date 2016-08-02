@@ -116,7 +116,7 @@
 }
 
 .question-status-bar.__show-tip {
-  background: #ccc;
+  background: #E6E6E6;
   color: black;
   transition: background 200ms;
 }
@@ -186,6 +186,7 @@
   position: absolute;
   top: 10px;
   left: 12px;
+  visibility: hidden;
   color: black;
   content: '\f054';
   font-family: FontAwesome;
@@ -194,6 +195,7 @@
 
 .question-comments-list-item.__highlighted:after {
   left: 16px;
+  visibility: visible;
 }
 
 .question-comments-list-item-body {

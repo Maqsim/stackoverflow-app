@@ -73,10 +73,18 @@ exports.renderQuestion = (question, token) => {
       });
   }
 
-  asyncInnerHTML(question.body, (questionBodyHtml) => {
+  const timeAgo = moment(question.creation_date * 1000).fromNow();
+  const dateTime = moment(question.creation_date * 1000).format('LLLL');
+  const html = question.body + `
+    <div class="text-muted" style="margin-top: 15px;">
+      <span title="${dateTime}">${timeAgo} &nbsp; <i class="fa fa-eye"></i> ${question.view_count}</span>
+    </div>
+  `;
+
+  asyncInnerHTML(html, (questionBodyHtml) => {
     questionScreenElement.innerHTML = `
       <div class="question-screen-content">
-        <div class="question-title"><a href="${question.link}">${question.title}</a></div>
+        <div class="question-title">${question.title}</div>
       </div>
     `;
 
@@ -102,10 +110,12 @@ exports.renderQuestion = (question, token) => {
           <div class="question-status-bar-content">
             <a class="question-status-bar-action scroll-to-comments" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
             <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
-            <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></i></a>
-            <a class="question-status-bar-action"><i class="fa fa-jsfiddle"></i></a>
+            <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></a>
+            <a class="question-status-bar-action" href="${question.link}" title="Open in browser"><i class="fa fa-external-link"></i></a>
+            <a class="question-status-bar-action" title="Create and paste JSFiddle"><i class="fa fa-jsfiddle"></i></a>
             <a class="question-status-bar-action like ${question.upvoted ? '__liked' : ''}"><i class="fa fa-heart"></i> <span class="like-count">${question.score || ''}</span></a>
             
+            <!--<a class="question-status-bar-action __right"><i class="fa fa-flag"></i></a>-->
             <a class="question-status-bar-action __right" href="${question.owner.link}">
               <img class="question-status-bar-profile-image" src="${question.owner.profile_image}" alt="">
               ${question.owner.display_name}
@@ -265,9 +275,19 @@ exports.renderQuestion = (question, token) => {
       $('.question-status-bar').removeClass('__show-tip');
       $('.question-comments-list').removeClass('__show-mentions');
       $('.question-comments-list-item.__highlighted').removeClass('__highlighted');
+
+      const caretPosition = commentInput.value.slice(0, commentInput.selectionStart).length;
+
+      if (commentInput.value.substr(caretPosition - 1, 1) === '@'){
+        commentInput.value = commentInput.value.slice(0, caretPosition - 1) + commentInput.value.slice(caretPosition);
+      }
     }
 
-    commentForm.addEventListener('keydown', function (event) {
+    commentInput.addEventListener('keydown', function (event) {
+      if (mentionsShown && event.shiftKey && event.which === 50) {
+        event.preventDefault();
+      }
+
       // Show mentions on '@'
       if (event.shiftKey && event.which === 50) {
         // Update mention data on each show
@@ -369,6 +389,12 @@ exports.renderQuestion = (question, token) => {
               document.querySelector('.question-comments-list').innerHTML += createAnswerLayout(savedAnswer);
             })
         });
+      }
+    });
+
+    commentInput.addEventListener('blur', function () {
+      if (mentionsShown) {
+        hideMentions();
       }
     });
 

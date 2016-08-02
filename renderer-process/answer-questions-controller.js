@@ -26,9 +26,9 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
   stackexchange
     .fetch('questions/unanswered/my-tags', {
       order: 'desc',
-      sort: 'votes',
+      sort: 'creation',
       access_token: data.token,
-      filter: '!7qBwspwo)2I5hUCyGqdJFhQa_SpsBZJ.cl'
+      filter: '!tf94YAq2Z_YBzNChvK*abKSyjEtOGYp'
     })
     .then((response) => {
       const questions = response.items;
@@ -43,14 +43,18 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         // Reduce fiddles and images count because they counts like links
         const links = countInString('</a>', question.body) - fiddles - images;
 
-        let questionInfo = `${paragraphs ? paragraphs + ' paragraphs, ' : ''}` +
-          `${codeBlocks ? codeBlocks + ' code-blocks, ' : ''}` +
-          `${links ? links + ' links, ' : ''}` +
-          `${fiddles ? fiddles + ' JS Fiddle, ' : ''}`;
+        let questionInfo = [];
 
-        // Clear ', ' in the end
-        questionInfo = questionInfo.substring(0, questionInfo.length - 2);
-        
+        if (codeBlocks || fiddles) {
+          questionInfo.push('<i class="fa fa-code __green"></i>');
+        }
+
+        if (paragraphs > 5) {
+          questionInfo.push('<i class="fa fa-hourglass-start __red"></i>');
+        }
+
+        questionInfo = questionInfo.join(' &nbsp; ');
+
         const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
         const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : '';
         let likeCountString = question.score ? `<i class="fa fa-heart"></i> ${question.score}` : '';
@@ -61,11 +65,11 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         questionsParts.push(`
           <div class="question" data-id="${question.question_id}">
             <div class="question-title">${question.title}</div>
-            <div class="question-info">${questionInfo}</div>
+            <!--<div class="question-info">${questionInfo}</div>-->
             <ul class="question-tags">
               ${question.tags.map((tag) => `<li>${tag}</li>`).join(' ')}
             </ul>
-            <span class="question-comment-count">${scrollToCommentsTitle}</span>
+            <span class="question-comment-count">${questionInfo} &nbsp; ${scrollToCommentsTitle}</span>
             <span></span>
             <span class="question-time">
               ${timeAgo}

@@ -5,3 +5,11 @@
 .CodeMirror, .editor-toolbar {
   border-width: 2px;
 }
+
+.__green {
+  color: #17B717;
+}
+
+.__red {
+  color: #D26868;
+}
