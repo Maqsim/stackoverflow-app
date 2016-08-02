@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-twitter');
 const _ = require('lodash');
 const ipcRenderer = require('electron').ipcRenderer;
 const stackexchange = require('./stackexchange-api-service');
@@ -35,7 +35,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
       const questionsParts = [];
 
       questions.forEach(question => {
-        const timeAgo = moment(question.creation_date * 1000).fromNow();
+        const timeAgo = moment(question.creation_date * 1000).twitter();
         const paragraphs = countInString('</p>', question.body);
         const codeBlocks = countInString('</pre>', question.body);
         const fiddles = countInString('jsfiddle.net', question.body);
@@ -57,7 +57,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
 
         const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
         const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : '';
-        let likeCountString = question.score ? `<i class="fa fa-heart"></i> ${question.score}` : '';
+        let likeCountString = question.score > 0 ? `<i class="fa fa-heart"></i> ${question.score}` : '';
         likeCountString = (answerCountString || commentCountString) && likeCountString ? '&nbsp;&nbsp;&nbsp;' + likeCountString : '';
 
         const scrollToCommentsTitle = (answerCountString + ' ' + commentCountString + ' ' + likeCountString).trim();
@@ -71,10 +71,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
             </ul>
             <span class="question-comment-count">${questionInfo} &nbsp; ${scrollToCommentsTitle}</span>
             <span></span>
-            <span class="question-time">
-              ${timeAgo}
-              <a tabindex="-1" href="${question.owner.link}">${question.owner.display_name}</a>
-            </span>
+            <span class="question-time">${timeAgo}</span>
           </div>
         `);
       });

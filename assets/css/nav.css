@@ -39,7 +39,7 @@
   margin-right: 10px;
   width: 50px;
   border-radius: 3px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 
 .nav-name {
@@ -98,6 +98,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, .1);
   border-radius: 40px;
   background: #1E242B;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.3);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .2);
   color: rgba(255, 255, 255, 0.6);
 }

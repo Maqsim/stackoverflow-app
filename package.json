@@ -63,6 +63,7 @@
     "glob": "^6.0.4",
     "jquery": "^3.1.0",
     "moment": "^2.13.0",
+    "moment-twitter": "^0.2.0",
     "simplemde": "^1.11.2"
   },
   "standard": {

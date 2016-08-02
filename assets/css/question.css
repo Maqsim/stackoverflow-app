@@ -1,7 +1,7 @@
 .question {
   position: relative;
-  padding-bottom: 12px;
   padding-top: 10px;
+  padding-bottom: 12px;
 }
 
 .question:first-child {
@@ -13,7 +13,7 @@
 }
 
 .question + .question {
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid #F0F0F0;
 }
 
 .question-title {
@@ -27,17 +27,18 @@
 
 .question-tags {
   display: inline-block;
-  list-style: none;
-  padding: 0;
   margin: 0;
   margin-top: 6px;
+  padding: 0;
+  list-style: none;
 }
 
 .question-tags li {
-  padding: 3px 9px;
-  font-size: 12px;
-  background: #d8ebf3;
   display: inline-block;
+  padding: 3px 9px;
+  border-radius: 2px;
+  background: #d8ebf3;
+  font-size: 12px;
 }
 
 .question-tags li + .question-tags li {
@@ -49,15 +50,15 @@
 }
 
 .question-comment-count {
+  margin-left: 3px;
   color: #919191;
   font-size: 12px;
-  margin-left: 3px;
 }
 
 .question-time {
   position: absolute;
-  right: 10px;
-  bottom: 14px;
-  font-size: 11px;
+  top: 12px;
+  right: 0;
   color: #aaa;
+  font-size: 11px;
 }
