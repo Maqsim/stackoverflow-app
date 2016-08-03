@@ -4,9 +4,9 @@
   overflow-x: hidden;
   overflow-y: auto;
   width: 250px;
-  border-right: 1px solid var(--color-border);
   background-color: var(--color-bg);
   color: #ccc;
+  -webkit-app-region: drag;
 }
 
 .nav-header {

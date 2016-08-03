@@ -21,6 +21,12 @@ function countInString(needly, haystack) {
   return results;
 }
 
+function stripHtml(html) {
+  var tmp = document.implementation.createHTMLDocument('New').body;
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
 ipcRenderer.on('stackexchange:login', (event, data) => {
   // Load unanswered questions
   stackexchange
@@ -49,7 +55,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
           questionInfo.push('<i class="fa fa-code __green"></i>');
         }
 
-        if (paragraphs > 5) {
+        if (stripHtml(question.body).match(/[^\s]+/g).length > 200) {
           questionInfo.push('<i class="fa fa-hourglass-start __red"></i>');
         }
 
@@ -64,14 +70,11 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
 
         questionsParts.push(`
           <div class="question" data-id="${question.question_id}">
-            <div class="question-title">${question.title}</div>
-            <!--<div class="question-info">${questionInfo}</div>-->
+            <div class="question-title">${question.title} <span class="question-time"> · ${timeAgo}</span></div>
             <ul class="question-tags">
-              ${question.tags.map((tag) => `<li>${tag}</li>`).join(' ')}
+              ${question.tags.map(tag => `<li>${tag}</li>`).join(' ')}
             </ul>
             <span class="question-comment-count">${questionInfo} &nbsp; ${scrollToCommentsTitle}</span>
-            <span></span>
-            <span class="question-time">${timeAgo}</span>
           </div>
         `);
       });

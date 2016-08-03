@@ -21,6 +21,7 @@ function initialize() {
       width: 1080,
       minWidth: 680,
       height: 840,
+      frame: false,
       title: 'Stack Overflow'
     };
 

@@ -1,23 +1,19 @@
+#answer-questions-section {
+  padding: 0;
+}
+
 .question {
   position: relative;
-  padding-top: 10px;
-  padding-bottom: 12px;
+  padding: 10px 15px ;
+  /*transition: background 100ms;*/
 }
 
-.question:first-child {
-  padding-top: 0;
-}
-
-.question:last-child {
-  padding-bottom: 0;
-}
-
-.question + .question {
-  border-top: 1px solid #F0F0F0;
+.question:hover {
+  background: #f7f7f7;
 }
 
 .question-title {
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 
 .question-info {
@@ -56,9 +52,7 @@
 }
 
 .question-time {
-  position: absolute;
-  top: 12px;
-  right: 0;
+  font-weight: normal;
   color: #aaa;
-  font-size: 11px;
+  font-size: 12px;
 }
