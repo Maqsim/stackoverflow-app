@@ -1,5 +1,7 @@
 ![logo](http://www.freelogovectors.net/wp-content/uploads/2013/06/stackoverflow_logo.jpg)
 
+[![Get help on Codementor](https://cdn.codementor.io/badges/get_help_github.svg)](https://www.codementor.io/max_diachenko?utm_source=github&utm_medium=button&utm_term=max_diachenko&utm_campaign=github)
+
 Stack Overflow App is a desktop client of [stackoverflow.com]() with fancy design and quick UI, build on [Electron](https://github.com/electron/electron). I love answer questions and help community, but I don't really like the overloaded UI of original website, also I would like to introduce new and useful features.
 
 **IMPORTANT NOTE:** This App is under development. See the development process here [livecoding.tv/max_diachenko](https://www.livecoding.tv/max_diachenko/). It's an absolutely hobby project so no deadlines, no commercial.
