@@ -50,6 +50,7 @@ class StackOverflowSocketClient {
   constructor() {
     this.subscribedActions = [];
     this.unsubscribedActions = [];
+    this.callbacks = {};
 
     this.socketConnectionPromise = new Promise((socketConnectionPromiseResolve, socketConnectionPromiseReject) => {
       const connection = new WebSocket('wss://qa.sockets.stackexchange.com');
@@ -60,9 +61,25 @@ class StackOverflowSocketClient {
 
       connection.onerror = socketConnectionPromiseReject;
 
-      this.onMessagePromise = new Promise(onMessagePromiseResolve => {
-        connection.onmessage = onMessagePromiseResolve;
-      });
+      connection.onmessage = event => {
+        const response = JSON.parse(event.data);
+
+        // Stack Overflow doesn't allow us to unsubscribe from actions we subscribed
+        // so emulate unsubscribing by ignoring onMessage event
+        if (this.unsubscribedActions.includes(response.action)) {
+          return;
+        }
+
+        if (this.callbacks[response.action]) {
+          let json;
+
+          try {
+            json = JSON.parse(response.data);
+          } catch (ignore) {}
+
+          this.callbacks[response.action](json || response.data);
+        }
+      };
     });
   }
 
@@ -70,28 +87,9 @@ class StackOverflowSocketClient {
     this.socketConnectionPromise.then(connection => {
       if (!this.subscribedActions.includes(action)) {
         connection.send(action);
-        this.subscribedActions.push(action)
+        this.subscribedActions.push(action);
+        this.callbacks[action] = callback;
       }
-
-      this.onMessagePromise.then(event => {
-        // Stack Overflow doesn't allow us to unsubscribe from actions we subscribed
-        // so emulate unsubscribing by ignoring onMessage event
-        if (this.unsubscribedActions.includes(action)) {
-          return;
-        }
-
-        const response = JSON.parse(event.data);
-
-        if (response.action === action) {
-          let json;
-
-          try {
-            json = JSON.parse(response.data);
-          } catch (ignore) {}
-
-          callback(json || event.data);
-        }
-      })
     });
   }
 
