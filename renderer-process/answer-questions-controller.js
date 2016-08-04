@@ -3,6 +3,7 @@ const _ = require('lodash');
 const ipcRenderer = require('electron').ipcRenderer;
 const stackexchange = require('./stackexchange-api-service');
 const questionScreenService = require('./question-screen-service');
+const reviewedQuestionsService = require('./reviewed-questions-service');
 
 const questionScreenBackdrop = document.querySelector('.question-screen-backdrop');
 const questionScreen = document.querySelector('.question-screen');
@@ -42,12 +43,9 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
 
       questions.forEach(question => {
         const timeAgo = moment(question.creation_date * 1000).twitter();
-        const paragraphs = countInString('</p>', question.body);
         const codeBlocks = countInString('</pre>', question.body);
         const fiddles = countInString('jsfiddle.net', question.body);
         const images = countInString('i.stack.imgur.com', question.body) / 2; // Divide by 2 because images are wrapped to <a> with the same url
-        // Reduce fiddles and images count because they counts like links
-        const links = countInString('</a>', question.body) - fiddles - images;
 
         let questionInfo = [];
 
@@ -70,7 +68,7 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
 
         questionsParts.push(`
           <div class="question" data-id="${question.question_id}">
-            <div class="question-title">${question.title} <span class="question-time"> · ${timeAgo}</span></div>
+            <div class="question-title ${reviewedQuestionsService.isReviewed(question) ? '__reviewed' : ''}">${question.title} <span class="question-time"> · ${timeAgo}</span></div>
             <ul class="question-tags">
               ${question.tags.map(tag => `<li>${tag}</li>`).join(' ')}
             </ul>
@@ -92,6 +90,8 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
 
         // TODO do not pass token through function
         questionScreenService.renderQuestion(question, data.token);
+        reviewedQuestionsService.markAsReviewed(question);
+        questionElement.querySelector('.question-title').classList.add('__reviewed');
       });
 
       // Close question screen on click outside

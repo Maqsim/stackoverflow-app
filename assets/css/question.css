@@ -16,6 +16,10 @@
   /*font-weight: bold;*/
 }
 
+.question-title.__reviewed {
+  color: #aaa;
+}
+
 .question-info {
   color: #919191;
   font-size: 12px;
