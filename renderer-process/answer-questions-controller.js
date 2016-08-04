@@ -52,11 +52,11 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
         let questionInfo = [];
 
         if (codeBlocks || fiddles) {
-          questionInfo.push('<i class="fa fa-code __green"></i>');
+          questionInfo.push('<i class="fa fa-code __green" title="With code"></i>');
         }
 
         if (stripHtml(question.body).match(/[^\s]+/g).length > 200) {
-          questionInfo.push('<i class="fa fa-hourglass-start __red"></i>');
+          questionInfo.push('<i class="fa fa-clock-o __red" title="A lot of reading"></i>');
         }
 
         questionInfo = questionInfo.join(' &nbsp; ');

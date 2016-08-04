@@ -1,4 +1,5 @@
 const ipcRenderer = require('electron').ipcRenderer;
+const $ = require('jquery');
 const pinnedQuestions = require('./pinned-questions-service');
 const stackexchange = require('./stackexchange-api-service');
 
@@ -18,9 +19,15 @@ function init(profile) {
         <div class="nav-name">
           <div class="nav-title">
             ${profile.display_name}
-            <span class="nav-logout">&nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i></span>
+            <span class="nav-logout">&nbsp;<i class="fa fa-sign-out"></i></span>
           </div>
-          <div class="nav-rep">${profile.reputation} reputation</div>
+          <div class="nav-rep">
+            ${profile.reputation}
+          </div>
+        </div>
+        <div class="nav-notifications">
+          <span class="nav-rep-new" style="display: none;"></span>
+          <span class="nav-inbox" style="display: none;"></span>
         </div>
       `;
 
@@ -36,18 +43,45 @@ function init(profile) {
 
   // Listen reputation change via sockets
   stackexchange.socketClient.on(`1-${profile.user_id}-reputation`, data => {
+    console.log(data);
+    const notificationRep = parseInt($('.nav-rep-new').text()) || 0;
+    const oldRep = parseInt($('.nav-rep').text()) || 0;
+    const newRep = data;
+    const diff = newRep - oldRep;
+
     // Update reputation counter
-    document.querySelector('.nav-rep').innerHTML = `${data} reputation`;
+    $('.nav-rep').text(newRep);
 
     // Show notification
-    new Notification('Reputation earned!', {
-      title: 'Reputation earned!',
-      body: `You reputation now is ${data}`
+    new Notification('Reputation', {
+      title: 'Reputation',
+      body: `You earned ${diff} reputation`
     });
+
+    $('.nav-rep-new').show().text(notificationRep + diff);
   });
 
-  stackexchange.socketClient.on(`1-${profile.user_id}-topbar`, data => {
-    // TODO
+  // Listen for new comments
+  stackexchange.socketClient.on(`${profile.account_id}-topbar`, data => {
+    // TODO New comment
+    const notificationInboxCount = parseInt($('.nav-inbox').text()) || 0;
+
+    // Show notification
+    new Notification('Comment', {
+      title: 'Comment',
+      body: `You have new comment`
+    });
+
+    $('.nav-inbox').show().text(notificationInboxCount + 1);
+  });
+
+  // Get unread inbox and achievements
+  stackexchange.fetch('me/inbox', { access_token: localStorage.token }).then(response => {
+    // console.log(response);
+  });
+
+  stackexchange.fetch('me/reputation-history/full', { access_token: localStorage.token }).then(response => {
+    // console.log(response);
   });
 }
 
