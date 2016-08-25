@@ -5,7 +5,7 @@ const stackexchange = require('./stackexchange-api-service');
 const pinnedQuestions = require('./pinned-questions-service');
 const { asyncInnerHTML, colorize } = require('./utils');
 const $ = require('jquery');
-const { map } = require('lodash');
+const { map, find } = require('lodash');
 const loggedInUserId = Number(localStorage.userId);
 const loggedInAccountId = Number(localStorage.accountId);
 let questionId;
@@ -38,17 +38,18 @@ function createAnswerLayout(answer) {
   const timeAgo = moment(answer.creation_date * 1000).fromNow();
 
   return `
-    <div class="question-comments-list-item question-comments-answer ${loggedInUserId === answer.owner.user_id ? '__my' : ''}" data-id="${answer.answer_id}">
-      ${answer.body}
-      –
-      <a class="question-comments-profile-link" href="${answer.owner.link}">${answer.owner.display_name}</a>
-      <span class="text-muted">${timeAgo}</span>
-      <span class="question-comments-controls">
+    <div class="question-comments-list-item question-answer ${loggedInUserId === answer.owner.user_id ? '__my' : ''} ${answer.is_accepted && '__accepted'}" data-id="${answer.answer_id}">
+      <div class="question-comments-profile-link">
+        <img class="question-answer-profile-image" src="${answer.owner.profile_image}" alt="">
+        <b>${answer.owner.display_name}</b> <span class="text-muted">${timeAgo}</span>
+      </div>
+      <div class="question-answer-body">${answer.body}</div>
+      <div class="question-comments-controls">
         &nbsp;
         <a class="question-comments-controls-edit" href="#">edit</a>
         <span class="text-muted">·</span>
         <a class="question-comments-controls-remove" href="#">remove</a>
-      </span>
+      </div>
     </div>
   `;
 }
@@ -75,15 +76,18 @@ exports.renderQuestion = (question, token) => {
 
   const timeAgo = moment(question.creation_date * 1000).fromNow();
   const dateTime = moment(question.creation_date * 1000).format('LLLL');
-  const html = question.body + `
+  const html =  `
     <div class="text-muted" style="margin-top: 15px;">
       <span title="${dateTime}">${timeAgo} &nbsp; <i class="fa fa-eye"></i> ${question.view_count}</span>
     </div>
-  `;
+  ` + question.body;
 
-  asyncInnerHTML(html, (questionBodyHtml) => {
+  asyncInnerHTML(question.body, (questionBodyHtml) => {
     questionScreenElement.innerHTML = `
       <div class="question-screen-content">
+        <div class="text-muted" style="margin-top: 15px;">
+          <span title="${dateTime}">${timeAgo} &nbsp; <i class="fa fa-eye"></i> ${question.view_count}</span>
+        </div>
         <div class="question-title">${question.title}</div>
       </div>
     `;
@@ -106,7 +110,7 @@ exports.renderQuestion = (question, token) => {
 
     questionScreenElement.innerHTML += `
       <div class="question-comments" id="scroll-to-comments">
-        <div class="question-status-bar ${question.answer_count && '__answered'}">
+        <div class="question-status-bar ${question.answer_count & !question.accepted_answer_id && '__answered'} ${question.accepted_answer_id && '__accepted'}">
           <div class="question-status-bar-content">
             <a class="question-status-bar-action scroll-to-comments" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
             <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
@@ -127,16 +131,30 @@ exports.renderQuestion = (question, token) => {
         </div>
         <div class="question-status-bar-placeholder"></div>
         <div class="question-comments-list"></div>
+        
+        <!-- TODO -->
+        <form class="question-comments-form" style="margin-bottom: 22px; margin-top: 8px;">
+          <button class="button question-comments-add-comment" class="button">Add comment...</button>
+          <input type="text" style="width: 100%;" hidden placeholder="Your comment">
+          <div class="question-comments-form-errors"></div>
+        </form>
+        
+        <div class="question-answer-list">
+          
+        </div>
+        
         <form class="question-comments-form">
-          <input type="text" placeholder="Your comment. Press Shift + Enter to start answer">
+          <textarea></textarea>
           <div class="question-answer-buttons">
-            <button type="button" class="button __success post-answer">Post</button>
-            <button type="button" class="button discard-changes">Cancel</button>
+            <button type="button" class="button __success post-answer">Post your answer</button>
           </div>
         </form>
-        <div class="question-comments-form-errors"></div>
       </div>
     `;
+
+    $('.question-comments-add-comment').click(function () {
+      $(this).hide().next().show();
+    });
 
     $('.question-status-bar-action.scroll-to-comments').click(function () {
       setTimeout(function () {
@@ -194,6 +212,27 @@ exports.renderQuestion = (question, token) => {
       .then(response => {
         question.comments = response.items;
         document.querySelector('.question-comments-list').innerHTML = question.comments.map(createCommentLayout).join('');
+      });
+
+    // Load and render answers
+    stackexchange
+      .fetch(`questions/${question.question_id}/answers`, {
+        order: 'desc',
+        sort: 'votes',
+        filter: '!7gohYEfTZz2-egqfSOhb)AcNr1qh1NkP71',
+        access_token: token
+      })
+      .then(response => {
+        question.answers = response.items;
+
+        const acceptedAnswer = find(question.answers, 'is_accepted');
+
+        if (acceptedAnswer) {
+          question.moreAnswerCount = question.answers.length;
+          document.querySelector('.question-answer-list').innerHTML += createAnswerLayout(acceptedAnswer);
+        } else {
+          document.querySelector('.question-answer-list').innerHTML += question.answers.map(createAnswerLayout).join('');
+        }
       });
 
     // Make status bar sticky
@@ -267,6 +306,54 @@ exports.renderQuestion = (question, token) => {
         });
     });
 
+    // Init answer form
+    const simpleMDE = new SimpleMDE({
+      status: false,
+      toolbarTips: false,
+      toolbar: ['bold', 'italic', '|', 'link', 'quote', 'code', 'image', '|', 'ordered-list', 'unordered-list', 'heading', 'horizontal-rule'],
+      placeholder: 'Your answer'
+    });
+
+    // Posting answer
+    document.querySelector('.button.post-answer').addEventListener('click', () => {
+      let doAddSpaces = false;
+      let answerText = simpleMDE.value();
+
+      // Change code-block format so SO can handle it
+      answerText = answerText
+        .split('\n')
+        .map(line => {
+          if (line === '```') {
+            doAddSpaces = !doAddSpaces;
+            return ''; // Remove this line
+          }
+
+          return doAddSpaces ? '    ' + line : line;
+        })
+        .join('\n');
+
+      stackexchange
+        .post(`questions/${question.question_id}/answers/add`, {
+          access_token: token,
+          body: answerText,
+          key: 'bdFSxniGkNbU3E*jsj*28w((',
+          preview: false,
+          site: 'stackoverflow',
+          filter: '!)s0G2lBkPFy_lEEcsfX9'
+        })
+        .then(response => {
+          // Server-side validation (if not pass)
+          if (response.error_id) {
+            return formErrors.innerHTML = response.error_message;
+          }
+
+          // Render successfully added comment
+          const savedAnswer = response.items[0];
+
+          document.querySelector('.question-comments-list').innerHTML += createAnswerLayout(savedAnswer);
+        })
+    });
+
     let mentionsShown = false;
     let mentionData = [];
 
@@ -327,69 +414,6 @@ exports.renderQuestion = (question, token) => {
         console.log($('.question-comments-list-item.__highlighted'));
         hideMentions();
       }
-
-      //  Expand form to start answering on Shift + Enter
-      if (event.shiftKey && event.which === 13) {
-        event.preventDefault();
-
-        const simpleMDE = new SimpleMDE({
-          element: commentInput,
-          autofocus: true,
-          status: false,
-          toolbarTips: false,
-          toolbar: ['bold', 'italic', '|', 'link', 'quote', 'code', 'image', '|', 'ordered-list', 'unordered-list', 'heading', 'horizontal-rule'],
-          placeholder: 'Your answer'
-        });
-
-        // Show answer buttons
-        document.querySelector('.question-answer-buttons').style.display = 'block';
-
-        // Unbind the handler
-        this.removeEventListener('keydown', arguments.callee);
-
-        // Scroll to form
-        commentForm.scrollIntoView(true);
-
-        // Posting answer
-        document.querySelector('.button.post-answer').addEventListener('click', () => {
-          let doAddSpaces = false;
-          let answerText = simpleMDE.value();
-
-          // Change code-block format so SO can handle it
-          answerText = answerText
-            .split('\n')
-            .map(line => {
-              if (line === '```') {
-                doAddSpaces = !doAddSpaces;
-                return ''; // Remove this line
-              }
-
-              return doAddSpaces ? '    ' + line : line;
-            })
-            .join('\n');
-
-          stackexchange
-            .post(`questions/${question.question_id}/answers/add`, {
-              access_token: token,
-              body: answerText,
-              key: 'bdFSxniGkNbU3E*jsj*28w((',
-              preview: false,
-              site: 'stackoverflow',
-              filter: '!)s0G2lBkPFy_lEEcsfX9'
-            })
-            .then(response => {
-              // Server-side validation (if not pass)
-              if (response.error_id) {
-                return formErrors.innerHTML = response.error_message;
-              }
-
-              // Render successfully added comment
-              const savedAnswer = response.items[0];
-
-              document.querySelector('.question-comments-list').innerHTML += createAnswerLayout(savedAnswer);
-            })
-        });
-      }
     });
 
     commentInput.addEventListener('blur', function () {
@@ -436,6 +460,9 @@ exports.renderQuestion = (question, token) => {
           if (data.acctid !== loggedInAccountId) {
             loadAndRenderComment(data.commentid);
           }
+          break;
+        case 'accept':
+          $statusBar.addClass('__accepted');
           break;
         default:
           if (data.a === 'post-edit') {

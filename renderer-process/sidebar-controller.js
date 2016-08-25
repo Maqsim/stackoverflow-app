@@ -22,12 +22,12 @@ function init(profile) {
             <span class="nav-logout">&nbsp;<i class="fa fa-sign-out"></i></span>
           </div>
           <div class="nav-rep">
-            ${profile.reputation}
+            ${profile.reputation} rep
           </div>
         </div>
         <div class="nav-notifications">
-          <span class="nav-rep-new" style="display: none;"></span>
-          <span class="nav-inbox" style="display: none;"></span>
+          <span class="nav-rep-new">10</span>
+          <span class="nav-inbox">2</span>
         </div>
       `;
 
@@ -58,7 +58,7 @@ function init(profile) {
       body: `You earned ${diff} reputation`
     });
 
-    $('.nav-rep-new').show().text(notificationRep + diff);
+    $('.nav-rep-new').show().text(notificationRep + diff + ' rep');
   });
 
   // Listen for new comments

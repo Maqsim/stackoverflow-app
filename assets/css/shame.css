@@ -1,9 +1,13 @@
 .CodeMirror {
-  height: 300px;
+  border-width: 2px !important;
 }
 
-.CodeMirror, .editor-toolbar {
-  border-width: 2px;
+.CodeMirror, .CodeMirror-scroll {
+  min-height: 100px !important;
+}
+
+.editor-toolbar {
+  border-width: 2px !important;
 }
 
 .__green {

@@ -207,14 +207,6 @@
   opacity: .4;
 }
 
-.question-comments-list-item:nth-child(even) {
-  background: #F0F0F0;
-}
-
-.question-comments-list-item:nth-child(even) code, kbd {
-  /* TODO make darken */
-}
-
 .question-comments-profile-color {
   display: inline-block;
   width: 8px;
@@ -227,7 +219,7 @@
 }
 
 .question-comments-list-item.__my .question-comments-profile-link {
-  color: #A71D5D;
+  /*color: #A71D5D;*/
 }
 
 .question-comments-list-item:not(.__my) .question-comments-controls {
@@ -252,7 +244,6 @@
 }
 
 .question-answer-buttons {
-  display: none;
   margin-top: 10px;
 }
 
@@ -297,4 +288,41 @@
 
 .__outdated {
   opacity: .3;
+}
+
+/* Question answer */
+.question-answer {
+}
+
+.question-answer-profile-image {
+  margin: 0 3px -5px -5px;
+  height: 25px;
+}
+
+.question-answer .question-comments-profile-link {
+  margin-left: -5px;
+  padding: 5px;
+  border-bottom: 2px solid #ddd;
+}
+
+.question-answer.__accepted .question-comments-profile-link {
+  border-bottom: 2px solid #3aa340;
+}
+
+.question-answer .question-comments-profile-link a {
+  font-weight: bold;
+}
+
+.question-answer.__answered .question-comments-profile-link {
+  background: linear-gradient(to bottom right, #49D8C4, #B7A943);
+}
+
+.question-answer:not(.__accepted) .question-answer-accepted-label {
+  display: none;
+}
+
+.question-answer-body {
+  padding-left: 27px;
+  font-size: 14px;
+  line-height: 21px;
 }
