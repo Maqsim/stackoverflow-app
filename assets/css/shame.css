@@ -1,5 +1,6 @@
 .CodeMirror {
   border-width: 2px !important;
+  font-size: 14px !important;
 }
 
 .CodeMirror, .CodeMirror-scroll {
@@ -8,6 +9,10 @@
 
 .editor-toolbar {
   border-width: 2px !important;
+}
+
+.question-screen-answer-form .editor-toolbar, .question-screen-answer-form .CodeMirror {
+  border: none;
 }
 
 .__green {

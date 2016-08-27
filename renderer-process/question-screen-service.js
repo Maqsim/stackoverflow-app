@@ -3,9 +3,9 @@ const delegate = require('delegate');
 const SimpleMDE = require('simplemde');
 const stackexchange = require('./stackexchange-api-service');
 const pinnedQuestions = require('./pinned-questions-service');
-const { asyncInnerHTML, colorize } = require('./utils');
+const { asyncInnerHTML, colorize, prettifyCode } = require('./utils');
 const $ = require('jquery');
-const { map, find } = require('lodash');
+const { map, find, without } = require('lodash');
 const loggedInUserId = Number(localStorage.userId);
 const loggedInAccountId = Number(localStorage.accountId);
 let questionId;
@@ -62,6 +62,8 @@ exports.renderQuestion = (question, token) => {
   questionId = question.question_id;
   const questionUpdates = []; // Updates coming from socket server
   const questionScreenElement = document.querySelector('.question-screen');
+  let statusBarElementTop;
+  let statusBarElementHeight;
 
   function loadAndRenderComment(commentId) {
     stackexchange
@@ -76,7 +78,7 @@ exports.renderQuestion = (question, token) => {
 
   const timeAgo = moment(question.creation_date * 1000).fromNow();
   const dateTime = moment(question.creation_date * 1000).format('LLLL');
-  const html =  `
+  const html = `
     <div class="text-muted" style="margin-top: 15px;">
       <span title="${dateTime}">${timeAgo} &nbsp; <i class="fa fa-eye"></i> ${question.view_count}</span>
     </div>
@@ -95,18 +97,12 @@ exports.renderQuestion = (question, token) => {
     const questionScreenContentElement = document.querySelector('.question-screen-content');
     questionScreenContentElement.appendChild(questionBodyHtml);
 
-    // Beautify code
-    const codeBlocks = document.querySelectorAll('pre code');
-    Array.prototype.forEach.call(codeBlocks, (code) => {
-      code.classList.add('prettyprint');
-    });
-
-    prettyPrint();
+    prettifyCode();
 
     const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
     const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : '';
     let scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
-    scrollToCommentsTitle = scrollToCommentsTitle || 'Add your comment...';
+    scrollToCommentsTitle = scrollToCommentsTitle || 'Answer...';
 
     questionScreenElement.innerHTML += `
       <div class="question-comments" id="scroll-to-comments">
@@ -134,8 +130,7 @@ exports.renderQuestion = (question, token) => {
         
         <!-- TODO -->
         <form class="question-comments-form" style="margin-bottom: 22px; margin-top: 8px;">
-          <button class="button question-comments-add-comment" class="button">Add comment...</button>
-          <input type="text" style="width: 100%;" hidden placeholder="Your comment">
+          <input type="text" style="width: 100%;" placeholder="Your comment">
           <div class="question-comments-form-errors"></div>
         </form>
         
@@ -143,22 +138,20 @@ exports.renderQuestion = (question, token) => {
           
         </div>
         
-        <form class="question-comments-form">
+        <form class="question-answer-form">
           <textarea></textarea>
           <div class="question-answer-buttons">
             <button type="button" class="button __success post-answer">Post your answer</button>
+            <button type="button" class="button split-view"><i class="fa fa-columns"></i> Split view</button>
           </div>
         </form>
       </div>
     `;
 
-    $('.question-comments-add-comment').click(function () {
-      $(this).hide().next().show();
-    });
-
     $('.question-status-bar-action.scroll-to-comments').click(function () {
-      setTimeout(function () {
-        commentInput.focus();
+      setTimeout(() => {
+        simpleMDE.undo(); // FIXME focus the textarea properly
+        $('.question-answer-form')[0].scrollIntoView();
       }, 0);
     });
 
@@ -223,32 +216,48 @@ exports.renderQuestion = (question, token) => {
         access_token: token
       })
       .then(response => {
+        const $questionAnswerList = $('.question-answer-list');
         question.answers = response.items;
 
         const acceptedAnswer = find(question.answers, 'is_accepted');
 
         if (acceptedAnswer) {
-          question.moreAnswerCount = question.answers.length;
-          document.querySelector('.question-answer-list').innerHTML += createAnswerLayout(acceptedAnswer);
+          question.moreAnswers = without(question.answers, acceptedAnswer);
+          $questionAnswerList
+            .append(createAnswerLayout(acceptedAnswer))
+            .append(`<button class="button show-more-answers">Show ${question.answers.length - 1} more answers</button>`);
+
+          // Show more button event handler
+          $('.show-more-answers').click(function () {
+            // Hide button
+            $(this).hide();
+            $questionAnswerList.append(question.moreAnswers.map(createAnswerLayout).join(''));
+            prettifyCode($questionAnswerList[0]);
+          });
         } else {
-          document.querySelector('.question-answer-list').innerHTML += question.answers.map(createAnswerLayout).join('');
+          $questionAnswerList.append(question.answers.map(createAnswerLayout).join(''));
         }
+
+        prettifyCode($questionAnswerList[0]);
       });
 
     // Make status bar sticky
     const $questionScreen = $('.question-screen');
     const $statusBar = $('.question-status-bar');
-    const statusBarElementTop = $statusBar.offset().top;
-    const statusBarElementHeight = $statusBar.outerHeight();
+    statusBarElementTop = $statusBar.offset().top;
+    statusBarElementHeight = $statusBar.outerHeight();
     let lastKnownScrollPosition = 0;
     let ticking = false;
 
     function checkStatusBarPosition() {
       lastKnownScrollPosition = $questionScreen.scrollTop();
-
+      
       if (!ticking) {
         window.requestAnimationFrame(function () {
           const statusBarOffset = statusBarElementTop + statusBarElementHeight - ($questionScreen.outerHeight() + lastKnownScrollPosition);
+          
+          console.log(statusBarOffset);
+          
           $statusBar.toggleClass('__sticky', statusBarOffset > 0);
           ticking = false;
         });
@@ -354,6 +363,36 @@ exports.renderQuestion = (question, token) => {
         })
     });
 
+    // Enter to split-view mode
+    let splitViewEnabled = false;
+    let simpleMDELastHeight;
+    const $CodeMirror = $('.question-screen-answer-form .CodeMirror');
+    $('.button.split-view').click(function () {
+      if (splitViewEnabled) {
+        $('.question-screen-answer-form .CodeMirror').height(simpleMDELastHeight);
+        $(this).html('<i class="fa fa-columns"></i> Split view');
+        questionScreenElement.classList.remove('__split-view');
+        $('.question-answer-form')
+          .detach()
+          .insertAfter('.question-answer-list')
+          .get(0)
+          .scrollIntoView();
+      } else {
+        questionScreenElement.scrollTop = 0;
+        $(this).html('Exit split view');
+        questionScreenElement.classList.add('__split-view');
+        $('.question-answer-form').detach().appendTo('.question-screen-answer-form');
+        simpleMDELastHeight = $CodeMirror.height();
+        $CodeMirror.height(window.innerHeight - 112);
+      }
+
+      // Recalculate status-bar positions
+      statusBarElementTop = $statusBar.offset().top;
+      statusBarElementHeight = $statusBar.outerHeight();
+
+      splitViewEnabled = !splitViewEnabled;
+    });
+
     let mentionsShown = false;
     let mentionData = [];
 
@@ -365,7 +404,7 @@ exports.renderQuestion = (question, token) => {
 
       const caretPosition = commentInput.value.slice(0, commentInput.selectionStart).length;
 
-      if (commentInput.value.substr(caretPosition - 1, 1) === '@'){
+      if (commentInput.value.substr(caretPosition - 1, 1) === '@') {
         commentInput.value = commentInput.value.slice(0, caretPosition - 1) + commentInput.value.slice(caretPosition);
       }
     }
@@ -478,6 +517,6 @@ exports.renderQuestion = (question, token) => {
 
 exports.clearScreen = () => {
   // Remove all event listeners
-  $('.question-screen').empty().off('scroll');
+  $('.question-screen').empty().removeClass('__split-view').off('scroll');
   stackexchange.socketClient.off(`1-question-${questionId}`);
 };

@@ -1,4 +1,5 @@
-const _ = require('lodash');
+const $ = require('jquery');
+const { find } = require('lodash');
 const randomColor = require('randomcolor');
 
 // This function is needed for performance
@@ -19,7 +20,7 @@ exports.asyncInnerHTML = (HTML, callback) => {
 
 const savedColors = [];
 exports.colorize = function (key) {
-  const foundColor = _.find(savedColors, { key: key });
+  const foundColor = find(savedColors, { key: key });
 
   if (foundColor) {
     return foundColor.color;
@@ -36,4 +37,14 @@ exports.colorize = function (key) {
 
     return color;
   }
+};
+
+exports.prettifyCode = function (element = document) {
+  $('pre code:not(.prettyprint)', element).each(function () {
+    $(this).addClass('prettyprint').parent().wrap('<p></p>');
+  });
+
+  prettyPrint();
+
+
 };

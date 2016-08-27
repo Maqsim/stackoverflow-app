@@ -53,6 +53,10 @@ ipcRenderer.on('stackexchange:login', (event, data) => {
           questionInfo.push('<i class="fa fa-code __green" title="With code"></i>');
         }
 
+        if (images) {
+          questionInfo.push('<i class="fa fa-picture-o __green" title="With images"></i>');
+        }
+
         if (stripHtml(question.body).match(/[^\s]+/g).length > 200) {
           questionInfo.push('<i class="fa fa-clock-o __red" title="A lot of reading"></i>');
         }

@@ -51,6 +51,54 @@
   animation: slide-left 250ms ease-out;
 }
 
+/* Split view mode */
+/* ----------------*/
+
+.question-screen.__split-view {
+  left: 0;
+  width: 50%;
+  box-shadow: none;
+}
+
+.question-screen.__split-view .question-status-bar.__sticky {
+  width: 50%;
+  left: 0;
+}
+
+.question-screen-answer-form {
+  display: none;
+  border-left: 1px solid #eee;
+}
+
+.question-screen-answer-form .question-answer-form {
+  margin-top: 0;
+}
+
+.question-screen-answer-form .question-answer-buttons {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 7px 10px;
+  width: 100%;
+  background-color: #f6f6f6;
+}
+
+.question-screen.__split-view + .question-screen-answer-form {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  display: block;
+  overflow-y: auto;
+  width: 50%;
+  height: 100%;
+  background: white;
+  transform: translate3D(0, 0, 0);
+  will-change: transform;
+}
+
 .question-screen-backdrop.is-shown {
   display: block;
   animation: fade-in 600ms;
@@ -230,8 +278,8 @@
   white-space: nowrap;
 }
 
-.question-comments-form {
-  margin-top: 8px;
+.question-comments-form, .question-answer-form {
+  margin-top: 30px;
 }
 
 .question-comments-form input {
@@ -245,6 +293,10 @@
 
 .question-answer-buttons {
   margin-top: 10px;
+}
+
+.question-answer-list .show-more-answers {
+  margin-top: 18px;
 }
 
 /* ACTIONS */
@@ -300,7 +352,7 @@
 }
 
 .question-answer .question-comments-profile-link {
-  margin-left: -5px;
+  margin-right: 0;
   padding: 5px;
   border-bottom: 2px solid #ddd;
 }
@@ -322,7 +374,7 @@
 }
 
 .question-answer-body {
-  padding-left: 27px;
+  padding-left: 32px;
   font-size: 14px;
   line-height: 21px;
 }
