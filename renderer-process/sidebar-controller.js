@@ -43,7 +43,6 @@ function init(profile) {
 
   // Listen reputation change via sockets
   stackexchange.socketClient.on(`1-${profile.user_id}-reputation`, data => {
-    console.log(data);
     const notificationRep = parseInt($('.nav-rep-new').text()) || 0;
     const oldRep = parseInt($('.nav-rep').text()) || 0;
     const newRep = data;

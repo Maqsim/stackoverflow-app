@@ -1,11 +1,12 @@
 const moment = require('moment');
-const delegate = require('delegate');
 const SimpleMDE = require('simplemde');
+const { clipboard } = require('electron');
+const { map, find, without } = require('lodash');
+const $ = require('jquery');
+
 const stackexchange = require('./stackexchange-api-service');
 const pinnedQuestions = require('./pinned-questions-service');
 const { asyncInnerHTML, colorize, prettifyCode } = require('./utils');
-const $ = require('jquery');
-const { map, find, without } = require('lodash');
 const loggedInUserId = Number(localStorage.userId);
 const loggedInAccountId = Number(localStorage.accountId);
 let questionId;
@@ -42,13 +43,18 @@ function createAnswerLayout(answer) {
       <div class="question-comments-profile-link">
         <img class="question-answer-profile-image" src="${answer.owner.profile_image}" alt="">
         <b>${answer.owner.display_name}</b> <span class="text-muted">${timeAgo}</span>
+        <div class="question-answer-right-controls">
+          <a class="share-answer"><i class="fa fa-hashtag"></i></a>
+          &nbsp;
+          <a><i class="fa fa-flag"></i></a>
+        </div>
       </div>
       <div class="question-answer-body">${answer.body}</div>
       <div class="question-comments-controls">
         &nbsp;
         <a class="question-comments-controls-edit" href="#">edit</a>
         <span class="text-muted">·</span>
-        <a class="question-comments-controls-remove" href="#">remove</a>
+        <a class="question-comments-controls-remove" href="#">delete</a>
       </div>
     </div>
   `;
@@ -251,13 +257,11 @@ exports.renderQuestion = (question, token) => {
 
     function checkStatusBarPosition() {
       lastKnownScrollPosition = $questionScreen.scrollTop();
-      
+
       if (!ticking) {
         window.requestAnimationFrame(function () {
           const statusBarOffset = statusBarElementTop + statusBarElementHeight - ($questionScreen.outerHeight() + lastKnownScrollPosition);
-          
-          console.log(statusBarOffset);
-          
+
           $statusBar.toggleClass('__sticky', statusBarOffset > 0);
           ticking = false;
         });
@@ -450,7 +454,6 @@ exports.renderQuestion = (question, token) => {
         event.preventDefault();
 
         // TODO
-        console.log($('.question-comments-list-item.__highlighted'));
         hideMentions();
       }
     });
@@ -462,7 +465,7 @@ exports.renderQuestion = (question, token) => {
     });
 
     // Remove comment
-    delegate(document.querySelector('.question-comments-list'), '.question-comments-controls-remove', 'click', event => {
+    $('.question-comments-list').on('click', '.question-comments-controls-remove', event => {
       const commentElement = event.target.closest('.question-comments-list-item');
       const commentId = commentElement.dataset.id;
 
@@ -481,11 +484,20 @@ exports.renderQuestion = (question, token) => {
     });
 
     // Edit comment
-    delegate(document.querySelector('.question-comments-list'), '.question-comments-controls-edit', 'click', event => {
+    $('.question-comments-list').on('click', '.question-comments-controls-edit', event => {
       const commentElement = event.target.closest('.question-comments-list-item');
       const commentId = commentElement.dataset.id;
 
       // TODO implement comment editing
+    });
+
+    // Copy answer URL to clipboard
+    $('.question-answer-list').on('click', '.question-answer-right-controls .share-answer', event => {
+      const answerElement = event.target.closest('.question-comments-list-item');
+      const answerId = answerElement.dataset.id;
+      const answer = find(question.answers, { answer_id: +answerId });
+
+      clipboard.writeText(answer.link);
     });
 
     // TODO Load answers

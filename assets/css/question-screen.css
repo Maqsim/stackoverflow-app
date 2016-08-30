@@ -295,6 +295,21 @@
   margin-top: 10px;
 }
 
+.question-answer-right-controls {
+  float: right;
+  margin-top: 9px;
+}
+
+.question-answer-right-controls a {
+  cursor: default;
+  color: #aaa;
+}
+
+.question-answer-right-controls a:hover {
+  border: none;
+  color: #777;
+}
+
 .question-answer-list .show-more-answers {
   margin-top: 18px;
 }

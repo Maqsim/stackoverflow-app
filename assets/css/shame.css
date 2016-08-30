@@ -22,3 +22,11 @@
 .__red {
   color: #D26868;
 }
+
+.float-r {
+  float: right;
+}
+
+.float-l {
+  float: left;
+}
