@@ -61,8 +61,8 @@
 }
 
 .question-screen.__split-view .question-status-bar.__sticky {
-  width: 50%;
   left: 0;
+  width: 50%;
 }
 
 .question-screen-answer-form {
@@ -218,6 +218,7 @@
 
 .question-comments-list {
   min-height: 1px; /* This is needed to summarize margins of closest siblings */
+  display: none;
 }
 
 .question-comments-list-item {
@@ -278,6 +279,10 @@
   white-space: nowrap;
 }
 
+.question-comments-form {
+  display: none;
+}
+
 .question-comments-form, .question-answer-form {
   margin-top: 30px;
 }
@@ -301,8 +306,8 @@
 }
 
 .question-answer-right-controls a {
-  cursor: default;
   color: #aaa;
+  cursor: default;
 }
 
 .question-answer-right-controls a:hover {
@@ -359,6 +364,11 @@
 
 /* Question answer */
 .question-answer {
+  overflow: hidden;
+}
+
+.question-answer + .question-answer {
+  border-top: 1px solid #eee;
 }
 
 .question-answer-profile-image {
@@ -388,8 +398,20 @@
   display: none;
 }
 
+.question-answer-score {
+  float: left;
+  margin-top: 17px;
+  margin-right: 13px;
+  margin-bottom: 17px;
+  margin-left: -13px;
+  width: 50px;
+  color: #6a737c;
+  text-align: center;
+}
+
 .question-answer-body {
-  padding-left: 32px;
+  float: left;
+  width: calc(100% - 50px);
   font-size: 14px;
   line-height: 21px;
 }

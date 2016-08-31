@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-twitter');
 const SimpleMDE = require('simplemde');
 const { clipboard } = require('electron');
 const { map, find, without } = require('lodash');
@@ -16,12 +16,13 @@ function createCommentLayout(comment) {
 
   return `
     <div class="question-comments-list-item ${loggedInUserId === comment.owner.user_id ? '__my' : ''}" data-id="${comment.comment_id}">
-      <nobr class="question-comments-profile-link">
+      <!-- <nobr class="question-comments-profile-link">
         <span class="question-comments-profile-color" style="background: ${colorize(comment.owner.user_id)}"></span>
         <a href="${comment.owner.link}">${comment.owner.display_name}</a>
-      </nobr>
+      </nobr> -->
       <span class="question-comments-list-item-body">
         ${comment.body}
+        <nobr>– <a href="${comment.owner.link}">${comment.owner.display_name}</a></nobr>
         <span class="text-muted">${timeAgo}</span>
         <span class="question-comments-controls">
           &nbsp;
@@ -36,29 +37,45 @@ function createCommentLayout(comment) {
 
 // TODO make answers look more sick and figure out how to show comments to the answers
 function createAnswerLayout(answer) {
-  const timeAgo = moment(answer.creation_date * 1000).fromNow();
+  const timeAgo = moment(answer.creation_date * 1000).twitter();
 
   return `
     <div class="question-comments-list-item question-answer ${loggedInUserId === answer.owner.user_id ? '__my' : ''} ${answer.is_accepted && '__accepted'}" data-id="${answer.answer_id}">
-      <div class="question-comments-profile-link">
-        <img class="question-answer-profile-image" src="${answer.owner.profile_image}" alt="">
-        <b>${answer.owner.display_name}</b> <span class="text-muted">${timeAgo}</span>
-        <div class="question-answer-right-controls">
-          <a class="share-answer"><i class="fa fa-hashtag"></i></a>
-          &nbsp;
-          <a><i class="fa fa-flag"></i></a>
+      <div class="question-answer-score">
+        <div class="arrow-up"></div>
+        <div style="margin: 5px 0;">${answer.score}</div>
+        <div class="arrow-down"></div>
+        <div ${!answer.is_accepted && 'hidden'} style="font-size: 20px;">
+          <i class="fa fa-check __green"></i>
         </div>
+        <div class="text-muted" style="margin-top: 5px;">${timeAgo}</div>
       </div>
-      <div class="question-answer-body">${answer.body}</div>
-      <div class="question-comments-controls">
-        &nbsp;
-        <a class="question-comments-controls-edit" href="#">edit</a>
-        <span class="text-muted">·</span>
-        <a class="question-comments-controls-remove" href="#">delete</a>
+      <div class="question-answer-body">
+        ${answer.body}
+        
+        <!--<div class="question-answer-info">
+          <img class="question-answer-profile-image" src="${answer.owner.profile_image}" alt="">
+          <b>${answer.owner.display_name}</b> <span class="text-muted">${timeAgo}</span>
+        </div>-->
+        
+        <div class="question-comments-controls">
+          <a class="question-comments-controls-edit" href="#">edit</a>
+          <span class="text-muted">·</span>
+          <a class="question-comments-controls-remove" href="#">delete</a>
+        </div>
       </div>
     </div>
   `;
 }
+
+// <div class="question-comments-profile-link">
+//   <img class="question-answer-profile-image" src="${answer.owner.profile_image}" alt="">
+//   <b>${answer.owner.display_name}</b> <span class="text-muted">${timeAgo}</span>
+//   <div class="question-answer-right-controls">
+//   <a class="share-answer"><i class="fa fa-hashtag"></i></a>
+//   &nbsp;
+// <a><i class="fa fa-flag"></i></a>
+
 
 function updateScore(score) {
   $('.question-status-bar-action.like .like-count').html(score || '');
@@ -105,21 +122,16 @@ exports.renderQuestion = (question, token) => {
 
     prettifyCode();
 
-    const answerCountString = question.answer_count ? `${question.answer_count} <i class="fa fa-check-circle"></i>&nbsp;` : '';
-    const commentCountString = question.comment_count ? `${question.comment_count} <i class="fa fa-comments-o"></i>` : '';
-    let scrollToCommentsTitle = (answerCountString + ' ' + commentCountString).trim();
-    scrollToCommentsTitle = scrollToCommentsTitle || 'Answer...';
-
     questionScreenElement.innerHTML += `
-      <div class="question-comments" id="scroll-to-comments">
+      <div class="question-comments">
         <div class="question-status-bar ${question.answer_count & !question.accepted_answer_id && '__answered'} ${question.accepted_answer_id && '__accepted'}">
           <div class="question-status-bar-content">
-            <a class="question-status-bar-action scroll-to-comments" href="#scroll-to-comments">${scrollToCommentsTitle}</a>
-            <a class="question-status-bar-action update"><i class="fa fa-refresh"></i></a>
+            <a class="question-status-bar-action start-answer">Answer...</a>
             <a class="question-status-bar-action pin"><i class="fa fa-thumb-tack ${!pinnedQuestions.isPinned(question) ? 'rotate-45' : ''}"></i></a>
             <a class="question-status-bar-action" href="${question.link}" title="Open in browser"><i class="fa fa-external-link"></i></a>
             <a class="question-status-bar-action" title="Create and paste JSFiddle"><i class="fa fa-jsfiddle"></i></a>
             <a class="question-status-bar-action like ${question.upvoted ? '__liked' : ''}"><i class="fa fa-heart"></i> <span class="like-count">${question.score || ''}</span></a>
+            <a class="question-status-bar-action toggle-comments">Show ${question.comment_count || ''} comments</a>
             
             <!--<a class="question-status-bar-action __right"><i class="fa fa-flag"></i></a>-->
             <a class="question-status-bar-action __right" href="${question.owner.link}">
@@ -134,7 +146,6 @@ exports.renderQuestion = (question, token) => {
         <div class="question-status-bar-placeholder"></div>
         <div class="question-comments-list"></div>
         
-        <!-- TODO -->
         <form class="question-comments-form" style="margin-bottom: 22px; margin-top: 8px;">
           <input type="text" style="width: 100%;" placeholder="Your comment">
           <div class="question-comments-form-errors"></div>
@@ -154,11 +165,15 @@ exports.renderQuestion = (question, token) => {
       </div>
     `;
 
-    $('.question-status-bar-action.scroll-to-comments').click(function () {
+    $('.question-status-bar-action.start-answer').click(function () {
       setTimeout(() => {
         simpleMDE.undo(); // FIXME focus the textarea properly
         $('.question-answer-form')[0].scrollIntoView();
       }, 0);
+    });
+
+    $('.question-status-bar-action.toggle-comments').click(function () {
+      $('.question-comments-form, .question-comments-list').toggle();
     });
 
     $('.question-status-bar-action.pin').click(function () {
@@ -236,7 +251,7 @@ exports.renderQuestion = (question, token) => {
           // Show more button event handler
           $('.show-more-answers').click(function () {
             // Hide button
-            $(this).hide();
+            $(this).remove();
             $questionAnswerList.append(question.moreAnswers.map(createAnswerLayout).join(''));
             prettifyCode($questionAnswerList[0]);
           });

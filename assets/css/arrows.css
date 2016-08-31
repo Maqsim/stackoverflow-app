@@ -1,0 +1,17 @@
+.arrow-up {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #6a737c;
+  border-left: 10px solid transparent;
+}
+
+.arrow-down {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 10px solid #6a737c;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+}
