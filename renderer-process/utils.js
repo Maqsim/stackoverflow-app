@@ -45,6 +45,4 @@ exports.prettifyCode = function (element = document) {
   });
 
   prettyPrint();
-
-
 };

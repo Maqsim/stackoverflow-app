@@ -89,14 +89,12 @@ const cachedProfile = localStorage.profile && JSON.parse(localStorage.profile);
 if (cachedProfile) {
   init(cachedProfile);
 } else {
-  ipcRenderer.on('stackexchange:login', (event, data) => {
-    // Load info about logged in user
-    stackexchange.fetch('me', { access_token: data.token }).then(response => {
-      const profile = response.items[0];
-      localStorage.profile = JSON.stringify(profile);
+  // Load info about logged in user
+  stackexchange.fetch('me', { access_token: localStorage.token }).then(response => {
+    const profile = response.items[0];
+    localStorage.profile = JSON.stringify(profile);
 
-      init(profile, true);
-    });
+    init(profile, true);
   });
 }
 

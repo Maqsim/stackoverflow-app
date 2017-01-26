@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const $ = require('jquery');
 
 let reviewedQuestions = [];
 try {
@@ -24,11 +23,16 @@ exports.get = function () {
   return reviewedQuestions;
 };
 
-exports.markAsReviewed = function (question) {
+exports.markAsReviewed = function (question, questionElement) {
   reviewedQuestions.push(question);
   syncLocalStorage();
+
+  if (questionElement) {
+    questionElement.querySelector('.question-title').classList.add('__reviewed');
+  }
 };
 
 exports.isReviewed = function (question) {
-  return Boolean(findReviewedQuestion(question.question_id));
+  // FIXME [PERFORMANCE] improve syncLocalStorage function
+  return false && Boolean(findReviewedQuestion(question.question_id));
 };

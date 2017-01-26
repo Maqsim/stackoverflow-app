@@ -15,16 +15,12 @@ Array.prototype.forEach.call(document.querySelectorAll('.nav-button'), (button) 
 
     // Save currently active button in localStorage
     const buttonId = event.target.getAttribute('id');
-    storage.set('activeSectionButtonId', buttonId, (err) => {
-      if (err) {
-        return console.error(err);
-      }
-    })
+    localStorage.activeSectionButtonId = buttonId;
   });
 });
 
 // Always show Answer questions section first
-document.querySelector('#answer-questions').click();
+document.querySelector(localStorage.activeSectionButtonId ? '#' + localStorage.activeSectionButtonId : '#answer-questions').click();
 
 function hideAllSectionsAndDeselectButtons() {
   const sections = document.querySelectorAll('.js-section.is-shown');

@@ -61,10 +61,14 @@
   require('./assets/imports');
   require('./assets/nav');
   require('./assets/normalize-shortcuts');
-  require('./renderer-process/sidebar-controller');
 
   // Disable zooming
   require('electron').webFrame.setZoomLevelLimits(1, 1);
+
+  // Run app
+  require('electron').ipcRenderer.on('stackexchange:login', function () {
+    require('./renderer-process/sidebar-controller');
+  });
 </script>
 </body>
 </html>

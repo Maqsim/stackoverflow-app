@@ -9,6 +9,8 @@ const pinnedQuestions = require('./pinned-questions-service');
 const { asyncInnerHTML, colorize, prettifyCode } = require('./utils');
 const loggedInUserId = Number(localStorage.userId);
 const loggedInAccountId = Number(localStorage.accountId);
+const questionScreenBackdrop = document.querySelector('.question-screen-backdrop');
+const questionScreen = document.querySelector('.question-screen');
 let questionId;
 
 function createCommentLayout(comment) {
@@ -81,7 +83,10 @@ function updateScore(score) {
   $('.question-status-bar-action.like .like-count').html(score || '');
 }
 
-exports.renderQuestion = (question, token) => {
+exports.renderQuestion = (question) => {
+  questionScreenBackdrop.classList.add('is-shown');
+  questionScreen.classList.add('is-shown');
+
   questionId = question.question_id;
   const questionUpdates = []; // Updates coming from socket server
   const questionScreenElement = document.querySelector('.question-screen');
@@ -212,7 +217,7 @@ exports.renderQuestion = (question, token) => {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded'
           },
-          body: encodeURI(`access_token=${token}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow`)
+          body: encodeURI(`access_token=${localStorage.token}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow`)
         });
     });
 
@@ -234,7 +239,7 @@ exports.renderQuestion = (question, token) => {
         order: 'desc',
         sort: 'votes',
         filter: '!7gohYEfTZz2-egqfSOhb)AcNr1qh1NkP71',
-        access_token: token
+        access_token: localStorage.token
       })
       .then(response => {
         const $questionAnswerList = $('.question-answer-list');
@@ -315,7 +320,7 @@ exports.renderQuestion = (question, token) => {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded'
           },
-          body: encodeURI(`access_token=${token}&key=bdFSxniGkNbU3E*jsj*28w((&body=${commentText}&preview=false&site=stackoverflow`)
+          body: encodeURI(`access_token=${localStorage.token}&key=bdFSxniGkNbU3E*jsj*28w((&body=${commentText}&preview=false&site=stackoverflow`)
         })
         .then((response) => {
           // Server-side validation (if not pass)
@@ -362,7 +367,7 @@ exports.renderQuestion = (question, token) => {
 
       stackexchange
         .post(`questions/${question.question_id}/answers/add`, {
-          access_token: token,
+          access_token: localStorage.token,
           body: answerText,
           key: 'bdFSxniGkNbU3E*jsj*28w((',
           preview: false,
@@ -491,7 +496,7 @@ exports.renderQuestion = (question, token) => {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded'
           },
-          body: encodeURI(`access_token=${token}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow`)
+          body: encodeURI(`access_token=${localStorage.token}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow`)
         })
         .then(() => {
           commentElement.parentNode.removeChild(commentElement);

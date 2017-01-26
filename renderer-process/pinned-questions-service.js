@@ -31,6 +31,10 @@ exports.get = function () {
   return pinnedQuestions;
 };
 
+exports.getIds = function () {
+  return _.map(pinnedQuestions, 'question_id');
+};
+
 exports.pin = function (question) {
   pinnedQuestions.push(question);
   syncLocalStorage();
