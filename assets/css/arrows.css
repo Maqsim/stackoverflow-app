@@ -5,6 +5,7 @@
   border-right: 10px solid transparent;
   border-bottom: 10px solid #6a737c;
   border-left: 10px solid transparent;
+  cursor: pointer;
 }
 
 .arrow-down {
@@ -14,4 +15,13 @@
   border-top: 10px solid #6a737c;
   border-right: 10px solid transparent;
   border-left: 10px solid transparent;
+  cursor: pointer;
+}
+
+.arrow-down.__selected {
+  border-top-color: #f48024;
+}
+
+.arrow-up.__selected {
+  border-bottom-color: #f48024;
 }
