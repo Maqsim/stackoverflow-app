@@ -44,9 +44,9 @@ function createAnswerLayout(answer) {
   return `
     <div class="question-comments-list-item question-answer ${loggedInUserId === answer.owner.user_id ? '__my' : ''} ${answer.is_accepted && '__accepted'}" data-id="${answer.answer_id}">
       <div class="question-answer-score">
-        <div class="arrow-up"></div>
-        <div style="margin: 5px 0;">${answer.score}</div>
-        <div class="arrow-down"></div>
+        <div class="arrow-up question-answer-upvote"></div>
+        <div class="question-answer-score-value" style="margin: 5px 0;">${answer.score}</div>
+        <div class="arrow-down question-answer-downvote"></div>
         <div ${!answer.is_accepted && 'hidden'} style="font-size: 20px;">
           <i class="fa fa-check __green"></i>
         </div>
@@ -79,10 +79,6 @@ function createAnswerLayout(answer) {
 // <a><i class="fa fa-flag"></i></a>
 
 
-function updateScore(score) {
-  $('.question-status-bar-action.like .like-count').html(score || '');
-}
-
 exports.renderQuestion = (question) => {
   questionScreenBackdrop.classList.add('is-shown');
   questionScreen.classList.add('is-shown');
@@ -92,6 +88,14 @@ exports.renderQuestion = (question) => {
   const questionScreenElement = document.querySelector('.question-screen');
   let statusBarElementTop;
   let statusBarElementHeight;
+
+  function updateScore(data) {
+    if (data.id === questionId) { // Question score
+      $('.question-status-bar-action.like .like-count').html(data.score || '');
+    } else { // Answer score
+      $(`.question-answer[data-id="${data.id}"] .question-answer-score-value`).html(data.score || '0');
+    }
+  }
 
   function loadAndRenderComment(commentId) {
     stackexchange
@@ -505,27 +509,77 @@ exports.renderQuestion = (question) => {
 
     // Edit comment
     $('.question-comments-list').on('click', '.question-comments-controls-edit', event => {
-      const commentElement = event.target.closest('.question-comments-list-item');
+      const commentElement = event.target.closest('.question-answer');
       const commentId = commentElement.dataset.id;
 
       // TODO implement comment editing
     });
 
-    // Copy answer URL to clipboard
+    // Open question in browser
     $('.question-answer-list').on('click', '.question-answer-right-controls .share-answer', event => {
-      const answerElement = event.target.closest('.question-comments-list-item');
+      const answerElement = event.target.closest('.question-answer');
       const answerId = answerElement.dataset.id;
       const answer = find(question.answers, { answer_id: +answerId });
 
       clipboard.writeText(answer.link);
     });
 
-    // TODO Load answers
+    let isVotingProcessing = false;
+    const voteAnswer = function (answerId, isUpvoting, isUndo) {
+      return stackexchange
+        .fetch(`answers/${answerId}/${isUpvoting ? 'upvote' : 'downvote'}${isUndo ? '/undo' : ''}`, null, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: encodeURI(`access_token=${localStorage.token}&key=bdFSxniGkNbU3E*jsj*28w((&preview=false&site=stackoverflow`)
+        })
+        .then(response => {
+          isVotingProcessing = false;
+          updateScore({
+            id: answerId,
+            score: response.items[0].score
+          });
+        });
+    };
+
+    $('.question-answer-list').on('click', '.question-answer-upvote, .question-answer-downvote', event => {
+      if (isVotingProcessing) {
+        return;
+      }
+
+      const answerElement = event.target.closest('.question-answer');
+      const answerId = answerElement.dataset.id;
+      const isUpvoting = event.target.classList.contains('arrow-up');
+      const isUndo = event.target.classList.contains('__selected');
+      const isMyFirstVote = !$(answerElement).find('.__selected').length;
+
+      if (isUndo) { // Undo vote
+        event.target.classList.remove('__selected');
+        voteAnswer(answerId, isUpvoting, true);
+      } else if (isMyFirstVote) { // Vote first time
+        event.target.classList.add('__selected');
+        voteAnswer(answerId, isUpvoting);
+      } else { // Re-vote
+        // Deselect previous selection
+        $(answerElement).find('.question-answer-score .__selected').removeClass('__selected');
+        event.target.classList.add('__selected');
+
+        // Re-vote
+        voteAnswer(answerId, !isUpvoting, true).then(() => {
+          voteAnswer(answerId, isUpvoting);
+        });
+      }
+
+      // Send to the server
+      isVotingProcessing = true;
+    });
 
     stackexchange.socketClient.on(`1-question-${question.question_id}`, data => {
       switch (data.a) {
         case 'score':
-          updateScore(data.score);
+          updateScore(data);
           break;
         case 'comment-add':
           if (data.acctid !== loggedInAccountId) {

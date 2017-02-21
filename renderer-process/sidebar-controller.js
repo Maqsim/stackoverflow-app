@@ -43,6 +43,8 @@ function init(profile) {
 
   // Listen reputation change via sockets
   stackexchange.socketClient.on(`1-${profile.user_id}-reputation`, data => {
+    // TODO make downvote/undo silent
+
     const notificationRep = parseInt($('.nav-rep-new').text()) || 0;
     const oldRep = parseInt($('.nav-rep').text()) || 0;
     const newRep = data;
@@ -62,6 +64,9 @@ function init(profile) {
 
   // Listen for new comments
   stackexchange.socketClient.on(`${profile.account_id}-topbar`, data => {
+    // FIXME WTF is happening when you downvote an answer
+    return;
+    
     // TODO New comment
     const notificationInboxCount = parseInt($('.nav-inbox').text()) || 0;
 
