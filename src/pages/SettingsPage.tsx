@@ -7,9 +7,7 @@ export function SettingsPage() {
     <>
       <Stack>
         <Heading size="md">Color mode</Heading>
-        <Button onClick={toggleColorMode}>
-          {colorMode === 'light' ? 'dark' : 'light'}
-        </Button>
+        <Button onClick={toggleColorMode}>{colorMode === 'light' ? 'dark' : 'light'}</Button>
       </Stack>
     </>
   );

@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { clipboard, contextBridge, ipcRenderer } from 'electron';
 
 export const api = {
   /**
@@ -15,6 +15,10 @@ export const api = {
 
   auth: () => {
     ipcRenderer.send('message', 'auth');
+  },
+
+  copyToClipboard: (text: string) => {
+    clipboard.writeText(text);
   },
 
   /**

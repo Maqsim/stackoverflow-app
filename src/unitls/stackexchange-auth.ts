@@ -25,17 +25,12 @@ export const auth = (scb: (token: string, expires: string) => void) => {
   };
 
   const unloadAndCloseAuthWindow = () => {
-    authWindow.webContents.removeListener(
-      'did-finish-load',
-      showAuthWindowIfNotLoggedIn
-    );
+    authWindow.webContents.removeListener('did-finish-load', showAuthWindowIfNotLoggedIn);
     authWindow.destroy();
   };
 
   authWindow.webContents.on('did-redirect-navigation', (event, url) => {
-    const isMainPage = !/[a-zA-Z]+/.test(
-      url.replace(/(https|http)/, '').replace('//stackexchange.com', '')
-    );
+    const isMainPage = !/[a-zA-Z]+/.test(url.replace(/(https|http)/, '').replace('//stackexchange.com', ''));
 
     if (isMainPage) {
       return loadAuthUrl();

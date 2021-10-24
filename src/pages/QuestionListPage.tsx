@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/QuestionListItem';
 import { api } from '../unitls/stackexchange-api';
-import { Stack } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Stack } from '@chakra-ui/react';
 
 export function QuestionListPage() {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -19,13 +19,13 @@ export function QuestionListPage() {
 
   return (
     <>
-      {/* <Box mb="16px"> */}
-      {/*  <ButtonGroup size="xs" isAttached variant="outline"> */}
-      {/*    <Button mr="-px">Interesting</Button> */}
-      {/*    <Button mr="-px">Bountied</Button> */}
-      {/*    <Button>Hot</Button> */}
-      {/*  </ButtonGroup> */}
-      {/* </Box> */}
+      <Box mb="16px">
+        <ButtonGroup size="xs" isAttached variant="outline">
+          <Button mr="-px">Interesting</Button>
+          <Button mr="-px">Bountied</Button>
+          <Button>Hot</Button>
+        </ButtonGroup>
+      </Box>
 
       <Stack spacing="8px">
         {questions.map((question) => (

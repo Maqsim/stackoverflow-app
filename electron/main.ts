@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { auth } from '../src/unitls/stackexchange-auth';
 
 let mainWindow: BrowserWindow | null;
@@ -30,6 +30,12 @@ function createWindow() {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+
+    return { action: 'deny' };
   });
 
   // TODO

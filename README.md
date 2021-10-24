@@ -12,7 +12,9 @@
 - and more...
 
 ### Screenshots (work in progress)
-![screen](./screenshot.png)
+![screen](./screenshot1.png)
+![screen2](./screenshot2.png)
+![screen3](./screenshot3.png)
 
 ## Installing
 

@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
 type Props = {
-  to?: string;
+  to: string;
   children: any;
 };
 
@@ -15,7 +15,7 @@ export function MenuItem({ children, to }: Props) {
         cursor="pointer"
         alignItems="center"
         fontWeight="semibold"
-        _hover={{ color: 'white', bgColor: 'rgba(255, 255, 255, 0.1)' }}
+        _hover={{ color: 'white', bgColor: 'rgba(255, 255, 255, 0.04)' }}
         p="4px 10px"
       >
         {children}
