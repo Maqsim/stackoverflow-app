@@ -1,5 +1,5 @@
-import { Center, Text } from "@chakra-ui/react";
-import { QuestionType } from "../interfaces/QuestionType";
+import { Center, Text } from '@chakra-ui/react';
+import { QuestionType } from '../interfaces/QuestionType';
 
 type Props = {
   item: QuestionType;
@@ -12,7 +12,7 @@ export function SearchBar() {
       cursor="pointer"
       bgColor="gray.600"
       transition="background-color 200ms ease"
-      _hover={{ bgColor: "gray.500" }}
+      _hover={{ bgColor: 'gray.500' }}
       w="350px"
       h="25px"
     >

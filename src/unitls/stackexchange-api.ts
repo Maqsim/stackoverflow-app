@@ -1,15 +1,16 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-
 export const buildStackOverflowUrl = (url: string, parameters?: any) => {
   url = 'https://api.stackexchange.com/2.3/' + url;
 
-  const queryString = parameters && Object.keys(parameters)
-    .map(function (key) {
-      const value = parameters[key];
-      return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-    })
-    .join('&');
+  const queryString =
+    parameters &&
+    Object.keys(parameters)
+      .map(function (key) {
+        const value = parameters[key];
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      })
+      .join('&');
 
   if (queryString) {
     url = url + '?' + queryString;
@@ -18,14 +19,20 @@ export const buildStackOverflowUrl = (url: string, parameters?: any) => {
   return url;
 };
 
-export const api = (url: string, parameters: any, options?: AxiosRequestConfig) => {
+export const api = (
+  url: string,
+  parameters: any,
+  options?: AxiosRequestConfig
+) => {
   if (parameters) {
     parameters.site = 'stackoverflow';
     parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
     parameters.access_token = localStorage.getItem('token');
   }
 
-  return axios(buildStackOverflowUrl(url, parameters), options).then(response => response.data);
+  return axios(buildStackOverflowUrl(url, parameters), options).then(
+    (response) => response.data
+  );
 };
 
 export const post = (url: string, data: unknown) => {

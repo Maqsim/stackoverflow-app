@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { QuestionType } from "../interfaces/QuestionType";
-import { QuestionListItem } from "../components/QuestionListItem";
-import { api } from "../unitls/stackexchange-api";
-import { Box, Button, ButtonGroup, Center, Flex, Stack } from "@chakra-ui/react";
+import { useEffect, useState } from 'react';
+import { QuestionType } from '../interfaces/QuestionType';
+import { QuestionListItem } from '../components/QuestionListItem';
+import { api } from '../unitls/stackexchange-api';
+import { Stack } from '@chakra-ui/react';
 
 export function QuestionListPage() {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
 
   useEffect(() => {
-    api("questions/unanswered/my-tags", {
-      order: "desc",
-      sort: "creation",
-      filter: "!tf94YAq2Z_YBzNChvK*abKSyjEtOGYp",
+    api('questions/unanswered/my-tags', {
+      order: 'desc',
+      sort: 'creation',
+      filter: '!tf94YAq2Z_YBzNChvK*abKSyjEtOGYp'
     }).then((response) => {
       setQuestions((response as any).items);
     });

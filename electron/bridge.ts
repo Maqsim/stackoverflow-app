@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron';
 
 export const api = {
   /**
@@ -10,19 +10,19 @@ export const api = {
    */
 
   sendMessage: (message: any) => {
-    ipcRenderer.send('message', message)
+    ipcRenderer.send('message', message);
   },
 
   auth: () => {
-    ipcRenderer.send('message', 'auth')
+    ipcRenderer.send('message', 'auth');
   },
 
   /**
    * Provide an easier way to listen to events
    */
   on: (channel: string, callback: Function) => {
-    ipcRenderer.on(channel, (_, data) => callback(data))
+    ipcRenderer.on(channel, (_, data) => callback(data));
   }
-}
+};
 
-contextBridge.exposeInMainWorld('Main', api)
+contextBridge.exposeInMainWorld('Main', api);

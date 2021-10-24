@@ -12,7 +12,9 @@ export const auth = (scb: (token: string, expires: string) => void) => {
   });
 
   const loadAuthUrl = () => {
-    authWindow.loadURL('https://stackexchange.com/oauth/dialog?redirect_uri=https://stackexchange.com/oauth/login_success&client_id=7276&scope=private_info read_inbox');
+    authWindow.loadURL(
+      'https://stackexchange.com/oauth/dialog?redirect_uri=https://stackexchange.com/oauth/login_success&client_id=7276&scope=private_info read_inbox'
+    );
   };
 
   loadAuthUrl();
@@ -23,12 +25,17 @@ export const auth = (scb: (token: string, expires: string) => void) => {
   };
 
   const unloadAndCloseAuthWindow = () => {
-    authWindow.webContents.removeListener('did-finish-load', showAuthWindowIfNotLoggedIn);
+    authWindow.webContents.removeListener(
+      'did-finish-load',
+      showAuthWindowIfNotLoggedIn
+    );
     authWindow.destroy();
   };
 
   authWindow.webContents.on('did-redirect-navigation', (event, url) => {
-    const isMainPage = !/[a-zA-Z]+/.test(url.replace(/(https|http)/, '').replace('//stackexchange.com', ''));
+    const isMainPage = !/[a-zA-Z]+/.test(
+      url.replace(/(https|http)/, '').replace('//stackexchange.com', '')
+    );
 
     if (isMainPage) {
       return loadAuthUrl();

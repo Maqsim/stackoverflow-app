@@ -1,5 +1,5 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import { auth } from "../src/unitls/stackexchange-auth";
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { auth } from '../src/unitls/stackexchange-auth';
 
 let mainWindow: BrowserWindow | null;
 
@@ -17,18 +17,18 @@ function createWindow() {
     width: 1000,
     height: 600,
     title: 'StackOverflow',
-    titleBarStyle: "hiddenInset",
-    backgroundColor: "#191622",
+    titleBarStyle: 'hiddenInset',
+    backgroundColor: '#191622',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    },
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
+    }
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  mainWindow.on("closed", () => {
+  mainWindow.on('closed', () => {
     mainWindow = null;
   });
 
@@ -44,8 +44,8 @@ async function registerListeners() {
   /**
    * This comes from bridge integration, check bridge.ts
    */
-  ipcMain.on("message", (_, message) => {
-    if (message === "auth") {
+  ipcMain.on('message', (_, message) => {
+    if (message === 'auth') {
       auth((token, expires) => {
         console.log(token, expires);
       });
@@ -54,27 +54,29 @@ async function registerListeners() {
 }
 
 app
-  .on("ready", createWindow)
+  .on('ready', createWindow)
   .whenReady()
   .then(registerListeners)
   .catch((e) => console.error(e));
 
-app
-  .on("web-contents-created", (event, webContents) => {
-    webContents.on('dom-ready', () => {
-      auth((token, expires) => {
-        webContents.send('stackexchange:on-auth', { token: token, expires: expires });
+app.on('web-contents-created', (event, webContents) => {
+  webContents.on('dom-ready', () => {
+    auth((token, expires) => {
+      webContents.send('stackexchange:on-auth', {
+        token: token,
+        expires: expires
       });
-    })
-  })
+    });
+  });
+});
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-app.on("activate", () => {
+app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
