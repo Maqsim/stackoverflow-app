@@ -1,5 +1,5 @@
-import { Flex } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { HStack } from '@chakra-ui/react';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 
 type Props = {
   to: string;
@@ -7,19 +7,26 @@ type Props = {
 };
 
 export function MenuItem({ children, to }: Props) {
+  const routeMatch = useRouteMatch(to);
+  const hoverStyles = {
+    color: routeMatch && routeMatch.isExact ? 'whiteAlpha.900' : 'whiteAlpha.800',
+    bgColor: 'whiteAlpha.50'
+  };
+
   return (
     <RouterLink to={to}>
-      <Flex
-        color="rgba(255, 255, 255, .7)"
+      <HStack
+        color={routeMatch && routeMatch.isExact ? 'whiteAlpha.900' : 'whiteAlpha.500'}
         borderRadius="5px"
         cursor="pointer"
         alignItems="center"
         fontWeight="semibold"
-        _hover={{ color: 'white', bgColor: 'rgba(255, 255, 255, 0.04)' }}
+        _hover={hoverStyles}
         p="4px 10px"
+        spacing="4px"
       >
         {children}
-      </Flex>
+      </HStack>
     </RouterLink>
   );
 }

@@ -3,6 +3,7 @@ import { HashRouter as Router } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { theme } from './styles/theme';
 import { Layout } from './components/Layout';
+import ScrollToTop from './components/ScrollToTop';
 
 export function App() {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -20,6 +21,7 @@ export function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <ChakraProvider theme={theme}>
         <Layout />
       </ChakraProvider>
