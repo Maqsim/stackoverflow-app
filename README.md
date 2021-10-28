@@ -6,8 +6,8 @@
 
 ### Why?
 
-- Faster and cleaner UI
-- Better code editor
+- Fast, clean, and distraction-free UI
+- Better wysiwyg editor
 - Native notifications
 - and more...
 

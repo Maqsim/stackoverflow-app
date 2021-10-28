@@ -56,8 +56,4 @@ export const auth = (scb: (token: string, expires: string) => void) => {
 
   // This event can be unregistered by `did-get-redirect-request` handler
   authWindow.webContents.on('did-finish-load', showAuthWindowIfNotLoggedIn);
-
-  authWindow.on('closed', () => {
-    // authWindow = null;
-  });
 };

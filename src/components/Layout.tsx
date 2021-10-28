@@ -1,7 +1,19 @@
-import { Box, Center, Divider, Flex, Image, Stack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Stack,
+  Text
+} from '@chakra-ui/react';
 import UserPlaceholder from '../../assets/user-placeholder.jpeg';
 import Logo from '../../assets/stackoverflow-logo.png';
-import { MenuItem } from './MenuItem';
+import { NavItem } from './NavItem';
 import { Route, Switch } from 'react-router-dom';
 import { QuestionsPage } from '../pages/QuestionsPage';
 import { QuestionDetailsPage } from '../pages/QuestionDetailsPage';
@@ -10,6 +22,7 @@ import { RiEarthFill, RiSettings3Fill } from 'react-icons/ri';
 import { SettingsPage } from '../pages/SettingsPage';
 import { AiFillTags } from 'react-icons/ai';
 import { MyQuestionsPage } from '../pages/MyQuestionsPage';
+import { UserMenuDropdown } from "./UserMenuDropdown";
 
 export function Layout() {
   return (
@@ -20,48 +33,55 @@ export function Layout() {
           <SearchBar />
         </Box>
         <Box justifySelf="flex-end" flex={1}>
-          <Image src={UserPlaceholder} boxSize="25px" objectFit="cover" borderRadius="5px" ml="auto" mr="10px" />
+          <UserMenuDropdown />
         </Box>
       </Center>
       <Flex h="calc(100vh - 40px)" alignItems={'stretch'}>
-        <Stack bgColor="gray.700" color="white" flex={'0 0 200px'} overflow={'auto'} p="8px" justifyContent="space-between">
+        <Stack
+          bgColor="gray.700"
+          color="white"
+          flex={'0 0 200px'}
+          overflow={'auto'}
+          p="8px"
+          justifyContent="space-between"
+        >
           <Box>
             <Image mt="8px" mb="16px" ml="10px" src={Logo} h="20px" />
             <Stack spacing={0}>
-              <MenuItem to="/">
+              <NavItem to="/">
                 <RiEarthFill />
                 <Text>Questions</Text>
-              </MenuItem>
-              <MenuItem to="/tags">
+              </NavItem>
+              <NavItem to="/tags">
                 <AiFillTags />
                 <Text>Tags</Text>
-              </MenuItem>
+              </NavItem>
             </Stack>
             <Box p="16px 8px">
               <Divider borderColor="gray.600" />
             </Box>
             <Stack spacing={0}>
-              <MenuItem to="/my-questions">
+              <NavItem to="/my-questions">
                 <Text>My questions</Text>
-              </MenuItem>
-              <MenuItem to="/my-answers">
+              </NavItem>
+              <NavItem to="/my-answers">
                 <Text>My answers</Text>
-              </MenuItem>
-              <MenuItem to="/my-inbox">
+              </NavItem>
+              <NavItem to="/my-inbox">
                 <Text>My inbox</Text>
-              </MenuItem>
-              <MenuItem to="/my-tags">
+              </NavItem>
+              <NavItem to="/my-tags">
                 <Text>My tags</Text>
-              </MenuItem>
+              </NavItem>
             </Stack>
           </Box>
 
-          <MenuItem to="/settings">
+          <NavItem to="/settings">
             <RiSettings3Fill />
             <Text>Settings</Text>
-          </MenuItem>
+          </NavItem>
         </Stack>
-        <Box overflow={'auto'} p="16px" w="100%" id="scrolling-container">
+        <Box overflow={'auto'} p="16px" pb="72px" w="100%" id="scrolling-container">
           <Switch>
             <Route path="/" exact component={QuestionsPage} />
             <Route path="/questions/:id" component={QuestionDetailsPage} />

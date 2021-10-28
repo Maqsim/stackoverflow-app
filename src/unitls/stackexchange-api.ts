@@ -19,7 +19,7 @@ export const buildStackOverflowUrl = (url: string, parameters?: any) => {
   return url;
 };
 
-export const api = (url: string, parameters: any, options?: AxiosRequestConfig) => {
+export const api = (url: string, parameters?: any, options?: AxiosRequestConfig) => {
   if (parameters) {
     parameters.site = 'stackoverflow';
     parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
@@ -32,6 +32,21 @@ export const api = (url: string, parameters: any, options?: AxiosRequestConfig) 
 export const post = (url: string, data: unknown) => {
   return axios.post(buildStackOverflowUrl(url), data);
 };
+
+// export const logout = (token: string) => {
+//   let logoutPromise = fetch(
+//     buildStackOverflowUrl('apps/' + token + '/de-authenticate', {
+//       key: 'bdFSxniGkNbU3E*jsj*28w(('
+//     })
+//   );
+//
+//   // Remove acct cookies to logout user from SE
+//   logoutPromise.then(() => {
+//     window.Main.webContents.session.cookies.remove('https://stackexchange.com', 'acct', noop);
+//   });
+//
+//   return logoutPromise;
+// };
 
 // class StackOverflowSocketClient {
 //   constructor() {

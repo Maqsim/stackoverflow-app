@@ -1,4 +1,4 @@
-import { clipboard, contextBridge, ipcRenderer } from 'electron';
+import { clipboard, contextBridge, dialog, ipcRenderer } from 'electron';
 
 export const api = {
   /**
@@ -8,10 +8,6 @@ export const api = {
    *
    * The function below can accessed using `window.Main.sayHello`
    */
-
-  sendMessage: (message: any) => {
-    ipcRenderer.send('message', message);
-  },
 
   auth: () => {
     ipcRenderer.send('message', 'auth');

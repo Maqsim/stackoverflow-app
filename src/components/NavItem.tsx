@@ -6,7 +6,7 @@ type Props = {
   children: any;
 };
 
-export function MenuItem({ children, to }: Props) {
+export function NavItem({ children, to }: Props) {
   const routeMatch = useRouteMatch(to);
   const hoverStyles = {
     color: routeMatch && routeMatch.isExact ? 'whiteAlpha.900' : 'whiteAlpha.800',
@@ -16,7 +16,8 @@ export function MenuItem({ children, to }: Props) {
   return (
     <RouterLink to={to}>
       <HStack
-        color={routeMatch && routeMatch.isExact ? 'whiteAlpha.900' : 'whiteAlpha.500'}
+        userSelect={'none'}
+        color={routeMatch && routeMatch.isExact ? 'whiteAlpha.900' : 'whiteAlpha.600'}
         borderRadius="5px"
         cursor="pointer"
         alignItems="center"

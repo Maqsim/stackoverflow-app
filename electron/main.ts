@@ -47,15 +47,15 @@ function createWindow() {
 }
 
 async function registerListeners() {
-  /**
-   * This comes from bridge integration, check bridge.ts
-   */
-  ipcMain.on('message', (_, message) => {
-    if (message === 'auth') {
-      auth((token, expires) => {
-        console.log(token, expires);
+  // This comes from bridge integration, check bridge.ts
+  ipcMain.on('stackexchange-logout', (event) => {
+    mainWindow?.webContents.session.cookies.remove('https://stackexchange.com', 'acct').then(() => {
+      event.reply('stackexchange-did-logout');
+
+      mainWindow?.webContents.session.cookies.get({}).then((value) => {
+        console.log(value);
       });
-    }
+    });
   });
 }
 
