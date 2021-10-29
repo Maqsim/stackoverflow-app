@@ -25,6 +25,17 @@
 
   <script>
     const global = globalThis;
+
+    function updateOnlineStatus() {
+      if (navigator.onLine) {
+        window.Main.send('online');
+      } else {
+        window.Main.send('offline');
+      }
+    }
+
+    window.addEventListener('online', updateOnlineStatus)
+    window.addEventListener('offline', updateOnlineStatus)
   </script>
 </head>
 <body>

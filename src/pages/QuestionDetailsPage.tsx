@@ -23,6 +23,7 @@ import { UserBadge } from '../components/UserBadge';
 import { TagList } from '../components/TagList';
 import type { CommentType } from '../interfaces/CommentType';
 import { CommentForm } from "../components/comments/CommentForm";
+import { InlineCode } from "../components/InlineCode";
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -78,14 +79,6 @@ export function QuestionDetailsPage() {
       <Flex mb="32px" justify="space-between">
         <BackButton />
 
-        <Box position="fixed" right="16px" bottom="16px" zIndex={100}>
-          <Tooltip placement="left" label="Post your answer">
-            <Button borderRadius="5px" colorScheme="blue">
-              <RiBallPenFill />
-            </Button>
-          </Tooltip>
-        </Box>
-
         <HStack spacing="16px">
           <Button size="xs" variant="outline">
             Jump to answers
@@ -110,6 +103,10 @@ export function QuestionDetailsPage() {
       <Box className="stackoverflow_question-body">
         {parse(question.body, {
           replace: (domNode) => {
+            if (domNode instanceof Element && domNode.name === 'code') {
+              return <InlineCode fontSize="13px">{domToReact(domNode.children)}</InlineCode>;
+            }
+
             if (domNode instanceof Element && domNode.name === 'pre') {
               return <Code>{domToReact(domNode.children)}</Code>;
             }
@@ -137,7 +134,7 @@ export function QuestionDetailsPage() {
         <UserBadge />
       </HStack>
 
-      <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px" ml="32px">
+      <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px" ml="24px">
         {comments?.map((comment) => (
           <CommentListItem comment={comment} key={`${question.question_id}-${comment.comment_id}`} />
         ))}

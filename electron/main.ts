@@ -16,9 +16,9 @@ function createWindow() {
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
     width: 1000,
     height: 600,
+    show: false,
     title: 'StackOverflow',
     titleBarStyle: 'hiddenInset',
-    backgroundColor: '#191622',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -38,12 +38,16 @@ function createWindow() {
     return { action: 'deny' };
   });
 
-  // TODO
-  // mainWindow.setTitle('StackOverflow')
-  //
-  // mainWindow.on('page-title-updated', function(e) {
-  //   e.preventDefault()
-  // });
+  mainWindow.webContents.on('dom-ready', () => {
+    mainWindow?.show();
+
+    auth((token, expires) => {
+      mainWindow?.webContents.send('stackexchange:on-auth', {
+        token: token,
+        expires: expires
+      });
+    });
+  });
 }
 
 async function registerListeners() {
@@ -57,6 +61,14 @@ async function registerListeners() {
       });
     });
   });
+
+  ipcMain.on('online', (event) => {
+    console.log('online');
+  });
+
+  ipcMain.on('offline', (event) => {
+    console.log('offline');
+  });
 }
 
 app
@@ -64,17 +76,6 @@ app
   .whenReady()
   .then(registerListeners)
   .catch((e) => console.error(e));
-
-app.on('web-contents-created', (event, webContents) => {
-  webContents.on('dom-ready', () => {
-    auth((token, expires) => {
-      webContents.send('stackexchange:on-auth', {
-        token: token,
-        expires: expires
-      });
-    });
-  });
-});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

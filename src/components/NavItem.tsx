@@ -24,7 +24,7 @@ export function NavItem({ children, to }: Props) {
         fontWeight="semibold"
         _hover={hoverStyles}
         p="4px 10px"
-        spacing="4px"
+        spacing="6px"
       >
         {children}
       </HStack>

@@ -1,6 +1,7 @@
 import { Box, HStack, Image, Text } from '@chakra-ui/react';
 import { CommentType } from '../../interfaces/CommentType';
-import parse from 'html-react-parser';
+import parse, { domToReact, Element } from 'html-react-parser';
+import { InlineCode } from "../InlineCode";
 
 type Props = {
   comment: CommentType;
@@ -10,14 +11,17 @@ export function CommentListItem({ comment }: Props) {
   return (
     <HStack align="flex-start" fontSize="12px">
       <Box flexBasis="40px" flexShrink={0}>
-        <Image
-          src={comment.owner.profile_image}
-          boxSize="24px"
-          objectFit="cover"
-          borderRadius="3px"
-        />
+        <Image src={comment.owner.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" />
       </Box>
-      <Text alignSelf="center">{parse(comment.body)}</Text>
+      <Text alignSelf="center">
+        {parse(comment.body, {
+          replace: (domNode) => {
+            if (domNode instanceof Element && domNode.name === 'code') {
+              return <InlineCode fontSize="12px">{domToReact(domNode.children)}</InlineCode>;
+            }
+          }
+        })}
+      </Text>
     </HStack>
   );
 }

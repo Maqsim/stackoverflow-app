@@ -1,4 +1,4 @@
-import { ChakraProvider, Spinner } from '@chakra-ui/react';
+import { Center, ChakraProvider, Spinner } from '@chakra-ui/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { theme } from './styles/theme';
@@ -15,15 +15,17 @@ export function App() {
     });
   }, []);
 
-  if (!isAuthorized) {
-    return <Spinner />;
-  }
-
   return (
     <Router>
       <ScrollToTop />
       <ChakraProvider theme={theme}>
-        <Layout />
+        {isAuthorized ? (
+          <Layout />
+        ) : (
+          <Center h="100vh">
+            <Spinner />
+          </Center>
+        )}
       </ChakraProvider>
     </Router>
   );
