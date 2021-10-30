@@ -1,5 +1,5 @@
 import { Center, Text } from '@chakra-ui/react';
-import { QuestionType } from '../interfaces/QuestionType';
+import { QuestionType } from '../../interfaces/QuestionType';
 
 type Props = {
   item: QuestionType;

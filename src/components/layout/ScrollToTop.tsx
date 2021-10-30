@@ -4,12 +4,12 @@ import type { RouteComponentProps } from 'react-router';
 
 function ScrollToTop({ history }: RouteComponentProps) {
   useEffect(() => {
-    const scrollableEl = document.querySelector('#scrolling-container');
+    const scrollableEl = document.getElementById('scrolling-container');
 
     const unlisten = history.listen(() => {
-      if (scrollableEl) {
-        scrollableEl.scrollTo(0, 0);
-      }
+      requestAnimationFrame(() => {
+        scrollableEl!.scrollTo(0, 0);
+      });
     });
     return () => {
       unlisten();

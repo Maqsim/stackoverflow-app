@@ -1,0 +1,43 @@
+import { Box, HStack, Image, Text } from '@chakra-ui/react';
+import { UserType } from '../../interfaces/UserType';
+import dayjs from 'dayjs';
+import RelativeTime from 'dayjs/plugin/relativeTime';
+import { kFormatter } from '../../unitls/k-formatter';
+import parse from 'html-react-parser';
+
+dayjs.extend(RelativeTime);
+
+type Props = {
+  datetime: number;
+  user: UserType;
+  type: 'question' | 'answer' | 'edit';
+};
+
+const typeToLabelMap: { [type: string]: string } = {
+  question: 'Asked',
+  answer: 'Answered',
+  edit: 'Edited'
+};
+
+export function UserBadge({ user, type, datetime }: Props) {
+  const isQuestion = type === 'question';
+  const isAnswer = type === 'answer';
+  const isEdit = type === 'edit';
+
+  return (
+    <Box w="200px" p="8px" borderRadius="3px" bgColor={isQuestion ? 'gray.200' : 'none'} fontSize="13px">
+      <Text color="#777" mb="6px" lineHeight="12px">
+        {typeToLabelMap[type]} {dayjs().to(dayjs.unix(datetime))}
+      </Text>
+      <HStack>
+        <Image src={user.profile_image} boxSize="32px" objectFit="cover" borderRadius="3px" />
+        <Box>
+          <Text lineHeight="13px" my="1px">
+            {parse(user.display_name)}
+          </Text>
+          <Text fontWeight="bold">{kFormatter(user.reputation)}</Text>
+        </Box>
+      </HStack>
+    </Box>
+  );
+}

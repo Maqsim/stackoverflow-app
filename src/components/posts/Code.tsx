@@ -1,6 +1,6 @@
 import { Box, BoxProps, useColorModeValue } from '@chakra-ui/react';
 
-export function InlineCode(props: BoxProps) {
+export function Code(props: BoxProps) {
   const bgColor = useColorModeValue('#eee', 'gray.700');
 
   return (

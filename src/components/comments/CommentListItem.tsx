@@ -1,7 +1,7 @@
 import { Box, HStack, Image, Text } from '@chakra-ui/react';
 import { CommentType } from '../../interfaces/CommentType';
 import parse, { domToReact, Element } from 'html-react-parser';
-import { InlineCode } from "../InlineCode";
+import { Code } from "../posts/Code";
 
 type Props = {
   comment: CommentType;
@@ -17,7 +17,7 @@ export function CommentListItem({ comment }: Props) {
         {parse(comment.body, {
           replace: (domNode) => {
             if (domNode instanceof Element && domNode.name === 'code') {
-              return <InlineCode fontSize="12px">{domToReact(domNode.children)}</InlineCode>;
+              return <Code fontSize="13px">{domToReact(domNode.children)}</Code>;
             }
           }
         })}

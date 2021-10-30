@@ -5,7 +5,7 @@ type Props = {
   children: ReactNode;
 };
 
-export function Code({ children }: Props) {
+export function Snippet({ children }: Props) {
   const bgColor = useColorModeValue('#f6f6f6', 'gray.700');
 
   useEffect(() => {

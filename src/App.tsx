@@ -2,8 +2,8 @@ import { Center, ChakraProvider, Spinner } from '@chakra-ui/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { theme } from './styles/theme';
-import { Layout } from './components/Layout';
-import ScrollToTop from './components/ScrollToTop';
+import { Layout } from './components/layout/Layout';
+import stackoverflow from './unitls/stackexchange-api';
 
 export function App() {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -12,12 +12,15 @@ export function App() {
     window.Main.on('stackexchange:on-auth', ({ token }: any) => {
       localStorage.setItem('token', token);
       setIsAuthorized(true);
+
+      stackoverflow.getLoggedInUser().then((user) => {
+        console.log(user, 2);
+      });
     });
   }, []);
 
   return (
     <Router>
-      <ScrollToTop />
       <ChakraProvider theme={theme}>
         {isAuthorized ? (
           <Layout />

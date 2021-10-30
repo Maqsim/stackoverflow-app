@@ -32,11 +32,11 @@ function createWindow() {
     mainWindow = null;
   });
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
-
-    return { action: 'deny' };
-  });
+  // mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  //   shell.openExternal(url);
+  //
+  //   return { action: 'deny' };
+  // });
 
   mainWindow.webContents.on('dom-ready', () => {
     mainWindow?.show();
@@ -47,6 +47,16 @@ function createWindow() {
         expires: expires
       });
     });
+  });
+
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (process.env.NODE_ENV === 'development' && url.includes('localhost')) {
+      return;
+    }
+
+    event.preventDefault();
+
+    shell.openExternal(url);
   });
 }
 

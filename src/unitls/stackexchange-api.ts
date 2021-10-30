@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-export const buildStackOverflowUrl = (url: string, parameters?: any) => {
-  url = 'https://api.stackexchange.com/2.3/' + url;
+function buildStackOverflowUrl(path: string, parameters?: any) {
+  let url = `https://api.stackexchange.com/2.3/${path}`;
 
   const queryString =
     parameters &&
@@ -17,21 +17,27 @@ export const buildStackOverflowUrl = (url: string, parameters?: any) => {
   }
 
   return url;
-};
+}
 
-export const api = (url: string, parameters?: any, options?: AxiosRequestConfig) => {
-  if (parameters) {
-    parameters.site = 'stackoverflow';
-    parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
-    parameters.access_token = localStorage.getItem('token');
+const stackoverflow = {
+  get: (url: string, parameters?: any, options?: AxiosRequestConfig) => {
+    if (parameters) {
+      parameters.site = 'stackoverflow';
+      parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
+      parameters.access_token = localStorage.getItem('token');
+    }
+
+    return axios(buildStackOverflowUrl(url, parameters), options).then((response) => response.data);
+  },
+  getLoggedInUser: () => {
+    return stackoverflow.get('me', {}).then((response: any) => response.items[0]);
+  },
+  post: (url: string, data: unknown) => {
+    return axios.post(buildStackOverflowUrl(url), data);
   }
-
-  return axios(buildStackOverflowUrl(url, parameters), options).then((response) => response.data);
 };
 
-export const post = (url: string, data: unknown) => {
-  return axios.post(buildStackOverflowUrl(url), data);
-};
+export default stackoverflow;
 
 // export const logout = (token: string) => {
 //   let logoutPromise = fetch(
