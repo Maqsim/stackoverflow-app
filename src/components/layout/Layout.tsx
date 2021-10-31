@@ -11,6 +11,8 @@ import { AiFillTags } from 'react-icons/ai';
 import { MyQuestionsPage } from '../../pages/MyQuestionsPage';
 import { UserMenuDropdown } from './UserMenuDropdown';
 import ScrollToTop from './ScrollToTop';
+import { IoIosHeart } from 'react-icons/io';
+import { SponsorWidget } from './SponsorWidget';
 
 export function Layout() {
   return (
@@ -57,10 +59,14 @@ export function Layout() {
             </Stack>
           </Box>
 
-          <NavItem to="/settings">
-            <RiSettings3Fill/>
-            <Text>Settings</Text>
-          </NavItem>
+          <Box>
+            <SponsorWidget mb="32px" />
+
+            <NavItem to="/settings">
+              <RiSettings3Fill/>
+              <Text>Settings</Text>
+            </NavItem>
+          </Box>
         </Stack>
         <Box overflow={'auto'} p="16px" pb="72px" w="100%" id="scrolling-container">
           <ScrollToTop/>

@@ -26,13 +26,13 @@ export function UserBadge({ user, type, datetime }: Props) {
 
   return (
     <Box w="200px" p="8px" borderRadius="3px" bgColor={isQuestion ? 'gray.200' : 'none'} fontSize="13px">
-      <Text color="#777" mb="6px" lineHeight="12px">
+      <Text color="#777" mb="6px" lineHeight="13px">
         {typeToLabelMap[type]} {dayjs().to(dayjs.unix(datetime))}
       </Text>
-      <HStack>
+      <HStack w="calc(100% - 48px)">
         <Image src={user.profile_image} boxSize="32px" objectFit="cover" borderRadius="3px" />
         <Box>
-          <Text lineHeight="13px" my="1px">
+          <Text lineHeight="13px" my="1px" isTruncated>
             {parse(user.display_name)}
           </Text>
           <Text fontWeight="bold">{kFormatter(user.reputation)}</Text>

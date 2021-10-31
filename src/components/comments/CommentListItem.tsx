@@ -9,7 +9,7 @@ type Props = {
 
 export function CommentListItem({ comment }: Props) {
   return (
-    <HStack align="flex-start" fontSize="12px">
+    <HStack align="flex-start" fontSize="13px">
       <Box flexBasis="40px" flexShrink={0}>
         <Image src={comment.owner.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" />
       </Box>
