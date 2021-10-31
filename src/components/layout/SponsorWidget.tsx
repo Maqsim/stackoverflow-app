@@ -12,7 +12,7 @@ export function SponsorWidget(props: BoxProps) {
           <Text>Become a sponsor</Text>
         </HStack>
       </Heading>
-      <Text>Help author to maintain and develop the application</Text>
+      <Text>That will help author to maintain and develop the application</Text>
     </Box>
   );
 }

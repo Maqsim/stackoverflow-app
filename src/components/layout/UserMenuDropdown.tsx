@@ -7,7 +7,7 @@ export function UserMenuDropdown() {
     stackoverflow.get(`access-tokens/${localStorage.token}/invalidate`).then(() => {
       // window.Main.logout();
       window.Main.on('stackexchange-did-logout', () => {
-        console.log('LOGOUTED');
+        // console.log('LOGOUTED');
       });
     });
   }

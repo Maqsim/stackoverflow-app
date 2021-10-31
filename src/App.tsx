@@ -14,7 +14,7 @@ export function App() {
       setIsAuthorized(true);
 
       stackoverflow.getLoggedInUser().then((user) => {
-        console.log(user, 2);
+        // console.log(user, 2);
       });
     });
   }, []);

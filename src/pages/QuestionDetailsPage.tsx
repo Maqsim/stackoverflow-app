@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import stackoverflow from '../unitls/stackexchange-api';
 import { useLocation, useParams } from 'react-router-dom';
 import { Box, Button, ButtonGroup, Flex, Heading, HStack, Spinner, Tooltip } from '@chakra-ui/react';
@@ -9,6 +9,7 @@ import { RiEarthFill, RiFileCopyFill } from 'react-icons/ri';
 import { QuestionDetails } from '../components/posts/QuestionDetails';
 import { AnswerDetails } from '../components/posts/AnswerDetails';
 import { AnswerType } from '../interfaces/AnswerType';
+import { StickyAnswerForm } from '../components/posts/StickyAnswerForm';
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -19,6 +20,7 @@ export function QuestionDetailsPage() {
   const [question, setQuestion] = useState<QuestionDetailsType>(initialQuestion as QuestionDetailsType);
   const [answers, setAnswers] = useState<AnswerType[]>([]);
   const [isTooltipShown, setIsTooltipShown] = useState(false);
+  const answersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!question) {
@@ -38,6 +40,10 @@ export function QuestionDetailsPage() {
         setAnswers((response as any).items);
       });
   }, []);
+
+  function jumpToAnswers() {
+    answersRef.current?.scrollIntoView({ block: 'center' });
+  }
 
   function openInBrowser() {
     window.location.href = question.link;
@@ -60,11 +66,11 @@ export function QuestionDetailsPage() {
 
   return (
     <>
-      <Flex justify="space-between" position="sticky" top="-16px" p="16px" m="-16px" mb="16px" bgColor="white">
+      <Flex justify="space-between" position="sticky" top="-16px" p="16px" m="-16px" mb="16px" bgColor="white" zIndex={100}>
         <BackButton />
 
         <HStack spacing="16px">
-          <Button size="xs" variant="outline">
+          <Button size="xs" variant="outline" onClick={jumpToAnswers}>
             Jump to answers
           </Button>
 
@@ -84,26 +90,25 @@ export function QuestionDetailsPage() {
       <QuestionDetails question={question} />
 
       <Box>
-        <Heading size="md" mb="32px" mt="48px">
+        <Heading size="md" mb="32px" mt="48px" ref={answersRef}>
           {question.answer_count} answers
-
           <ButtonGroup size="xs" isAttached variant="outline" float="right">
             <Button mr="-px" onClick={openInBrowser}>
               Active
             </Button>
-            <Button onClick={copyUrl}>
-              Oldest
-            </Button>
+            <Button onClick={copyUrl}>Oldest</Button>
             <Button onClick={copyUrl} isActive>
               Votes
             </Button>
           </ButtonGroup>
         </Heading>
 
-        {answers.map(answer => (
+        {answers.map((answer) => (
           <AnswerDetails answer={answer} key={answer.answer_id} />
         ))}
       </Box>
+
+      <StickyAnswerForm />
     </>
   );
 }

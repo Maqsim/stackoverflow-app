@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
 import stackoverflow from '../unitls/stackexchange-api';
-import { Box, Button, ButtonGroup, Stack } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Flex, Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 
 export function QuestionsPage() {
@@ -24,7 +24,9 @@ export function QuestionsPage() {
 
   return (
     <>
-      <Box mb="16px">
+      <Flex justify="space-between" mb="16px">
+        <Button colorScheme="blue" size="xs">Ask question</Button>
+
         <ButtonGroup size="xs" isAttached variant="outline">
           <Button isActive mr="-px">
             Interesting
@@ -32,7 +34,7 @@ export function QuestionsPage() {
           <Button mr="-px">Bountied</Button>
           <Button>Hot</Button>
         </ButtonGroup>
-      </Box>
+      </Flex>
 
       <Stack spacing="8px">
         {/* Skeletons */}

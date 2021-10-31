@@ -55,7 +55,7 @@ export function QuestionDetails({ question }: Props) {
         <TagList tags={question.tags} />
       </Box>
 
-      <HStack my="24px" justify="space-between" align="flex-start" fontSize="13px">
+      <HStack id="question-sticky-trigger" my="24px" justify="space-between" align="flex-start" fontSize="13px">
         <HStack>
           <Link color="gray" href="#">
             Share

@@ -7,9 +7,7 @@ type Props = {
 };
 
 export function CommentForm({ olderCommentsCount }: Props) {
-  console.log(olderCommentsCount);
   const [view, setView] = useState<'form' | 'link'>(olderCommentsCount ? 'form' : 'link');
-  console.log(view);
 
   if (view === 'link') {
     return (
