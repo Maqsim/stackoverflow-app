@@ -1,11 +1,10 @@
-import { Box, HStack, Link, Stack, Text } from '@chakra-ui/react';
-import parse, { domToReact, Element } from 'html-react-parser';
-import { Code } from './Code';
+import { Box, HStack, Stack } from '@chakra-ui/react';
 import { UserBadge } from './UserBadge';
 import { CommentListItem } from '../comments/CommentListItem';
 import { CommentForm } from '../comments/CommentForm';
-import { Snippet } from './Snippet';
 import type { AnswerType } from '../../interfaces/AnswerType';
+import { VotingControls } from './VotingControls';
+import parseBody from '../../unitls/parse-body';
 
 type Props = {
   answer: AnswerType;
@@ -13,43 +12,26 @@ type Props = {
 
 export function AnswerDetails({ answer }: Props) {
   return (
-    <>
-      <Box className="stackoverflow_question-body" fontFamily="Georgia" fontSize="16px">
-        {parse(answer.body, {
-          replace: (domNode) => {
-            if (domNode instanceof Element && domNode.name === 'code') {
-              return <Code fontSize="13px">{domToReact(domNode.children)}</Code>;
-            }
+    <HStack spacing="12px" align="start">
+      <VotingControls score={answer.score} />
 
-            if (domNode instanceof Element && domNode.name === 'pre') {
-              return <Snippet>{domToReact(domNode.children)}</Snippet>;
-            }
-          }
-        })}
-      </Box>
+      {/* overflow needed here to prevent child has more width than parent */}
+      <Box overflow="auto">
+        <Box className="stackoverflow_question-body" fontFamily="Georgia" fontSize="16px">
+          {parseBody(answer.body)}{' '}
+        </Box>
 
-      <HStack my="24px" justify="space-between" align="flex-start" fontSize="13px">
-        <HStack>
-          <Link color="gray" href="#">
-            Share
-          </Link>
-          <Link color="gray" href="#">
-            Edit
-          </Link>
-          <Link color="gray" href="#">
-            Flag
-          </Link>
+        <HStack my="24px" align="flex-start" justify="end">
+          <UserBadge type="answer" datetime={answer.creation_date} user={answer.owner} />
         </HStack>
 
-        <UserBadge type="answer" datetime={answer.creation_date} user={answer.owner} />
-      </HStack>
-
-      <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px" ml="24px">
-        {answer.comments?.map((comment) => (
-          <CommentListItem comment={comment} key={comment.comment_id} />
-        ))}
-        <CommentForm />
-      </Stack>
-    </>
+        <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
+          {answer.comments?.map((comment) => (
+            <CommentListItem comment={comment} key={comment.comment_id} />
+          ))}
+          <CommentForm />
+        </Stack>
+      </Box>
+    </HStack>
   );
 }

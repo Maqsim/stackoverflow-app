@@ -25,8 +25,6 @@ export function QuestionsPage() {
   return (
     <>
       <Flex justify="space-between" mb="16px">
-        <Button colorScheme="blue" size="xs">Ask question</Button>
-
         <ButtonGroup size="xs" isAttached variant="outline">
           <Button isActive mr="-px">
             Interesting

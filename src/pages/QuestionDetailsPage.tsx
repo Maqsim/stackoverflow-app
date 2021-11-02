@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import stackoverflow from '../unitls/stackexchange-api';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Button, ButtonGroup, Flex, Heading, HStack, Spinner, Tooltip } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Flex, Heading, HStack, Spinner, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { QuestionDetailsType } from '../interfaces/QuestionDetailsType';
 import { QuestionType } from '../interfaces/QuestionType';
 import { BackButton } from '../components/layout/BackButton';
@@ -89,24 +89,30 @@ export function QuestionDetailsPage() {
 
       <QuestionDetails question={question} />
 
-      <Box>
-        <Heading size="md" mb="32px" mt="48px" ref={answersRef}>
-          {question.answer_count} answers
-          <ButtonGroup size="xs" isAttached variant="outline" float="right">
-            <Button mr="-px" onClick={openInBrowser}>
-              Active
-            </Button>
-            <Button onClick={copyUrl}>Oldest</Button>
-            <Button onClick={copyUrl} isActive>
-              Votes
-            </Button>
-          </ButtonGroup>
-        </Heading>
+      {answers.length ? (
+        <Box>
+          <Heading size="md" mb="32px" mt="48px" ref={answersRef}>
+            {answers.length} answers
+            <ButtonGroup size="xs" isAttached variant="outline" float="right">
+              <Button mr="-px" onClick={openInBrowser}>
+                Active
+              </Button>
+              <Button onClick={copyUrl}>Oldest</Button>
+              <Button onClick={copyUrl} isActive>
+                Votes
+              </Button>
+            </ButtonGroup>
+          </Heading>
 
-        {answers.map((answer) => (
-          <AnswerDetails answer={answer} key={answer.answer_id} />
-        ))}
-      </Box>
+          <Stack spacing="48px">
+            {answers.map((answer) => (
+              <AnswerDetails answer={answer} key={answer.answer_id} />
+            ))}
+          </Stack>
+        </Box>
+      ) : (
+        <Text mb="32px" color="gray" mt="48px" textAlign="center" ref={answersRef}>There are no answers yet.</Text>
+      )}
 
       <StickyAnswerForm />
     </>
