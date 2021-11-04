@@ -12,7 +12,7 @@ export function QuestionListItem({ item }: Props) {
   const hoverBg = useColorModeValue('gray.50', 'gray.700');
 
   return (
-    <RouterLink to={{ pathname: `/questions/${item.question_id}`, state: item }}>
+    <RouterLink to={`/questions/${item.question_id}`} state={item}>
       <Flex
         borderRadius="5px"
         cursor="pointer"

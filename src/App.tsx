@@ -1,11 +1,11 @@
-import { Center, ChakraProvider, Spinner } from '@chakra-ui/react';
-import { HashRouter as Router } from 'react-router-dom';
+import { Center, Spinner } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { theme } from './styles/theme';
 import { Layout } from './components/layout/Layout';
 import stackoverflow from './unitls/stackexchange-api';
+import { useNavigate } from 'react-router-dom';
 
 export function App() {
+  const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
@@ -17,19 +17,29 @@ export function App() {
         // console.log(user, 2);
       });
     });
+
+    document.addEventListener('paste', (e) => {
+      const clipboardData = e.clipboardData;
+      const pastedText = clipboardData?.getData('text');
+
+      // FIXME on Question page when pastin new url hash is changing, but rerender missing
+      if (pastedText && pastedText.startsWith('https://stackoverflow.com/questions/')) {
+        const questionId = pastedText.replace('https://stackoverflow.com/questions/', '').split('/')[0];
+
+        navigate(`/questions/${questionId}`, { replace: true });
+      }
+    });
   }, []);
 
   return (
-    <Router>
-      <ChakraProvider theme={theme}>
-        {isAuthorized ? (
-          <Layout />
-        ) : (
-          <Center h="100vh">
-            <Spinner />
-          </Center>
-        )}
-      </ChakraProvider>
-    </Router>
+    <>
+      {isAuthorized ? (
+        <Layout />
+      ) : (
+        <Center h="100vh">
+          <Spinner />
+        </Center>
+      )}
+    </>
   );
 }

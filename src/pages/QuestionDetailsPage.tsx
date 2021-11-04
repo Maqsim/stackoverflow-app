@@ -14,7 +14,7 @@ import { StickyAnswerForm } from '../components/posts/StickyAnswerForm';
 let tooltipTimerId: NodeJS.Timer;
 
 export function QuestionDetailsPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const location = useLocation();
   const initialQuestion = location.state as QuestionType;
   const [question, setQuestion] = useState<QuestionDetailsType>(initialQuestion as QuestionDetailsType);

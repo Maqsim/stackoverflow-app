@@ -18,7 +18,7 @@ type Props = {
 export function QuestionDetails({ question }: Props) {
   const [isCommentsLoading, setIsCommentsLoading] = useState(true);
   const [comments, setComments] = useState<CommentType[]>([]);
-  console.log('render');
+  const [score, setScore] = useState<number>(question.score);
 
   useEffect(() => {
     stackoverflow
@@ -33,12 +33,19 @@ export function QuestionDetails({ question }: Props) {
       });
   }, []);
 
+  function handleUpvote() {
+    setScore(score + 1);
+  }
+
+  function handleDownvote() {
+    setScore(score - 1);
+  }
+
   return (
     <HStack spacing="12px" align="start">
-      <VotingControls score={question.score} />
+      <VotingControls score={score} onUpvote={handleUpvote} onDownvote={handleDownvote} />
 
-      {/* overflow needed here to prevent child has more width than parent */}
-      <Box overflow="auto">
+      <Box flexGrow={1} overflow="auto" p="2px" m="-2px">
         <Heading size="md" mb="12px" maxWidth="800px">
           {parse(question.title)}
         </Heading>

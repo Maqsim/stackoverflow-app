@@ -4,3 +4,5 @@ packages
 .webpack
 out
 .idea
+!/yarn.lock
+!/yarn-error.log

@@ -7,7 +7,7 @@ module.exports = [
     test: /\.(m?js|node)$/,
     parser: { amd: false },
     use: {
-      loader: '@timfish/webpack-asset-relocator-loader',
+      loader: '@marshallofsound/webpack-asset-relocator-loader',
       options: {
         outputAssetBase: 'native_modules',
       },
@@ -21,7 +21,10 @@ module.exports = [
     }
   },
   {
-    test: /\.(png|jpg|jpeg|gif)$/i,
-    type: 'asset/resource'
+    test: /\.(png|jpe?g|gif)$/i,
+    loader: 'file-loader',
+    options: {
+      name: '[path][name].[ext]',
+    },
   }
 ]

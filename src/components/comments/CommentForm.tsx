@@ -21,7 +21,7 @@ export function CommentForm({ olderCommentsCount }: Props) {
         <Box flexBasis="40px" flexShrink={0}>
           <Image src={UserPlaceholder} boxSize="24px" objectFit="cover" borderRadius="3px" />
         </Box>
-        <Box flexGrow={1}>
+        <Box w="100%">
           <Input size="xs" placeholder="Your comment..." />
         </Box>
       </HStack>

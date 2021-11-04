@@ -4,5 +4,5 @@ module.exports = {
   },
   module: {
     rules: require('./rules.webpack'),
-  },
+  }
 }

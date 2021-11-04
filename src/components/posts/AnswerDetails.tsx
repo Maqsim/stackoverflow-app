@@ -5,15 +5,26 @@ import { CommentForm } from '../comments/CommentForm';
 import type { AnswerType } from '../../interfaces/AnswerType';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../unitls/parse-body';
+import { useState } from 'react';
 
 type Props = {
   answer: AnswerType;
 };
 
 export function AnswerDetails({ answer }: Props) {
+  const [score, setScore] = useState<number>(answer.score);
+
+  function handleUpvote() {
+    setScore(score + 1);
+  }
+
+  function handleDownvote() {
+    setScore(score - 1);
+  }
+
   return (
     <HStack spacing="12px" align="start">
-      <VotingControls score={answer.score} />
+      <VotingControls score={score} onUpvote={handleUpvote} onDownvote={handleDownvote} />
 
       {/* overflow needed here to prevent child has more width than parent */}
       <Box overflow="auto">

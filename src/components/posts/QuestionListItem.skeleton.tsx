@@ -1,4 +1,4 @@
-import { Box, Center, Flex, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Box, Center, Flex, HStack, Skeleton, Stack } from '@chakra-ui/react';
 import { useRef } from 'react';
 
 export function QuestionListItemSkeleton() {
@@ -12,25 +12,25 @@ export function QuestionListItemSkeleton() {
           <Center>
             <Skeleton w="18px" h="21px" />
           </Center>
-          <Text>
+          <Box>
             <Skeleton w="39px" h="12px" />
-          </Text>
+          </Box>
         </Stack>
         <Stack p="4px" spacing="4px">
           <Center>
             <Skeleton w="18px" h="21px" />
           </Center>
-          <Text>
+          <Box>
             <Skeleton w="39px" h="12px" />
-          </Text>
+          </Box>
         </Stack>
         <Stack p="4px" spacing="4px">
           <Center>
             <Skeleton w="18px" h="21px" />
           </Center>
-          <Text>
+          <Box>
             <Skeleton w="39px" h="12px" />
-          </Text>
+          </Box>
         </Stack>
       </HStack>
 

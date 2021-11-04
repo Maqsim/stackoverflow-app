@@ -6,7 +6,7 @@ import { Snippet } from '../components/posts/Snippet';
 function parseBody(text: string) {
   return parse(text, {
     replace: (domNode) => {
-      if (domNode instanceof Element && domNode.name === 'a') {
+      if (domNode instanceof Element && domNode.name === 'a' && (domNode.children[0] as any).name !== 'img') {
         return <ExternalLink href={domNode.attribs.href}>{domToReact(domNode.children)}</ExternalLink>;
       }
 

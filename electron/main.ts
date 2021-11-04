@@ -1,5 +1,6 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, clipboard, ipcMain, shell } from 'electron';
 import { auth } from '../src/unitls/stackexchange-auth';
+import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 
 let mainWindow: BrowserWindow | null;
 
@@ -20,6 +21,7 @@ function createWindow() {
     title: 'StackOverflow',
     titleBarStyle: 'hiddenInset',
     webPreferences: {
+      sandbox: true,
       nodeIntegration: false,
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
@@ -78,6 +80,10 @@ async function registerListeners() {
 
   ipcMain.on('offline', (event) => {
     console.log('offline');
+  });
+
+  ipcMain.handle(InvokeEnum.COPY_TO_CLIPBOARD, (event, text) => {
+    clipboard.writeText(text);
   });
 }
 

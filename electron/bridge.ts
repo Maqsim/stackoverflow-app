@@ -1,11 +1,9 @@
-import { clipboard, contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
+import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 
 export const api = {
-  auth: () => {
-    ipcRenderer.send('message', 'auth');
-  },
   copyToClipboard: (text: string) => {
-    clipboard.writeText(text);
+    ipcRenderer.invoke(InvokeEnum.COPY_TO_CLIPBOARD, text);
   },
   send: (channel: string, data?: any) => {
     ipcRenderer.send(channel, data);
