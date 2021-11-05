@@ -10,6 +10,7 @@ import { QuestionDetails } from '../components/posts/QuestionDetails';
 import { AnswerDetails } from '../components/posts/AnswerDetails';
 import { AnswerType } from '../interfaces/AnswerType';
 import { StickyAnswerForm } from '../components/posts/StickyAnswerForm';
+import { socketClient } from '../unitls/stackexchange-socket-client';
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -39,6 +40,14 @@ export function QuestionDetailsPage() {
       .then((response) => {
         setAnswers((response as any).items);
       });
+
+    socketClient.on(`1-question-${id}`, () => {
+      new Notification('Question', { body: 'questions changed' });
+    });
+
+    return () => {
+      socketClient.off(`1-question-${id}`);
+    };
   }, []);
 
   function jumpToAnswers() {
@@ -111,7 +120,9 @@ export function QuestionDetailsPage() {
           </Stack>
         </Box>
       ) : (
-        <Text mb="32px" color="gray" mt="48px" textAlign="center" ref={answersRef}>There are no answers yet.</Text>
+        <Text mb="32px" color="gray" mt="48px" textAlign="center" ref={answersRef}>
+          There are no answers yet.
+        </Text>
       )}
 
       <StickyAnswerForm />

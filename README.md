@@ -14,7 +14,6 @@
 ### Screenshots (work in progress)
 ![screen](./screenshot1.png)
 ![screen2](./screenshot2.png)
-![screen3](./screenshot3.png)
 
 ## Installing
 

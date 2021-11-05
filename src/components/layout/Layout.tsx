@@ -16,7 +16,7 @@ import { SponsorWidget } from './SponsorWidget';
 export function Layout() {
   return (
     <>
-      <Center bgColor="gray.800" h="40px" css={{ WebkitAppRegion: 'drag' }}>
+      <Center bgColor="gray.800" h="40px" sx={{ WebkitAppRegion: 'drag' }}>
         <Box justifySelf="flex-start" flex={1} />
         <Box flex={1}>
           <SearchBar />
