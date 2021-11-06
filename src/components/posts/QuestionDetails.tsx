@@ -66,7 +66,7 @@ export function QuestionDetails({ question }: Props) {
             {comments.map((comment) => (
               <CommentListItem comment={comment} key={comment.comment_id} />
             ))}
-            <CommentForm olderCommentsCount={comments.length} />
+            <CommentForm hideControls={!comments.length} />
           </Stack>
         )}
       </Box>

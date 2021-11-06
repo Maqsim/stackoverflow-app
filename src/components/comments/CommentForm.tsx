@@ -1,15 +1,16 @@
-import { Box, HStack, Image, Input, Link } from '@chakra-ui/react';
+import { Box, Flex, HStack, Image, Input, Link } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useUser } from '../../contexts/use-user';
 
 type Props = {
-  olderCommentsCount?: number;
+  hideControls?: boolean;
 };
 
-export function CommentForm({ olderCommentsCount }: Props) {
+export function CommentForm({ hideControls }: Props) {
   const user = useUser();
 
   const [view, setView] = useState<'form' | 'link'>('form');
+  console.log(hideControls);
 
   if (view === 'link') {
     return (
@@ -20,9 +21,9 @@ export function CommentForm({ olderCommentsCount }: Props) {
   } else {
     return (
       <HStack align="flex-start" fontSize="13px">
-        <Box flexBasis="40px" flexShrink={0}>
+        <Flex w={hideControls ? 'auto' : '66px'} flexShrink={0} justify="end">
           <Image src={user.data.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" />
-        </Box>
+        </Flex>
         <Box w="100%">
           <Input size="xs" placeholder="Your comment..." />
         </Box>

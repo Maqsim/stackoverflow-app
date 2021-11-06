@@ -12,6 +12,7 @@ import { MyQuestionsPage } from '../../pages/MyQuestionsPage';
 import { UserMenuDropdown } from './UserMenuDropdown';
 import { ScrollToTop } from './ScrollToTop';
 import { SponsorWidget } from './SponsorWidget';
+import { UserProfilePage } from '../../pages/UserProfilePage';
 
 export function Layout() {
   return (
@@ -74,6 +75,7 @@ export function Layout() {
           <Routes>
             <Route path="/" element={<QuestionsPage />} />
             <Route path="/questions/:id" element={<QuestionDetailsPage />} />
+            <Route path="/users/:id" element={<UserProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/my-questions" element={<MyQuestionsPage />} />
           </Routes>

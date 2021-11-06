@@ -40,7 +40,7 @@ export function AnswerDetails({ answer }: Props) {
           {answer.comments?.map((comment) => (
             <CommentListItem comment={comment} key={comment.comment_id} />
           ))}
-          <CommentForm />
+          <CommentForm hideControls={!answer.comments?.length} />
         </Stack>
       </Box>
     </HStack>
