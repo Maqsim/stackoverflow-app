@@ -3,6 +3,9 @@ import stackoverflow from '../../unitls/stackexchange-api';
 import { useUser } from '../../contexts/use-user';
 import { BsInboxFill } from 'react-icons/bs';
 import { kFormatter } from '../../unitls/k-formatter';
+import { useEffect } from 'react';
+import { socketClient } from '../../unitls/stackexchange-socket-client';
+import { notification } from '../../unitls/notitification';
 
 export function UserMenuDropdown() {
   const user = useUser();
@@ -15,6 +18,16 @@ export function UserMenuDropdown() {
       });
     });
   }
+
+  useEffect(() => {
+    socketClient.on(`1-${user.data.user_id}-reputation`, () => {
+      notification('Reputation', '+25');
+    });
+
+    socketClient.on(`${user.data.account_id}-inbox`, () => {
+      notification('Inbox', 'You got new message');
+    });
+  }, []);
 
   return (
     <HStack justify="end" align="stretch" mr="16px" spacing={0} sx={{ WebkitAppRegion: 'no-drag' }}>
@@ -34,7 +47,7 @@ export function UserMenuDropdown() {
       </Center>
 
       <Menu>
-        <MenuButton marginStart="10px !important">
+        <MenuButton marginStart="10px !important" _hover={{ filter: 'brightness(1.1)' }}>
           <Image src={user.data.profile_image} boxSize="25px" objectFit="cover" borderRadius="5px" />
         </MenuButton>
         <MenuList zIndex={200}>

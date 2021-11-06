@@ -2,9 +2,11 @@ class StackOverflowSocketClient {
   subscribedActions: string[] = [];
   unsubscribedActions: string[] = [];
   callbacks: { [key: string]: (data: any) => void } = {};
-  socketConnectionPromise: Promise<any>;
+  socketConnectionPromise: Promise<any> = Promise.resolve();
 
-  constructor() {
+  constructor() {}
+
+  connect() {
     this.socketConnectionPromise = new Promise((socketConnectionPromiseResolve, socketConnectionPromiseReject) => {
       const connection = new WebSocket('wss://qa.sockets.stackexchange.com');
 

@@ -11,6 +11,7 @@ import { AnswerDetails } from '../components/posts/AnswerDetails';
 import { AnswerType } from '../interfaces/AnswerType';
 import { StickyAnswerForm } from '../components/posts/StickyAnswerForm';
 import { socketClient } from '../unitls/stackexchange-socket-client';
+import { notification } from '../unitls/notitification';
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -42,7 +43,7 @@ export function QuestionDetailsPage() {
       });
 
     socketClient.on(`1-question-${id}`, () => {
-      new Notification('Question', { body: 'questions changed' });
+      notification('Question', 'questions changed');
     });
 
     return () => {
