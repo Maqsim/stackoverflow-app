@@ -1,4 +1,4 @@
-import { Flex, HStack, Image, Link, Text } from '@chakra-ui/react';
+import { Flex, HStack, Image, Text } from '@chakra-ui/react';
 import { CommentType } from '../../interfaces/CommentType';
 import parse, { domToReact, Element } from 'html-react-parser';
 import { Code } from '../posts/Code';
@@ -38,15 +38,7 @@ export function CommentListItem({ comment }: Props) {
           </Flex>
         </HStack>
         <RouterLink to={`/users/${comment.owner.user_id}`} state={comment.owner}>
-          <Link>
-            <Image
-              src={comment.owner.profile_image}
-              boxSize="24px"
-              objectFit="cover"
-              borderRadius="3px"
-              title={comment.owner.display_name}
-            />
-          </Link>
+          <Image src={comment.owner.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" title={comment.owner.display_name} />
         </RouterLink>
       </HStack>
       <Text alignSelf="center">

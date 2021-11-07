@@ -10,7 +10,7 @@ type Props = {
 export function ExternalLink({ href, children }: Props) {
   return (
     <>
-      <Link href={href} color="blue.500" textDecoration="underline" rel="noreferrer">
+      <Link href={href} color="blue.500" textDecor="underline" rel="noreferrer">
         {children}
       </Link>
 

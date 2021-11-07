@@ -27,7 +27,7 @@ export function AnswerDetails({ answer }: Props) {
       <VotingControls score={score} onUpvote={handleUpvote} onDownvote={handleDownvote} />
 
       {/* overflow needed here to prevent child has more width than parent */}
-      <Box overflow="auto">
+      <Box flexGrow={1} overflow="auto" p="2px" m="-2px">
         <Box className="stackoverflow_question-body" fontFamily="Georgia" fontSize="16px">
           {parseBody(answer.body)}{' '}
         </Box>

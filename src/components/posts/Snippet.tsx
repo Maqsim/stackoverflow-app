@@ -1,4 +1,4 @@
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue } from '@chakra-ui/react';
 import { ReactNode, useEffect } from 'react';
 
 type Props = {

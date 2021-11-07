@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, Stack } from '@chakra-ui/react';
+import { Box, Heading, HStack, Stack, Text } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import { TagList } from './TagList';
 import { UserBadge } from './UserBadge';
@@ -10,13 +10,14 @@ import { useEffect, useState } from 'react';
 import { CommentType } from '../../interfaces/CommentType';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../unitls/parse-body';
+import { EllipsisLoader } from '../ui/EllipsisLoader';
 
 type Props = {
   question: QuestionDetailsType;
 };
 
 export function QuestionDetails({ question }: Props) {
-  const [isCommentsLoading, setIsCommentsLoading] = useState(true);
+  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
   const [comments, setComments] = useState<CommentType[]>([]);
   const [score, setScore] = useState<number>(question.score);
 
@@ -29,7 +30,7 @@ export function QuestionDetails({ question }: Props) {
       })
       .then((response) => {
         setComments((response as any).items);
-        setIsCommentsLoading(false);
+        setIsCommentsLoaded(true);
       });
   }, []);
 
@@ -45,6 +46,7 @@ export function QuestionDetails({ question }: Props) {
     <HStack spacing="12px" align="start">
       <VotingControls score={score} onUpvote={handleUpvote} onDownvote={handleDownvote} />
 
+      {/* overflow needed here to prevent child has more width than parent */}
       <Box flexGrow={1} overflow="auto" p="2px" m="-2px">
         <Heading size="md" mb="12px" maxWidth="800px">
           {parse(question.title)}
@@ -61,14 +63,16 @@ export function QuestionDetails({ question }: Props) {
           <UserBadge type="question" datetime={question.creation_date} user={question.owner} />
         </HStack>
 
-        {!isCommentsLoading && (
-          <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
-            {comments.map((comment) => (
-              <CommentListItem comment={comment} key={comment.comment_id} />
-            ))}
-            <CommentForm hideControls={!comments.length} />
-          </Stack>
-        )}
+        <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
+          {!isCommentsLoaded ? (
+            <EllipsisLoader fontSize="13px">Loading comments</EllipsisLoader>
+          ) : (
+            <>
+              {isCommentsLoaded && comments.map((comment) => <CommentListItem comment={comment} key={comment.comment_id} />)}
+              <CommentForm hideControls={!comments.length} />
+            </>
+          )}
+        </Stack>
       </Box>
     </HStack>
   );
