@@ -1,20 +1,15 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
+// TODO Fix jitter on location change
 export function ScrollToTop() {
-  // const history = useTransition();
+  const location = useLocation();
 
   useEffect(() => {
     const scrollableEl = document.getElementById('scrolling-container');
 
-    // const unlisten = history.listen(() => {
-    //   requestAnimationFrame(() => {
-    //     scrollableEl!.scrollTo(0, 0);
-    //   });
-    // });
-    return () => {
-      // unlisten();
-    };
-  }, []);
+    scrollableEl!.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return null;
 }

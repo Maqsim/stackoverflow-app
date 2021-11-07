@@ -14,7 +14,8 @@ export function QuestionsPage() {
       .get('questions/unanswered/my-tags', {
         order: 'desc',
         sort: 'creation',
-        filter: '!tf94YAq2Z_YBzNChvK*abKSyjEtOGYp'
+        pagesize: 15,
+        filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
       })
       .then((response) => {
         setQuestions((response as any).items);

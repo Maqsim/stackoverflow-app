@@ -1,8 +1,9 @@
 import { Box, Center, Flex, HStack, Skeleton, Stack } from '@chakra-ui/react';
 import { useRef } from 'react';
+import randomRange from '../../unitls/random-range';
 
 export function QuestionListItemSkeleton() {
-  const titleWidth = useRef(Math.max(Math.random() * 100, 30));
+  const titleWidth = useRef(randomRange(30, 100));
   const tagsCount = useRef(Math.ceil(Math.random() * 5));
 
   return (

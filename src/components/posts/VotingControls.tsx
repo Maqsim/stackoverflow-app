@@ -3,8 +3,8 @@ import { GoTriangleDown, GoTriangleUp } from 'react-icons/go';
 
 type Props = {
   score: number;
-  onUpvote: () => void;
-  onDownvote: () => void;
+  onUpvote?: () => void;
+  onDownvote?: () => void;
 };
 
 export function VotingControls({ score, onUpvote, onDownvote }: Props) {

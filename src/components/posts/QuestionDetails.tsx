@@ -1,38 +1,20 @@
-import { Box, Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, Heading, HStack, Stack } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import { TagList } from './TagList';
 import { UserBadge } from './UserBadge';
 import { CommentListItem } from '../comments/CommentListItem';
 import { CommentForm } from '../comments/CommentForm';
-import { QuestionDetailsType } from '../../interfaces/QuestionDetailsType';
-import stackoverflow from '../../unitls/stackexchange-api';
-import { useEffect, useState } from 'react';
-import { CommentType } from '../../interfaces/CommentType';
+import { useState } from 'react';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../unitls/parse-body';
-import { EllipsisLoader } from '../ui/EllipsisLoader';
+import { QuestionType } from '../../interfaces/QuestionType';
 
 type Props = {
-  question: QuestionDetailsType;
+  question: QuestionType;
 };
 
 export function QuestionDetails({ question }: Props) {
-  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
-  const [comments, setComments] = useState<CommentType[]>([]);
   const [score, setScore] = useState<number>(question.score);
-
-  useEffect(() => {
-    stackoverflow
-      .get(`questions/${question.question_id}/comments`, {
-        order: 'asc',
-        sort: 'creation',
-        filter: '!1zI5*cxyWVN7GRZNZpt2O'
-      })
-      .then((response) => {
-        setComments((response as any).items);
-        setIsCommentsLoaded(true);
-      });
-  }, []);
 
   function handleUpvote() {
     setScore(score + 1);
@@ -64,14 +46,8 @@ export function QuestionDetails({ question }: Props) {
         </HStack>
 
         <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
-          {!isCommentsLoaded ? (
-            <EllipsisLoader fontSize="13px">Loading comments</EllipsisLoader>
-          ) : (
-            <>
-              {isCommentsLoaded && comments.map((comment) => <CommentListItem comment={comment} key={comment.comment_id} />)}
-              <CommentForm hideControls={!comments.length} />
-            </>
-          )}
+          {question.comment_count && question.comments.map((comment) => <CommentListItem comment={comment} key={comment.comment_id} />)}
+          <CommentForm hideControls={!question.comment_count} />
         </Stack>
       </Box>
     </HStack>

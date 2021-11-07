@@ -2,14 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import stackoverflow from '../unitls/stackexchange-api';
 import { useLocation, useParams } from 'react-router-dom';
 import { Box, Button, ButtonGroup, Flex, Heading, HStack, Spinner, Stack, Text, Tooltip } from '@chakra-ui/react';
-import { QuestionDetailsType } from '../interfaces/QuestionDetailsType';
 import { QuestionType } from '../interfaces/QuestionType';
 import { BackButton } from '../components/layout/BackButton';
 import { RiEarthFill, RiFileCopyFill } from 'react-icons/ri';
 import { QuestionDetails } from '../components/posts/QuestionDetails';
 import { AnswerDetails } from '../components/posts/AnswerDetails';
-import { AnswerType } from '../interfaces/AnswerType';
-import { StickyAnswerForm } from '../components/posts/StickyAnswerForm';
 import { socketClient } from '../unitls/stackexchange-socket-client';
 import { notification } from '../unitls/notitification';
 
@@ -19,8 +16,7 @@ export function QuestionDetailsPage() {
   const { id } = useParams();
   const location = useLocation();
   const initialQuestion = location.state as QuestionType;
-  const [question, setQuestion] = useState<QuestionDetailsType>(initialQuestion as QuestionDetailsType);
-  const [answers, setAnswers] = useState<AnswerType[]>([]);
+  const [question, setQuestion] = useState(initialQuestion);
   const [isTooltipShown, setIsTooltipShown] = useState(false);
   const answersRef = useRef<HTMLDivElement>(null);
 
@@ -34,13 +30,6 @@ export function QuestionDetailsPage() {
           setQuestion((response as any).items[0]);
         });
     }
-    stackoverflow
-      .get(`questions/${id}/answers`, {
-        filter: '!2uJf83FMV*M-dzLI3KWSqhEXA*t9s7t6IYVsbULsbn'
-      })
-      .then((response) => {
-        setAnswers((response as any).items);
-      });
 
     socketClient.on(`1-question-${id}`, () => {
       notification('Question', 'questions changed');
@@ -49,7 +38,7 @@ export function QuestionDetailsPage() {
     return () => {
       socketClient.off(`1-question-${id}`);
     };
-  }, []);
+  }, [id]);
 
   function jumpToAnswers() {
     answersRef.current?.scrollIntoView({ block: 'center' });
@@ -99,10 +88,37 @@ export function QuestionDetailsPage() {
 
       <QuestionDetails question={question} />
 
-      {answers.length ? (
+      {/*{question.answer_count > 0 ? (*/}
+      {/*  <Box>*/}
+      {/*    <Heading size="md" mb="32px" mt="48px" ref={answersRef}>*/}
+      {/*      {question.answer_count} answers*/}
+      {/*      <ButtonGroup size="xs" isAttached variant="outline" float="right">*/}
+      {/*        <Button mr="-px" onClick={openInBrowser}>*/}
+      {/*          Active*/}
+      {/*        </Button>*/}
+      {/*        <Button onClick={copyUrl}>Oldest</Button>*/}
+      {/*        <Button onClick={copyUrl} isActive>*/}
+      {/*          Votes*/}
+      {/*        </Button>*/}
+      {/*      </ButtonGroup>*/}
+      {/*    </Heading>*/}
+
+      {/*    <Stack spacing="48px">*/}
+      {/*      {!isAnswersLoaded*/}
+      {/*        ? [...Array(question.answer_count)].map((_, index) => <AnswerDetailsSkeleton key={index} />)*/}
+      {/*        : answers.map((answer) => <AnswerDetails answer={answer} key={answer.answer_id} />)}*/}
+      {/*    </Stack>*/}
+      {/*  </Box>*/}
+      {/*) : (*/}
+      {/*  <Text mb="32px" color="gray" mt="48px" textAlign="center" ref={answersRef}>*/}
+      {/*    There are no answers yet.*/}
+      {/*  </Text>*/}
+      {/*)}*/}
+
+      {question.answer_count > 0 ? (
         <Box>
           <Heading size="md" mb="32px" mt="48px" ref={answersRef}>
-            {answers.length} answers
+            {question.answer_count} answers
             <ButtonGroup size="xs" isAttached variant="outline" float="right">
               <Button mr="-px" onClick={openInBrowser}>
                 Active
@@ -115,7 +131,7 @@ export function QuestionDetailsPage() {
           </Heading>
 
           <Stack spacing="48px">
-            {answers.map((answer) => (
+            {question.answers.map((answer) => (
               <AnswerDetails answer={answer} key={answer.answer_id} />
             ))}
           </Stack>
@@ -126,7 +142,7 @@ export function QuestionDetailsPage() {
         </Text>
       )}
 
-      <StickyAnswerForm />
+      {/*<StickyAnswerForm />*/}
     </>
   );
 }

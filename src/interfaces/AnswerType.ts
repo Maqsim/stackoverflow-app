@@ -7,7 +7,7 @@ export type AnswerType = {
   body: string;
   can_comment: boolean;
   comment_count: number;
-  comments?: CommentType[];
+  comments: CommentType[];
   creation_date: number;
   downvoted: boolean;
   is_accepted: boolean;

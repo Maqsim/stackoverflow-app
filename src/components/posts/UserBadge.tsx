@@ -31,9 +31,9 @@ export function UserBadge({ user, type, datetime }: Props) {
         <Text color="#777" mb="6px" lineHeight="13px">
           {typeToLabelMap[type]} {dayjs().to(dayjs.unix(datetime))}
         </Text>
-        <HStack w="calc(100% - 48px)">
+        <HStack>
           <Image src={user.profile_image} boxSize="32px" objectFit="cover" borderRadius="3px" />
-          <Box>
+          <Box overflow="hidden">
             <Text lineHeight="13px" my="1px" isTruncated>
               {parse(user.display_name)}
             </Text>
