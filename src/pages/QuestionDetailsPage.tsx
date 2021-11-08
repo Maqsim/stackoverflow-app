@@ -38,7 +38,7 @@ export function QuestionDetailsPage() {
     return () => {
       socketClient.off(`1-question-${id}`);
     };
-  }, [id]);
+  }, []);
 
   function jumpToAnswers() {
     answersRef.current?.scrollIntoView({ block: 'center' });
@@ -65,13 +65,24 @@ export function QuestionDetailsPage() {
 
   return (
     <>
-      <Flex justify="space-between" position="sticky" top="-16px" p="16px" m="-16px" mb="16px" bgColor="white" zIndex={100}>
+      <Flex
+        justify="space-between"
+        position="sticky"
+        top="-16px"
+        p="16px"
+        m="-16px"
+        mb="16px"
+        bgColor="white"
+        zIndex={100}
+      >
         <BackButton />
 
         <HStack spacing="16px">
-          <Button size="xs" variant="outline" onClick={jumpToAnswers}>
-            Jump to answers
-          </Button>
+          {question.answer_count > 0 && (
+            <Button size="xs" variant="outline" onClick={jumpToAnswers}>
+              Jump to answers
+            </Button>
+          )}
 
           <ButtonGroup size="xs" isAttached variant="outline">
             <Button mr="-px" onClick={openInBrowser} leftIcon={<RiEarthFill />} iconSpacing="3px">

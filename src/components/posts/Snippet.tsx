@@ -1,12 +1,16 @@
-import { Box, Button, useBoolean, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, IconButton, useBoolean, useColorModeValue } from '@chakra-ui/react';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
+import { RiFileCopyLine } from 'react-icons/ri';
 
 type Props = {
   children: ReactNode;
 };
 
+const NEW_LINE_REG_EXP = /\r\n|\r|\n/;
+
 export const Snippet = memo(({ children }: Props) => {
-  const shouldZip = (children as any).props.children.split(/\r\n|\r|\n/).length > 20;
+  const lineCount = (children as any).props.children.split(NEW_LINE_REG_EXP).length;
+  const shouldZip = lineCount > 20;
   const bgColor = useColorModeValue('#f6f6f6', 'gray.700');
   const [isZipped, setIsZipped] = useBoolean(shouldZip);
   const [scrollPosition, setScrollPosition] = useState<number | undefined>();
@@ -20,6 +24,10 @@ export const Snippet = memo(({ children }: Props) => {
 
   function toggleZip() {
     setIsZipped.toggle();
+  }
+
+  function copy() {
+    window.Main.copyToClipboard((children as any).props.children);
   }
 
   useEffect(() => {
@@ -51,12 +59,25 @@ export const Snippet = memo(({ children }: Props) => {
         p="10px !important"
         overflow={shouldZip && isZipped ? 'hidden' : 'auto'}
         bgColor={bgColor}
-        maxH={shouldZip && isZipped ? '200px' : 'auto'}
+        maxH={shouldZip && isZipped ? '250px' : 'auto'}
         onClick={shouldZip && isZipped ? toggleZip : undefined}
         cursor={shouldZip && isZipped ? 'pointer' : 'auto'}
       >
         {children}
       </Box>
+
+      <IconButton
+        aria-label="Copy to clipboard"
+        boxShadow="base"
+        size="sm"
+        position="absolute"
+        onClick={copy}
+        top={lineCount <= 2 ? '3px' : '10px'}
+        right="10px"
+        bgColor="white"
+        icon={<RiFileCopyLine />}
+      />
+
       {shouldZip && (
         <>
           {isZipped && (
@@ -71,7 +92,7 @@ export const Snippet = memo(({ children }: Props) => {
             />
           )}
           <Button
-            variant="outline"
+            boxShadow="base"
             size="xs"
             position="absolute"
             onClick={toggleZip}
@@ -80,6 +101,7 @@ export const Snippet = memo(({ children }: Props) => {
             transform="translate(-50%, 50%)"
             rounded="full"
             bgColor="white"
+            fontFamily="var(--chakra-fonts-body)"
           >
             {isZipped ? 'Show all' : 'Hide'}
           </Button>
