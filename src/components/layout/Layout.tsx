@@ -4,32 +4,24 @@ import { NavItem } from './NavItem';
 import { Route, Routes } from 'react-router-dom';
 import { QuestionsPage } from '../../pages/QuestionsPage';
 import { QuestionDetailsPage } from '../../pages/QuestionDetailsPage';
-import { SearchBar } from './SearchBar';
 import { RiEarthFill, RiSettings3Fill } from 'react-icons/ri';
 import { SettingsPage } from '../../pages/SettingsPage';
 import { AiFillTags } from 'react-icons/ai';
 import { MyQuestionsPage } from '../../pages/MyQuestionsPage';
-import { UserMenuDropdown } from './UserMenuDropdown';
 import { ScrollToTop } from './ScrollToTop';
 import { SponsorWidget } from './SponsorWidget';
 import { UserProfilePage } from '../../pages/UserProfilePage';
 import { MyBookmarksPage } from '../../pages/MyBookmarksPage';
 import { useSidebar } from '../../contexts/use-sidebar';
+import { TopBar } from './TopBar';
 
 export function Layout() {
   const sidebar = useSidebar();
 
   return (
     <>
-      <Center bgColor="gray.800" h="40px" sx={{ WebkitAppRegion: 'drag' }}>
-        <Box justifySelf="flex-start" flex={1} />
-        <Box flex={1}>
-          <SearchBar />
-        </Box>
-        <Box justifySelf="flex-end" flex={1}>
-          <UserMenuDropdown />
-        </Box>
-      </Center>
+      <TopBar />
+
       <Flex h="calc(100vh - 40px)" alignItems={'stretch'}>
         <Stack bgColor="gray.700" color="white" flex={'0 0 200px'} overflow={'auto'} p="8px" justifyContent="space-between">
           <DarkMode>

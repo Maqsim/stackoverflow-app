@@ -75,11 +75,11 @@ async function registerListeners() {
   });
 
   ipcMain.on('online', (event) => {
-    console.log('online');
+    event.reply('online');
   });
 
   ipcMain.on('offline', (event) => {
-    console.log('offline');
+    event.reply('offline');
   });
 
   ipcMain.handle(InvokeEnum.COPY_TO_CLIPBOARD, (event, text) => {
