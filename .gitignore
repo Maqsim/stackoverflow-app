@@ -4,5 +4,6 @@ packages
 .webpack
 out
 .idea
-!/yarn.lock
-!/yarn-error.log
+.vscode
+yarn-error.log
+.DS_Store
