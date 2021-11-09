@@ -13,8 +13,12 @@ import { UserMenuDropdown } from './UserMenuDropdown';
 import { ScrollToTop } from './ScrollToTop';
 import { SponsorWidget } from './SponsorWidget';
 import { UserProfilePage } from '../../pages/UserProfilePage';
+import { MyBookmarksPage } from '../../pages/MyBookmarksPage';
+import { useSidebar } from '../../contexts/use-sidebar';
 
 export function Layout() {
+  const sidebar = useSidebar();
+
   return (
     <>
       <Center bgColor="gray.800" h="40px" sx={{ WebkitAppRegion: 'drag' }}>
@@ -45,16 +49,16 @@ export function Layout() {
                 <Divider borderColor="gray.600" />
               </Box>
               <Stack spacing={0}>
-                <NavItem to="/my-bookmarks" count={4}>
+                <NavItem to="/my-bookmarks" count={sidebar.counts.bookmarks}>
                   <Text>My bookmarks</Text>
                 </NavItem>
-                <NavItem to="/my-questions" count={1}>
+                <NavItem to="/my-questions" count={sidebar.counts.questions}>
                   <Text>My questions</Text>
                 </NavItem>
-                <NavItem to="/my-answers" count={35}>
+                <NavItem to="/my-answers" count={sidebar.counts.answers}>
                   <Text>My answers</Text>
                 </NavItem>
-                <NavItem to="/my-tags" count={18}>
+                <NavItem to="/my-tags" count={sidebar.counts.tags}>
                   <Text>My tags</Text>
                 </NavItem>
               </Stack>
@@ -73,10 +77,14 @@ export function Layout() {
         <Box overflow={'auto'} p="16px" w="100%" id="scrolling-container">
           <ScrollToTop />
           <Routes>
+            {/* Global routes */}
             <Route path="/" element={<QuestionsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/questions/:id" element={<QuestionDetailsPage />} />
             <Route path="/users/:id" element={<UserProfilePage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+
+            {/* Personal routes */}
+            <Route path="/my-bookmarks" element={<MyBookmarksPage />} />
             <Route path="/my-questions" element={<MyQuestionsPage />} />
           </Routes>
         </Box>

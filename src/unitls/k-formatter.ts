@@ -1,5 +1,5 @@
-export function kFormatter(number: number) {
-  if (number < 9999) {
+export function kFormatter(number: number, threshold = 9999) {
+  if (number < threshold) {
     return number.toLocaleString();
   }
 

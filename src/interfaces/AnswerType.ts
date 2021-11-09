@@ -1,5 +1,5 @@
 import { UserType } from './UserType';
-import { CommentType } from "./CommentType";
+import { CommentType } from './CommentType';
 
 export type AnswerType = {
   accepted: boolean;
@@ -12,6 +12,8 @@ export type AnswerType = {
   downvoted: boolean;
   is_accepted: boolean;
   owner: UserType;
+  question_id?: number;
   score: number;
+  title?: string;
   upvoted: boolean;
 };

@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   Box,
+  Button,
+  ButtonGroup,
+  Center,
   Flex,
   Heading,
   HStack,
@@ -14,29 +17,70 @@ import {
   Text
 } from '@chakra-ui/react';
 import { UserType } from '../interfaces/UserType';
-import { useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { BackButton } from '../components/layout/BackButton';
 import { kFormatter } from '../unitls/k-formatter';
 import stackoverflow from '../unitls/stackexchange-api';
+import { AnswerType } from '../interfaces/AnswerType';
+import { QuestionType } from '../interfaces/QuestionType';
+import parse from 'html-react-parser';
 
 export function UserProfilePage() {
   const location = useLocation();
   const initialUser = location.state as UserType;
   const [isLoaded, setIsLoaded] = useState(false);
+  const [postType, setPostType] = useState<'questions' | 'answers'>('questions');
+  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
   const [user, setUser] = useState<UserType>(initialUser);
+  const [questions, setQuestions] = useState<QuestionType[]>();
+  const [answers, setAnswers] = useState<AnswerType[]>();
 
-  // Fetch more data
+  async function fetchAdditionalData() {
+    const response = (await stackoverflow.get(`users/${user.user_id}`, {
+      filter: '!0ZJUgZLp_(o9njLHPL0ZUMahE'
+    })) as any;
+
+    setUser(response.items[0]);
+    setIsLoaded(true);
+  }
+
+  async function fetchQuestions() {
+    setIsPostsLoaded(false);
+
+    const response = (await stackoverflow.get(`users/${user.user_id}/questions`, {
+      sort: 'votes',
+      order: 'desc',
+      filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
+    })) as any;
+
+    setQuestions(response.items);
+    setIsPostsLoaded(true);
+  }
+
+  async function fetchAnswers() {
+    setIsPostsLoaded(false);
+
+    const response = (await stackoverflow.get(`users/${user.user_id}/answers`, {
+      sort: 'votes',
+      order: 'desc',
+      filter: '!LJbtD(0QAN3VMHtITzTNgH'
+    })) as any;
+
+    setAnswers(response.items);
+    setIsPostsLoaded(true);
+  }
+
   useEffect(() => {
-    stackoverflow
-      .get(`users/${user.user_id}`, {
-        filter: '!0ZJUgZLp_(o9njLHPL0ZUMahE'
-      })
-      // FIXME remove any
-      .then((response: any) => {
-        setUser(response.items[0]);
-        setIsLoaded(true);
-      });
+    fetchAdditionalData();
   }, []);
+
+  useEffect(() => {
+    if (postType === 'questions') {
+      fetchQuestions();
+    } else {
+      fetchAnswers();
+    }
+  }, [postType]);
 
   return (
     <Stack spacing="32px">
@@ -47,7 +91,7 @@ export function UserProfilePage() {
       <HStack spacing="16px" align="start">
         <Image src={user.profile_image} boxSize="96px" objectFit="cover" borderRadius="5px" />
         <Stack>
-          <Heading size="lg" mb="4px">
+          <Heading size="lg">
             {user.display_name}
           </Heading>
           {/*<Text>{user.about_me}</Text>*/}
@@ -69,7 +113,7 @@ export function UserProfilePage() {
 
               <Stat>
                 <StatLabel>Reached</StatLabel>
-                <StatNumber>?</StatNumber>
+                <StatNumber>145k</StatNumber>
               </Stat>
             </StatGroup>
 
@@ -86,14 +130,50 @@ export function UserProfilePage() {
             </StatGroup>
           </Box>
 
-          <Box rounded="5px" flexShring={1} border="1px solid" borderColor="gray.200" p="16px">
-            <Heading size="md">Top posts</Heading>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusantium, alias asperiores corporis
-            doloribus ducimus eum eveniet facere natus provident quae quos recusandae reiciendis ullam ut veritatis
-            voluptas. Illum, quibusdam.
+          <Box rounded="5px" flexGrow={1} border="1px solid" borderColor="gray.200" p="16px">
+            <HStack justify="space-between" mb="8px">
+              <Heading size="md">Top posts</Heading>
+
+              <ButtonGroup size="xs" isAttached variant="outline">
+                <Button isActive={postType === 'questions'} onClick={() => setPostType('questions')} mr="-px">
+                  Questions
+                </Button>
+                <Button isActive={postType === 'answers'} onClick={() => setPostType('answers')}>
+                  Answers
+                </Button>
+              </ButtonGroup>
+            </HStack>
+
+            <Stack spacing="4px">
+              {(postType === 'questions' ? questions : answers)?.map((item) => (
+                <PostItem item={item} type={postType} key={item.question_id} />
+              ))}
+            </Stack>
           </Box>
         </HStack>
       )}
     </Stack>
   );
 }
+
+type PostItemsProps = {
+  item: QuestionType | AnswerType;
+  type: 'questions' | 'answers';
+};
+
+const PostItem = memo(({ item, type }: PostItemsProps) => {
+  const scoreStyles = item.is_accepted
+    ? { bgColor: 'green.300', color: 'white' }
+    : { bgColor: 'white', color: 'gray.600', border: '1px solid #ccc' };
+
+  return (
+    <NavLink to={`/questions/${item.question_id}`} state={type === 'questions' && item}>
+      <HStack color={item.is_accepted ? 'green.500' : 'blue.500'} align="start">
+        <Center fontWeight="bold" sx={scoreStyles} rounded="5px" w="40px" h="25px" flexShrink={0}>
+          {item.score}
+        </Center>
+        <Text>{parse(item.title!)}</Text>
+      </HStack>
+    </NavLink>
+  );
+});

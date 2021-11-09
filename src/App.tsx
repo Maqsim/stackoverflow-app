@@ -3,6 +3,7 @@ import { Layout } from './components/layout/Layout';
 import { useNavigate } from 'react-router-dom';
 import { UserProvider } from './contexts/use-user';
 import { AppSpinner } from './components/layout/AppSpinner';
+import { SidebarProvider } from './contexts/use-sidebar';
 
 export function App() {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ export function App() {
 
   return (
     <UserProvider LoadingComponent={<AppSpinner />}>
-      <Layout />
+      <SidebarProvider>
+        <Layout />
+      </SidebarProvider>
     </UserProvider>
   );
 }

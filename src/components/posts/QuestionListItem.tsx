@@ -3,6 +3,7 @@ import { Box, Flex, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/re
 import { QuestionType } from '../../interfaces/QuestionType';
 import { Link as RouterLink } from 'react-router-dom';
 import { TagList } from './TagList';
+import { kFormatter } from '../../unitls/k-formatter';
 
 type Props = {
   item: QuestionType;
@@ -10,6 +11,13 @@ type Props = {
 
 export function QuestionListItem({ item }: Props) {
   const hoverBg = useColorModeValue('gray.50', 'gray.700');
+
+  const answersFactoidStyles = item.is_answered
+    ? {
+        bgColor: 'green.300',
+        color: 'white'
+      }
+    : undefined;
 
   return (
     <RouterLink to={`/questions/${item.question_id}`} state={item}>
@@ -22,26 +30,35 @@ export function QuestionListItem({ item }: Props) {
         p="8px"
         align="center"
       >
-        <HStack flexShrink={0} mr="16px" spacing="2px" px="4px" bgColor="#fff" border="1px solid" borderColor="gray.200" borderRadius="5px">
+        <HStack
+          flexShrink={0}
+          mr="16px"
+          spacing="2px"
+          px="4px"
+          bgColor="#fff"
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="5px"
+        >
           <Stack p="4px" spacing="0px">
-            <Text fontWeight="semibold" align="center" color={item.score === 0 ? 'gray' : 'inherit'}>
+            <Text fontWeight="bold" align="center" color={item.score === 0 ? 'gray' : 'inherit'}>
               {item.score}
             </Text>
             <Text fontSize="13px" color="gray">
               votes
             </Text>
           </Stack>
-          <Stack p="4px" spacing="0px">
-            <Text fontWeight="semibold" align="center" color={item.answer_count === 0 ? 'gray' : 'inherit'}>
+          <Stack p="4px" spacing="0px" sx={answersFactoidStyles}>
+            <Text fontWeight="bold" align="center" color={item.answer_count === 0 ? 'gray' : 'inherit'}>
               {item.answer_count}
             </Text>
-            <Text fontSize="13px" color="gray">
+            <Text fontSize="13px" color={item.is_answered ? 'whiteAlpha.900' : 'gray'}>
               answers
             </Text>
           </Stack>
           <Stack p="4px" spacing="0px">
-            <Text fontWeight="semibold" align="center" color={item.view_count === 0 ? 'gray' : 'inherit'}>
-              {item.view_count}
+            <Text fontWeight="bold" align="center" color={item.view_count === 0 ? 'gray' : 'inherit'}>
+              {kFormatter(item.view_count, 999)}
             </Text>
             <Text fontSize="13px" color="gray">
               views

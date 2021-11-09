@@ -37,9 +37,8 @@ export const Snippet = memo(({ children }: Props) => {
 
     const scrollableEl = document.getElementById('scrolling-container');
 
-    if (isZipped && scrollPosition) {
+    if (isZipped && typeof scrollPosition === 'number') {
       requestAnimationFrame(() => {
-        console.log(scrollPosition);
         scrollableEl!.scrollTop = scrollPosition;
         (containerRef.current as unknown as HTMLDivElement).scrollTo(0, 0);
       });

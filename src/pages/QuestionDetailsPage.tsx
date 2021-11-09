@@ -24,7 +24,7 @@ export function QuestionDetailsPage() {
     if (!question) {
       stackoverflow
         .get(`questions/${id}`, {
-          filter: '!T1gn2_Z7sHTWd5)zc*'
+          filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ3LoiM_GpZITfZz5'
         })
         .then((response) => {
           setQuestion((response as any).items[0]);
