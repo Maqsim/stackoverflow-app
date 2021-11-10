@@ -9,7 +9,13 @@ type Props = {
 const NEW_LINE_REG_EXP = /\r\n|\r|\n/;
 
 export const Snippet = memo(({ children }: Props) => {
-  const lineCount = (children as any).props.children.split(NEW_LINE_REG_EXP).length;
+  const _children = (children as any).props.children;
+
+  if (!_children) {
+    return null;
+  }
+
+  const lineCount = _children.split(NEW_LINE_REG_EXP).length;
   const shouldZip = lineCount > 20;
   const bgColor = useColorModeValue('#f6f6f6', 'gray.700');
   const [isZipped, setIsZipped] = useBoolean(shouldZip);

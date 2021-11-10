@@ -14,6 +14,7 @@ import { UserProfilePage } from '../../pages/UserProfilePage';
 import { MyBookmarksPage } from '../../pages/MyBookmarksPage';
 import { useSidebar } from '../../contexts/use-sidebar';
 import { TopBar } from './TopBar';
+import { SearchPage } from '../../pages/SearchPage';
 
 export function Layout() {
   const sidebar = useSidebar();
@@ -73,6 +74,7 @@ export function Layout() {
             <Route path="/" element={<QuestionsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/questions/:id" element={<QuestionDetailsPage />} />
+            <Route path="/search/:query" element={<SearchPage />} />
             <Route path="/users/:id" element={<UserProfilePage />} />
 
             {/* Personal routes */}
