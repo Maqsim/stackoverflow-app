@@ -19,7 +19,8 @@ function createWindow() {
     height: 600,
     show: false,
     title: 'StackOverflow',
-    titleBarStyle: 'hiddenInset',
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 16, y: 13 },
     webPreferences: {
       sandbox: true,
       nodeIntegration: false,

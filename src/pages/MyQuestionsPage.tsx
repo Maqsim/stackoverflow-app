@@ -29,9 +29,9 @@ export function MyQuestionsPage() {
     <>
       <Stack spacing="8px">
         {/* Skeletons */}
-        {!isLoaded && [...Array(10)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
+        {!isLoaded && [...Array(10)].map((_, index) => <QuestionListItemSkeleton key={index}/>)}
 
-        {isLoaded && questions.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
+        {isLoaded && questions.map((question) => <QuestionListItem item={question} key={question.question_id}/>)}
       </Stack>
     </>
   );

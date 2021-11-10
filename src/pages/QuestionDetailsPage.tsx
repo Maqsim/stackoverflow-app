@@ -9,6 +9,7 @@ import { QuestionDetails } from '../components/posts/QuestionDetails';
 import { AnswerDetails } from '../components/posts/AnswerDetails';
 import { socketClient } from '../unitls/stackexchange-socket-client';
 import { notification } from '../unitls/notitification';
+import { getItem, setItem } from '../unitls/local-storage';
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -21,6 +22,17 @@ export function QuestionDetailsPage() {
   const answersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    // Remember visited question
+    const visitedQuestionIds = (getItem('visited-question-ids') as number[]) || [];
+    if (!visitedQuestionIds.includes(parseInt(id, 10))) {
+      visitedQuestionIds.push(parseInt(id, 10));
+      setItem('visited-question-ids', visitedQuestionIds);
+    }
+
     if (!question) {
       stackoverflow
         .get(`questions/${id}`, {
@@ -38,7 +50,7 @@ export function QuestionDetailsPage() {
     return () => {
       socketClient.off(`1-question-${id}`);
     };
-  }, []);
+  }, [id]);
 
   function jumpToAnswers() {
     answersRef.current?.scrollIntoView({ block: 'center' });
