@@ -1,4 +1,4 @@
-import { Box, Center, DarkMode, Divider, Flex, Image, Stack, Text } from '@chakra-ui/react';
+import { Box, DarkMode, Divider, Flex, Image, Stack, Text } from '@chakra-ui/react';
 import Logo from '../../../assets/stackoverflow-logo.png';
 import { NavItem } from './NavItem';
 import { Route, Routes } from 'react-router-dom';
@@ -12,19 +12,25 @@ import { ScrollToTop } from './ScrollToTop';
 import { SponsorWidget } from './SponsorWidget';
 import { UserProfilePage } from '../../pages/UserProfilePage';
 import { MyBookmarksPage } from '../../pages/MyBookmarksPage';
-import { useSidebar } from '../../contexts/use-sidebar';
+import { SidebarContext, useSidebar } from '../../contexts/use-sidebar';
 import { TopBar } from './TopBar';
 import { SearchPage } from '../../pages/SearchPage';
+import { TagsPage } from '../../pages/TagsPage';
 
 export function Layout() {
-  const sidebar = useSidebar();
-
   return (
     <>
       <TopBar />
 
       <Flex h="calc(100vh - 40px)" alignItems={'stretch'}>
-        <Stack bgColor="gray.700" color="white" flex={'0 0 200px'} overflow={'auto'} p="8px" justifyContent="space-between">
+        <Stack
+          bgColor="gray.700"
+          color="white"
+          flex={'0 0 200px'}
+          overflow={'auto'}
+          p="8px"
+          justifyContent="space-between"
+        >
           <DarkMode>
             <Box>
               <Image mt="8px" mb="16px" ml="10px" src={Logo} h="20px" />
@@ -42,18 +48,24 @@ export function Layout() {
                 <Divider borderColor="gray.600" />
               </Box>
               <Stack spacing={0}>
-                <NavItem to="/my-bookmarks" count={sidebar.counts.bookmarks}>
-                  <Text>My bookmarks</Text>
-                </NavItem>
-                <NavItem to="/my-questions" count={sidebar.counts.questions}>
-                  <Text>My questions</Text>
-                </NavItem>
-                <NavItem to="/my-answers" count={sidebar.counts.answers}>
-                  <Text>My answers</Text>
-                </NavItem>
-                <NavItem to="/my-tags" count={sidebar.counts.tags}>
-                  <Text>My tags</Text>
-                </NavItem>
+                <SidebarContext.Consumer>
+                  {(sidebar) => (
+                    <>
+                      <NavItem to="/my-bookmarks" count={sidebar.counts.bookmarks}>
+                        <Text>My bookmarks</Text>
+                      </NavItem>
+                      <NavItem to="/my-questions" count={sidebar.counts.questions}>
+                        <Text>My questions</Text>
+                      </NavItem>
+                      <NavItem to="/my-answers" count={sidebar.counts.answers}>
+                        <Text>My answers</Text>
+                      </NavItem>
+                      <NavItem to="/my-tags" count={sidebar.counts.tags}>
+                        <Text>My tags</Text>
+                      </NavItem>
+                    </>
+                  )}
+                </SidebarContext.Consumer>
               </Stack>
             </Box>
 
@@ -76,6 +88,7 @@ export function Layout() {
             <Route path="/questions/:id" element={<QuestionDetailsPage />} />
             <Route path="/search/:query" element={<SearchPage />} />
             <Route path="/users/:id" element={<UserProfilePage />} />
+            <Route path="/tags" element={<TagsPage />} />
 
             {/* Personal routes */}
             <Route path="/my-bookmarks" element={<MyBookmarksPage />} />

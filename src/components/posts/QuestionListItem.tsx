@@ -2,7 +2,7 @@ import parse from 'html-react-parser';
 import { Box, Flex, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { QuestionType } from '../../interfaces/QuestionType';
 import { Link as RouterLink } from 'react-router-dom';
-import { TagList } from './TagList';
+import { TagList } from '../tags/TagList';
 import { kFormatter } from '../../unitls/k-formatter';
 import { useEffect, useState } from 'react';
 import { getItem } from '../../unitls/local-storage';
@@ -22,8 +22,7 @@ export function QuestionListItem({ item }: Props) {
     : undefined;
 
   useEffect(() => {
-    const visitedQuestionIds = getItem('visited-question-ids') as number[];
-    console.log(typeof item.question_id, item.question_id);
+    const visitedQuestionIds = (getItem('visited-question-ids') || []) as number[];
     setIsVisited(visitedQuestionIds.includes(item.question_id));
   }, []);
 

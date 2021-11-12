@@ -31,8 +31,9 @@ export function SearchPage() {
 
   return (
     <>
-      <Heading>Search results for "{query}"</Heading>
-      {/*<Text color="gray">For: "{query}"</Text>*/}
+      <Heading size="lg" mt="16px">
+        Search results for "{query}"
+      </Heading>
 
       <Stack spacing="8px" mt="16px">
         {/* Skeletons */}

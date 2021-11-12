@@ -6,7 +6,15 @@ export function BackButton(props: ButtonProps) {
   const navigate = useNavigate();
 
   return (
-    <Button size="xs" variant="outline" pl="5px" leftIcon={<IoIosArrowBack/>} iconSpacing="3px" onClick={() => navigate(-1)} {...props}>
+    <Button
+      size="xs"
+      variant="outline"
+      pl="5px"
+      leftIcon={<IoIosArrowBack />}
+      iconSpacing="3px"
+      onClick={() => navigate(-1)}
+      {...props}
+    >
       Back
     </Button>
   );

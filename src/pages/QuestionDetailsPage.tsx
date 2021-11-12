@@ -53,7 +53,10 @@ export function QuestionDetailsPage() {
   }, [id]);
 
   function jumpToAnswers() {
-    answersRef.current?.scrollIntoView({ block: 'center' });
+    const scrollableEl = document.getElementById('scrolling-container');
+
+    answersRef.current?.scrollIntoView({ block: 'start' });
+    scrollableEl?.scrollBy(0, -60);
   }
 
   function openInBrowser() {

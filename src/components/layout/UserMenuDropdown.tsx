@@ -56,7 +56,7 @@ export function UserMenuDropdown() {
       >
         <Text fontSize="12px" fontWeight="semibold">
           {kFormatter(user.data.reputation)}
-          <Text as="span" ml="3px" px="3px" mt="1px" bgColor="green.500" color="whiteAlpha.800" rounded="2px">
+          <Text as="span" ml="3px" px="3px" mt="1px" bgColor="green.400" color="whiteAlpha.800" rounded="2px">
             +25
           </Text>
         </Text>

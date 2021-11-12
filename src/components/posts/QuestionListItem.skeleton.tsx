@@ -1,6 +1,7 @@
 import { Box, Center, Flex, HStack, Skeleton, Stack } from '@chakra-ui/react';
 import { useRef } from 'react';
 import randomRange from '../../unitls/random-range';
+import { TagSkeleton } from '../tags/Tag.skeleton';
 
 export function QuestionListItemSkeleton() {
   const titleWidth = useRef(randomRange(30, 100));
@@ -39,7 +40,7 @@ export function QuestionListItemSkeleton() {
         <Skeleton h="21px" w={`${titleWidth.current}%`} />
         <HStack mt="4px" spacing="4px">
           {[...Array(tagsCount.current)].map((_, index) => (
-            <RandomTag key={index} />
+            <TagSkeleton key={index} />
           ))}
         </HStack>
       </Box>
@@ -47,8 +48,3 @@ export function QuestionListItemSkeleton() {
   );
 }
 
-function RandomTag() {
-  const width = useRef(Math.max(Math.random() * 100, 50));
-
-  return <Skeleton h="23px" w={`${width.current}px`} />;
-}

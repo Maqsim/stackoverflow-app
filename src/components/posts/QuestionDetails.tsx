@@ -1,6 +1,6 @@
 import { Box, Heading, HStack, Stack } from '@chakra-ui/react';
 import parse from 'html-react-parser';
-import { TagList } from './TagList';
+import { TagList } from '../tags/TagList';
 import { UserBadge } from './UserBadge';
 import { CommentListItem } from '../comments/CommentListItem';
 import { CommentForm } from '../comments/CommentForm';

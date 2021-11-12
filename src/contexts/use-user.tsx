@@ -2,7 +2,6 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { UserType } from '../interfaces/UserType';
 import stackoverflow from '../unitls/stackexchange-api';
 import { socketClient } from '../unitls/stackexchange-socket-client';
-import { notification } from '../unitls/notitification';
 
 export type UserContextState = {
   data: UserType;

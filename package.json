@@ -78,7 +78,8 @@
     "forge": {
       "packagerConfig": {
         "name": "StackOverflow",
-        "executableName": "stackoverflow",
+        "icon": "./assets/icon",
+        "executableName": "StackOverflow",
         "extraResource": [
           "assets"
         ]
@@ -95,6 +96,14 @@
                   "html": "./public/index.html",
                   "js": "./src/index.tsx",
                   "name": "main_window",
+                  "preload": {
+                    "js": "./electron/bridge.ts"
+                  }
+                },
+                {
+                  "html": "./public/overlay.html",
+                  "js": "./src/overlay.tsx",
+                  "name": "overlay_window",
                   "preload": {
                     "js": "./electron/bridge.ts"
                   }

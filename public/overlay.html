@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://jmblog.github.io/ https://cdn.jsdelivr.net/ https://api.stackexchange.com/; img-src *">
+
+  <title>StackOverflow</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <link rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night-eighties.min.css">
+  <!--  <link rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/github-v2.min.css">-->
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color 200ms ease;
+      will-change: background-color;
+
+      padding: 0 50px;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body.in {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    #container {
+      opacity: 0;
+      transform: scale(0.98);
+      transition-property: opacity transform;
+      transition-duration: 200ms;
+      transition-timing-function: ease;
+      will-change: opacity, transform;
+
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 16px;
+      height: 100vh;
+      overflow: auto;
+      box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    #container.in {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</head>
+<body>
+<pre class="prettyprint" id="container"></pre>
+</body>
+</html>
