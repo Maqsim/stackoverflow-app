@@ -8,6 +8,9 @@ export const api = {
   openCodeInPreview: (html: string) => {
     ipcRenderer.invoke(InvokeEnum.OPEN_CODE_IN_PREVIEW, html);
   },
+  openImageInPreview(src: string) {
+    ipcRenderer.invoke(InvokeEnum.OPEN_IMAGE_IN_PREVIEW, src);
+  },
   hideOverlay: () => {
     ipcRenderer.invoke(InvokeEnum.HIDE_OVERLAY);
   },

@@ -109,6 +109,11 @@ async function registerListeners() {
     overlayWindow?.show();
   });
 
+  ipcMain.handle(InvokeEnum.OPEN_IMAGE_IN_PREVIEW, (event, url: string) => {
+    overlayWindow?.webContents.send('init-image', url);
+    overlayWindow?.show();
+  });
+
   ipcMain.handle(InvokeEnum.HIDE_OVERLAY, () => {
     overlayWindow?.hide();
   });

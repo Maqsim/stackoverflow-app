@@ -1,7 +1,7 @@
 import { Flex, HStack, Image, Text } from '@chakra-ui/react';
 import { CommentType } from '../../interfaces/CommentType';
 import parse, { domToReact, Element } from 'html-react-parser';
-import { Code } from '../posts/Code';
+import { Code } from '../ui/Code';
 import dayjs from 'dayjs';
 import { GoTriangleUp } from 'react-icons/go';
 import { useState } from 'react';

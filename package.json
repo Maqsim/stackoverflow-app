@@ -102,7 +102,7 @@
                 },
                 {
                   "html": "./public/overlay.html",
-                  "js": "./src/overlay.tsx",
+                  "js": "./src/overlay.ts",
                   "name": "overlay_window",
                   "preload": {
                     "js": "./electron/bridge.ts"

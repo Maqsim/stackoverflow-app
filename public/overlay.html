@@ -27,15 +27,19 @@
       padding: 0 50px;
       margin: 0;
       overflow: hidden;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     body.in {
       background-color: rgba(0, 0, 0, 0.3);
     }
 
-    #container {
+    #code-preview {
       opacity: 0;
-      transform: scale(0.98);
+      transform: scale3d(0.98, 0.98, 1);
       transition-property: opacity transform;
       transition-duration: 200ms;
       transition-timing-function: ease;
@@ -51,13 +55,27 @@
       box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.4);
     }
 
-    #container.in {
+    #image-preview {
+      opacity: 0;
+      transform: scale3d(0.98, 0.98, 1);
+      transition-property: opacity transform;
+      transition-duration: 200ms;
+      transition-timing-function: ease;
+      will-change: opacity, transform;
+    }
+
+    #code-preview.in,
+    #image-preview.in {
       opacity: 1;
       transform: scale(1);
     }
   </style>
 </head>
 <body>
-<pre class="prettyprint" id="container"></pre>
+<!-- Code preview -->
+<pre class="prettyprint" id="code-preview"></pre>
+
+<!-- Image preview -->
+<div id="image-preview"></div>
 </body>
 </html>

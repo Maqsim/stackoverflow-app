@@ -4,7 +4,7 @@ import { QuestionType } from '../../interfaces/QuestionType';
 import { Link as RouterLink } from 'react-router-dom';
 import { TagList } from '../tags/TagList';
 import { kFormatter } from '../../unitls/k-formatter';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getItem } from '../../unitls/local-storage';
 
 type Props = {
@@ -12,7 +12,8 @@ type Props = {
 };
 
 export function QuestionListItem({ item }: Props) {
-  const [isVisited, setIsVisited] = useState(false);
+  const visitedQuestionIds = (getItem('visited-question-ids') || []) as number[];
+  const [isVisited] = useState(visitedQuestionIds.includes(item.question_id));
   const hoverBg = useColorModeValue('gray.50', 'gray.700');
   const answersFactoidStyles = item.is_answered
     ? {
@@ -20,11 +21,6 @@ export function QuestionListItem({ item }: Props) {
         color: 'white'
       }
     : undefined;
-
-  useEffect(() => {
-    const visitedQuestionIds = (getItem('visited-question-ids') || []) as number[];
-    setIsVisited(visitedQuestionIds.includes(item.question_id));
-  }, []);
 
   return (
     <RouterLink to={`/questions/${item.question_id}`} state={item}>
