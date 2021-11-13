@@ -2,18 +2,17 @@ const bodyEl = document.body;
 const containerEl = document.querySelector('#container');
 
 window.Main.on('init-html', (html: string) => {
-  containerEl?.classList.remove('prettyprinted', 'in');
+  requestAnimationFrame(() => {
+    containerEl?.classList.remove('prettyprinted', 'in');
+    bodyEl?.classList.add('in');
+    containerEl?.classList.add('in');
+  });
 
   if (containerEl) {
     containerEl.textContent = html;
 
     requestAnimationFrame(() => {
       window.PR.prettyPrint();
-
-      requestAnimationFrame(() => {
-        bodyEl?.classList.add('in');
-        containerEl?.classList.add('in');
-      });
     });
   }
 });

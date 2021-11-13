@@ -100,7 +100,7 @@ export function TagTile({ tag, tagPreferences }: Props) {
                 <Text color="green.300" mr="3px" mt="-1px" fontSize="15px">
                   <FiCheck />
                 </Text>
-                Unwatch
+                Watching
               </>
             ) : (
               'Watch'
@@ -118,10 +118,10 @@ export function TagTile({ tag, tagPreferences }: Props) {
           >
             {isIgnoring ? (
               <>
-                <Text mr="3px" mt="-2px" fontSize="14px">
+                <Text mr="3px" mt="-2px" fontSize="13px">
                   <GoCircleSlash />
                 </Text>
-                Unwatch
+                Ignoring
               </>
             ) : (
               'Ignore'

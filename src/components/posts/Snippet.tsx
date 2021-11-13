@@ -18,6 +18,7 @@ export const Snippet = memo(({ children }: Props) => {
   const lineCount = _children.split(NEW_LINE_REG_EXP).length;
   const shouldZip = lineCount > 20;
   const shouldPreview = lineCount > 40;
+  const previewButtonRef = useRef(null);
   const bgColor = useColorModeValue('#f6f6f6', 'gray.700');
   const [isZipped, setIsZipped] = useBoolean(shouldZip);
   const [scrollPosition, setScrollPosition] = useState<number | undefined>();
@@ -56,6 +57,26 @@ export const Snippet = memo(({ children }: Props) => {
 
   function openInPreview() {
     window.Main.openCodeInPreview(_children);
+
+    setTimeout(() => {
+      // Unfocus the button to hide the tooltip
+      (previewButtonRef.current as unknown as HTMLButtonElement).blur();
+
+      // Zip when preview is opened
+      if (!isZipped) {
+        setIsZipped.on();
+      }
+    }, 200);
+  }
+
+  function shakePreviewButton() {
+    if (shouldPreview && isZipped && previewButtonRef && previewButtonRef.current) {
+      (previewButtonRef.current as unknown as HTMLButtonElement).classList.add('shake');
+
+      setTimeout(() => {
+        (previewButtonRef.current as unknown as HTMLButtonElement).classList.remove('shake');
+      }, 820); // Sync with .shake animation duration
+    }
   }
 
   return (
@@ -80,6 +101,7 @@ export const Snippet = memo(({ children }: Props) => {
         {shouldPreview && (
           <Tooltip label="Open in Preview" placement="top">
             <Button
+              ref={previewButtonRef}
               boxShadow="base"
               size="sm"
               bgColor="white"
@@ -119,6 +141,7 @@ export const Snippet = memo(({ children }: Props) => {
             size="xs"
             position="absolute"
             onClick={toggleZip}
+            onMouseEnter={shakePreviewButton}
             bottom="0"
             left="50%"
             transform="translate(-50%, 50%)"

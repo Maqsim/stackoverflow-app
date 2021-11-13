@@ -2,8 +2,6 @@ import { app, BrowserWindow, clipboard, ipcMain, screen, shell } from 'electron'
 import { auth } from '../src/unitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 
-app.disableHardwareAcceleration();
-
 let mainWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
 
