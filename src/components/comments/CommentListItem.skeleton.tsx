@@ -1,6 +1,6 @@
 import { Flex, HStack, Skeleton } from '@chakra-ui/react';
 import { useRef } from 'react';
-import randomRange from '../../unitls/random-range';
+import randomRange from '../../uitls/random-range';
 
 export function CommentListItemSkeleton() {
   const commentWidth = useRef(randomRange(40, 100));

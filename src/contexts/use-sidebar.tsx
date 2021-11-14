@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import stackoverflow from '../unitls/stackexchange-api';
+import stackoverflow from '../uitls/stackexchange-api';
 import { useUser } from './use-user';
 
 type CountsType = {

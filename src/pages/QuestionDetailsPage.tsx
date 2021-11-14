@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import stackoverflow from '../unitls/stackexchange-api';
+import stackoverflow from '../uitls/stackexchange-api';
 import { useLocation, useParams } from 'react-router-dom';
 import { Box, Button, ButtonGroup, Flex, Heading, HStack, Spinner, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { QuestionType } from '../interfaces/QuestionType';
@@ -7,9 +7,9 @@ import { BackButton } from '../components/layout/BackButton';
 import { RiEarthFill, RiFileCopyFill } from 'react-icons/ri';
 import { QuestionDetails } from '../components/posts/QuestionDetails';
 import { AnswerDetails } from '../components/posts/AnswerDetails';
-import { socketClient } from '../unitls/stackexchange-socket-client';
-import { notification } from '../unitls/notitification';
-import { getItem, setItem } from '../unitls/local-storage';
+import { socketClient } from '../uitls/stackexchange-socket-client';
+import { notification } from '../uitls/notitification';
+import { getItem, setItem } from '../uitls/local-storage';
 
 let tooltipTimerId: NodeJS.Timer;
 

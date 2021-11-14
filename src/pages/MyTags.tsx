@@ -1,7 +1,7 @@
 import { Heading } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { TagPreferenceType } from '../interfaces/TagPreferenceType';
-import stackoverflow from '../unitls/stackexchange-api';
+import stackoverflow from '../uitls/stackexchange-api';
 import { EditableTagList } from '../components/tags/EditableTagList';
 import { useSidebar } from '../contexts/use-sidebar';
 

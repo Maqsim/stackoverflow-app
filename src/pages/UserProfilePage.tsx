@@ -19,8 +19,8 @@ import {
 import { UserType } from '../interfaces/UserType';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
 import { BackButton } from '../components/layout/BackButton';
-import { kFormatter } from '../unitls/k-formatter';
-import stackoverflow from '../unitls/stackexchange-api';
+import { kFormatter } from '../uitls/k-formatter';
+import stackoverflow from '../uitls/stackexchange-api';
 import { AnswerType } from '../interfaces/AnswerType';
 import { QuestionType } from '../interfaces/QuestionType';
 import parse from 'html-react-parser';

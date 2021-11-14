@@ -2,7 +2,7 @@ import { Tag } from './Tag';
 import { Box, Button, HStack, SkeletonText, Text } from '@chakra-ui/react';
 import { TagType } from '../../interfaces/TagType';
 import { useEffect, useState } from 'react';
-import stackoverflow from '../../unitls/stackexchange-api';
+import stackoverflow from '../../uitls/stackexchange-api';
 import { TagWikiType } from '../../interfaces/TagWikiType';
 import { FiCheck } from 'react-icons/fi';
 import { GoCircleSlash } from 'react-icons/go';

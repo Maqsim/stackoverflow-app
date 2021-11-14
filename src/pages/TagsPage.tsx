@@ -1,6 +1,6 @@
 import { Heading, SimpleGrid } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import stackoverflow from '../unitls/stackexchange-api';
+import stackoverflow from '../uitls/stackexchange-api';
 import { TagType } from '../interfaces/TagType';
 import { TagTile } from '../components/tags/TagTile';
 import { TagTileSkeleton } from '../components/tags/TagTile.skeleton';

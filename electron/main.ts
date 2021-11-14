@@ -1,5 +1,5 @@
 import { app, BrowserWindow, clipboard, ipcMain, screen, shell } from 'electron';
-import { auth } from '../src/unitls/stackexchange-auth';
+import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 
 let mainWindow: BrowserWindow | null;

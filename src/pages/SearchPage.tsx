@@ -1,7 +1,7 @@
 import { Heading, Stack, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import stackoverflow from '../unitls/stackexchange-api';
+import stackoverflow from '../uitls/stackexchange-api';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { QuestionListItem } from '../components/posts/QuestionListItem';

@@ -3,9 +3,9 @@ import { Box, Flex, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/re
 import { QuestionType } from '../../interfaces/QuestionType';
 import { Link as RouterLink } from 'react-router-dom';
 import { TagList } from '../tags/TagList';
-import { kFormatter } from '../../unitls/k-formatter';
+import { kFormatter } from '../../uitls/k-formatter';
 import { useState } from 'react';
-import { getItem } from '../../unitls/local-storage';
+import { getItem } from '../../uitls/local-storage';
 
 type Props = {
   item: QuestionType;

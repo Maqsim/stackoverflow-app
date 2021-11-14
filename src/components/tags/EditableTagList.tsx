@@ -1,10 +1,11 @@
 import { Box, Button, Center, Input, Spinner, Text } from '@chakra-ui/react';
 import { TagList } from './TagList';
-import { useEffect, useRef, useState } from 'react';
-import stackoverflow from '../../unitls/stackexchange-api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import stackoverflow from '../../uitls/stackexchange-api';
 import { TagType } from '../../interfaces/TagType';
 import { TagSkeleton } from './Tag.skeleton';
-import randomRange from '../../unitls/random-range';
+import randomRange from '../../uitls/random-range';
+import { debounce } from 'lodash';
 
 type Props = {
   tags: string[];
@@ -23,17 +24,23 @@ export function EditableTagList({ tags, onAdd, onRemove, showSkeletons }: Props)
   const [foundTags, setFoundTags] = useState<TagType[]>([]);
   const skeletonsTagCount = useRef(randomRange(20, 30));
 
-  useEffect(() => {
-    if (input.trim().length) {
-      setIsDropdownShown(true);
-      setIsDropdownLoading(true);
-
-      stackoverflow.get('tags', { inname: input }).then((response: any) => {
+  const searchTags = useCallback(
+    debounce((query: string) => {
+      stackoverflow.get('tags', { inname: query }).then((response: any) => {
         const filteredTags = response.items.filter((t: TagType) => !tags.includes(t.name));
 
         setFoundTags(filteredTags);
         setIsDropdownLoading(false);
       });
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    if (input.trim().length) {
+      setIsDropdownShown(true);
+      setIsDropdownLoading(true);
+      searchTags(input);
     } else {
       setIsDropdownShown(false);
       setFoundTags([]);

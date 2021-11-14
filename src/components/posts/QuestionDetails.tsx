@@ -6,7 +6,7 @@ import { CommentListItem } from '../comments/CommentListItem';
 import { CommentForm } from '../comments/CommentForm';
 import { useState } from 'react';
 import { VotingControls } from './VotingControls';
-import parseBody from '../../unitls/parse-body';
+import parseBody from '../../uitls/parse-body';
 import { QuestionType } from '../../interfaces/QuestionType';
 
 type Props = {

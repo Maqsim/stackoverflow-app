@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import randomRange from '../../unitls/random-range';
+import randomRange from '../../uitls/random-range';
 import { Skeleton } from '@chakra-ui/react';
 
 export function TagSkeleton() {

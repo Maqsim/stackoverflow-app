@@ -1,6 +1,6 @@
 import { Box, Center, Flex, HStack, Skeleton, Stack } from '@chakra-ui/react';
 import { useRef } from 'react';
-import randomRange from '../../unitls/random-range';
+import randomRange from '../../uitls/random-range';
 import { TagSkeleton } from '../tags/Tag.skeleton';
 
 export function QuestionListItemSkeleton() {
