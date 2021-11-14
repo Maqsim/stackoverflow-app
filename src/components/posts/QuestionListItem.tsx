@@ -73,7 +73,7 @@ export function QuestionListItem({ item }: Props) {
             {parse(item.title)}
           </Text>
 
-          <Box mt="4px">
+          <Box mt="4px" h="24px">
             <TagList tags={item.tags} />
           </Box>
         </Box>

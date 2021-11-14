@@ -32,8 +32,20 @@ const stackoverflow = {
   getLoggedInUser: () => {
     return stackoverflow.get('me', {}).then((response: any) => response.items[0]);
   },
-  post: (url: string, data: unknown) => {
-    return axios.post(buildStackOverflowUrl(url), data);
+  post: (url: string, data: object) => {
+    const formData = new FormData();
+    const payload: any = {
+      site: 'stackoverflow',
+      key: 'bdFSxniGkNbU3E*jsj*28w((',
+      access_token: localStorage.getItem('token'),
+      ...data
+    };
+
+    for (const key in payload) {
+      formData.append(key, payload[key]);
+    }
+
+    return axios.post(buildStackOverflowUrl(url), formData);
   }
 };
 

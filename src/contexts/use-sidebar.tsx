@@ -51,12 +51,12 @@ export const SidebarProvider = ({ children }: Props) => {
       filter: 'total'
     });
     const answerCountResponse: any = await stackoverflow.get('me/answers', { filter: 'total' });
-    const tagCountResponse: any = await stackoverflow.get('me/tags', { filter: 'total' });
+    const tagCountResponse: any = await stackoverflow.get('me/tag-preferences', {});
 
     setBookmarkCount(bookmarkCountResponse.total);
     setQuestionCount(questionCountResponse.total);
     setAnswerCount(answerCountResponse.total);
-    setTagCount(tagCountResponse.total);
+    setTagCount(tagCountResponse.items.length);
   }
 
   useEffect(() => {

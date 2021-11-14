@@ -5,5 +5,5 @@ import { Skeleton } from '@chakra-ui/react';
 export function TagSkeleton() {
   const width = useRef(randomRange(50, 100));
 
-  return <Skeleton h="23px" w={`${width.current}px`} />;
+  return <Skeleton display="inline-flex" mr="4px" h="24px" w={`${width.current}px`} />;
 }

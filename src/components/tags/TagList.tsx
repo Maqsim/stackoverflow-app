@@ -2,13 +2,17 @@ import { Tag } from './Tag';
 
 type Props = {
   tags: string[];
+  isRemovable?: boolean;
+  onRemove?: (tag: string) => void;
 };
 
-export function TagList({ tags }: Props) {
+export function TagList({ tags, isRemovable, onRemove }: Props) {
   return (
     <>
       {tags.map((tag) => (
-        <Tag key={tag}>{tag}</Tag>
+        <Tag isRemovable={isRemovable} onRemove={onRemove} key={tag}>
+          {tag}
+        </Tag>
       ))}
     </>
   );

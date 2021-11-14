@@ -9,7 +9,16 @@ export function QuestionListItemSkeleton() {
 
   return (
     <Flex align="center" py="8px">
-      <HStack h="50px" flexShrink={0} mr="16px" spacing="2px" px="4px" border="1px solid" borderColor="gray.200" borderRadius="5px">
+      <HStack
+        h="50px"
+        flexShrink={0}
+        mr="16px"
+        spacing="2px"
+        px="4px"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="5px"
+      >
         <Stack p="4px" spacing="4px">
           <Center>
             <Skeleton w="18px" h="21px" />
@@ -37,12 +46,12 @@ export function QuestionListItemSkeleton() {
       </HStack>
 
       <Box flexGrow={1}>
-        <Skeleton h="21px" w={`${titleWidth.current}%`} />
-        <HStack mt="4px" spacing="4px">
+        <Skeleton h="16px" w={`${titleWidth.current}%`} />
+        <Box mt="7px" h="24px">
           {[...Array(tagsCount.current)].map((_, index) => (
             <TagSkeleton key={index} />
           ))}
-        </HStack>
+        </Box>
       </Box>
     </Flex>
   );

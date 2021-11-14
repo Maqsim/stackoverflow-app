@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
 import stackoverflow from '../unitls/stackexchange-api';
-import { Button, Stack } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
-import { useSidebar } from '../contexts/use-sidebar';
 
 export function MyBookmarksPage() {
-  const sidebar = useSidebar()
   const [isLoaded, setIsLoaded] = useState(false);
   const [questions, setQuestions] = useState<QuestionType[]>([]);
 

@@ -16,6 +16,7 @@ import { SidebarContext, useSidebar } from '../../contexts/use-sidebar';
 import { TopBar } from './TopBar';
 import { SearchPage } from '../../pages/SearchPage';
 import { TagsPage } from '../../pages/TagsPage';
+import { MyTagsPage } from '../../pages/MyTags';
 
 export function Layout() {
   return (
@@ -93,6 +94,7 @@ export function Layout() {
             {/* Personal routes */}
             <Route path="/my-bookmarks" element={<MyBookmarksPage />} />
             <Route path="/my-questions" element={<MyQuestionsPage />} />
+            <Route path="/my-tags" element={<MyTagsPage />} />
           </Routes>
         </Box>
       </Flex>

@@ -25,7 +25,7 @@ export function SearchBar() {
   }
 
   // TODO refactor this shit
-  function searchOnEnter(event: any) {
+  function handleEnter(event: any) {
     const isEnter = event.key === 'Enter';
     const isEsc = event.key === 'Escape';
 
@@ -67,9 +67,9 @@ export function SearchBar() {
       <FormControl display={isInputVisible ? 'block' : 'none'}>
         <Input
           ref={inputRef}
-          onInput={() => setInput(inputRef.current?.value)}
+          onChange={(event) => setInput(event.target.value)}
           onBlur={hideInput}
-          onKeyDown={searchOnEnter}
+          onKeyDown={handleEnter}
           bgColor="white"
           rounded="5px"
           size="xs"
