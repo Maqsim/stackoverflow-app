@@ -85,7 +85,7 @@ export function EditableTagList({ tags, onAdd, onRemove, showSkeletons }: Props)
       {!showSkeletons && <TagList tags={tags} isRemovable onRemove={onRemove} />}
 
       {!showSkeletons && formState === 'button' && (
-        <Button ref={buttonRef} size="xs" variant="outline" rounded="3px" onClick={handleAddClick}>
+        <Button ref={buttonRef} size="xs" variant="outline" rounded="3px" mb="4px" onClick={handleAddClick}>
           Add tag...
         </Button>
       )}

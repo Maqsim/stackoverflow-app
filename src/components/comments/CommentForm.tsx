@@ -16,6 +16,7 @@ export function CommentForm({ postId, onComment, hideControls }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const inputWrapperRef = useRef<HTMLDivElement | null>(null);
   const user = useUser();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [input, setInput] = useState('');
   const [showError, setShowError] = useState(false);
   const isInvalid = input.length > 0 && input.length < 15;
@@ -44,6 +45,8 @@ export function CommentForm({ postId, onComment, hideControls }: Props) {
       return;
     }
 
+    setIsSubmitting(true);
+
     const response: any = await stackoverflow.post(`posts/${postId}/comments/add`, {
       body: input,
       filter: '!bFsxHu(AR4ev8W',
@@ -59,9 +62,15 @@ export function CommentForm({ postId, onComment, hideControls }: Props) {
     onComment(postedComment);
 
     // Clear state
+    setIsSubmitting(false);
     setShowError(false);
     setInput('');
     inputRef.current.value = '';
+
+    // Restore input focus after disabled state
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
   }
 
   function trim(str: string) {
@@ -78,6 +87,7 @@ export function CommentForm({ postId, onComment, hideControls }: Props) {
           ref={inputRef}
           onChange={(event) => setInput(trim(event.target.value))}
           onKeyDown={handleSubmit}
+          isDisabled={isSubmitting}
           size="xs"
           placeholder="Your comment..."
         />

@@ -6,6 +6,7 @@ import type { AnswerType } from '../../interfaces/AnswerType';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
 import { useState } from 'react';
+import { CommentType } from '../../interfaces/CommentType';
 
 type Props = {
   answer: AnswerType;
@@ -13,6 +14,7 @@ type Props = {
 
 export function AnswerDetails({ answer }: Props) {
   const [score, setScore] = useState<number>(answer.score);
+  const [comments, setComments] = useState<CommentType[]>(answer.comments || []);
 
   function handleUpvote() {
     setScore(score + 1);
@@ -20,6 +22,10 @@ export function AnswerDetails({ answer }: Props) {
 
   function handleDownvote() {
     setScore(score - 1);
+  }
+
+  function handleCommentAdd(comment: CommentType) {
+    setComments([...comments, comment]);
   }
 
   return (
@@ -37,10 +43,10 @@ export function AnswerDetails({ answer }: Props) {
         </HStack>
 
         <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
-          {answer.comments?.map((comment) => (
+          {comments?.map((comment) => (
             <CommentListItem comment={comment} key={comment.comment_id} />
           ))}
-          <CommentForm hideControls={!answer.comments?.length} />
+          <CommentForm postId={answer.answer_id} onComment={handleCommentAdd} hideControls={!comments?.length} />
         </Stack>
       </Box>
     </HStack>

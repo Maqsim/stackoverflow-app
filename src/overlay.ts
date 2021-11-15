@@ -58,6 +58,7 @@ window.Main.on('init-image', (url: string) => {
 
   imageEl = document.createElement('img');
   imageEl.src = url;
+  imageEl.style.maxHeight = '100vh';
   imagePreviewEl.appendChild(imageEl);
   bodyEl.addEventListener('wheel', onZoom);
 

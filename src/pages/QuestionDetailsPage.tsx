@@ -114,33 +114,6 @@ export function QuestionDetailsPage() {
 
       <QuestionDetails question={question} />
 
-      {/*{question.answer_count > 0 ? (*/}
-      {/*  <Box>*/}
-      {/*    <Heading size="md" mb="32px" mt="48px" ref={answersRef}>*/}
-      {/*      {question.answer_count} answers*/}
-      {/*      <ButtonGroup size="xs" isAttached variant="outline" float="right">*/}
-      {/*        <Button mr="-px" onClick={openInBrowser}>*/}
-      {/*          Active*/}
-      {/*        </Button>*/}
-      {/*        <Button onClick={copyUrl}>Oldest</Button>*/}
-      {/*        <Button onClick={copyUrl} isActive>*/}
-      {/*          Votes*/}
-      {/*        </Button>*/}
-      {/*      </ButtonGroup>*/}
-      {/*    </Heading>*/}
-
-      {/*    <Stack spacing="48px">*/}
-      {/*      {!isAnswersLoaded*/}
-      {/*        ? [...Array(question.answer_count)].map((_, index) => <AnswerDetailsSkeleton key={index} />)*/}
-      {/*        : answers.map((answer) => <AnswerDetails answer={answer} key={answer.answer_id} />)}*/}
-      {/*    </Stack>*/}
-      {/*  </Box>*/}
-      {/*) : (*/}
-      {/*  <Text mb="32px" color="gray" mt="48px" textAlign="center" ref={answersRef}>*/}
-      {/*    There are no answers yet.*/}
-      {/*  </Text>*/}
-      {/*)}*/}
-
       {question.answer_count > 0 ? (
         <Box>
           <Heading size="md" mb="32px" mt="48px" ref={answersRef}>
