@@ -44,7 +44,7 @@ function createWindow() {
     frame: false,
     show: false,
     transparent: true,
-    roundedCorners: false,
+    roundedCorners: true, // TODO make it false, fix app quiting
     resizable: false,
     movable: false,
     minimizable: false,

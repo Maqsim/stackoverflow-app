@@ -31,6 +31,13 @@
       perspective: 1000px;
     }
 
+    .shake-out {
+      animation: shake-out 500ms cubic-bezier(.36,.07,.19,.97);
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+
     @keyframes shake {
       10%, 90% {
         transform: translate3d(-1px, 0, 0);
@@ -47,6 +54,25 @@
       40%, 60% {
         transform: translate3d(4px, 0, 0);
       }
+    }
+
+    @keyframes shake-out {
+      10% {
+        transform: translate3d(-3px, 0, 0);
+      }
+
+      20% {
+        transform: translate3d(2px, 0, 0);
+      }
+
+      40% {
+        transform: translate3d(-2px, 0, 0);
+      }
+
+      50% {
+        transform: translate3d(1px, 0, 0);
+      }
+
     }
   </style>
 

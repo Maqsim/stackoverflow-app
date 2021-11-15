@@ -45,7 +45,7 @@ const stackoverflow = {
       formData.append(key, payload[key]);
     }
 
-    return axios.post(buildStackOverflowUrl(url), formData);
+    return axios.post(buildStackOverflowUrl(url), formData).then((response) => response.data);
   }
 };
 
