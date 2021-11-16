@@ -76,8 +76,8 @@ app.stage.addChild(bezier);
 
 plates.forEach((plate, i) => {
   const tween = gsap.to(plate, {
-    duration: 1,
-    repeat: 25,
+    duration: 2,
+    repeat: 50,
     delay: i * 0.15,
     ease: 'cubic-bezier(0,.95,.95,.05)',
     motionPath: {
@@ -87,7 +87,7 @@ plates.forEach((plate, i) => {
       useRadians: true
     },
     onUpdate: () => {
-      plate.alpha = tween.progress();
+      plate.alpha = tween.progress() * 1.2;
     }
   });
 });

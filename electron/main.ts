@@ -44,6 +44,7 @@ function createWindows() {
     title: 'StackOverflow starting...',
     frame: false,
     resizable: false,
+    closable: false,
     backgroundColor: '#2d3748',
     webPreferences: {
       sandbox: true,
@@ -141,7 +142,8 @@ async function registerListeners() {
 
   ipcMain.on('main-window-ready', (event) => {
     mainWindow?.show();
-    loaderWindow?.hide();
+    loaderWindow?.destroy();
+    loaderWindow = null;
   });
 
   ipcMain.on('online', (event) => {
@@ -171,7 +173,7 @@ app.on('window-all-closed', () => {
 
 // TODO Implement cmd+q
 app.on('activate', () => {
-  if (!mainWindow?.isVisible() && !loaderWindow?.isVisible()) {
+  if (!mainWindow?.isVisible() && !loaderWindow) {
     mainWindow?.show();
   }
 });
