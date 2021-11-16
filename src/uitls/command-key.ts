@@ -1,12 +1,12 @@
-const ACTION_KEY_DEFAULT = ['Ctrl', 'Control'];
-const ACTION_KEY_APPLE = ['⌘', 'Command'];
+const ACTION_KEY_DEFAULT = 'Ctrl';
+const ACTION_KEY_APPLE = '⌘';
 
-export function commandKey(key: string[], filled = false) {
-  const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+export function commandKey(key: string[]) {
+  const isMac = process.platform === 'darwin';
 
   if (!isMac) {
-    return `${ACTION_KEY_APPLE[+filled]} ${key.join(' ')}`;
+    return `${ACTION_KEY_APPLE} ${key.join(' ')}`;
   } else {
-    return `${ACTION_KEY_DEFAULT[+filled]} ${key.join(' ')}`;
+    return `${ACTION_KEY_DEFAULT} ${key.join(' ')}`;
   }
 }
