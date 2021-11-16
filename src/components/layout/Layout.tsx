@@ -1,5 +1,5 @@
 import { Box, DarkMode, Divider, Flex, Image, Stack, Text } from '@chakra-ui/react';
-import Logo from '../../../assets/stackoverflow-logo.png';
+import Logo from '../../../assets/stackoverflow-logo.svg';
 import { NavItem } from './NavItem';
 import { Route, Routes } from 'react-router-dom';
 import { QuestionsPage } from '../../pages/QuestionsPage';
