@@ -2,9 +2,9 @@ const ACTION_KEY_DEFAULT = 'Ctrl';
 const ACTION_KEY_APPLE = '⌘';
 
 export function commandKey(key: string[]) {
-  const isMac = process.platform === 'darwin';
+  const isMac = /^mac/i.test(navigator.platform);
 
-  if (!isMac) {
+  if (isMac) {
     return `${ACTION_KEY_APPLE} ${key.join(' ')}`;
   } else {
     return `${ACTION_KEY_DEFAULT} ${key.join(' ')}`;
