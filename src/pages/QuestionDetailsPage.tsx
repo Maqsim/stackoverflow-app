@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import stackoverflow from '../unitls/stackexchange-api';
+import stackoverflow from '../uitls/stackexchange-api';
 import { useLocation, useParams } from 'react-router-dom';
 import { Box, Button, ButtonGroup, Flex, Heading, HStack, Spinner, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { QuestionType } from '../interfaces/QuestionType';
@@ -7,8 +7,9 @@ import { BackButton } from '../components/layout/BackButton';
 import { RiEarthFill, RiFileCopyFill } from 'react-icons/ri';
 import { QuestionDetails } from '../components/posts/QuestionDetails';
 import { AnswerDetails } from '../components/posts/AnswerDetails';
-import { socketClient } from '../unitls/stackexchange-socket-client';
-import { notification } from '../unitls/notitification';
+import { socketClient } from '../uitls/stackexchange-socket-client';
+import { notification } from '../uitls/notitification';
+import { getItem, setItem } from '../uitls/local-storage';
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -21,6 +22,17 @@ export function QuestionDetailsPage() {
   const answersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    // Remember visited question
+    const visitedQuestionIds = (getItem('visited-question-ids') as number[]) || [];
+    if (!visitedQuestionIds.includes(parseInt(id, 10))) {
+      visitedQuestionIds.push(parseInt(id, 10));
+      setItem('visited-question-ids', visitedQuestionIds);
+    }
+
     if (!question) {
       stackoverflow
         .get(`questions/${id}`, {
@@ -38,10 +50,13 @@ export function QuestionDetailsPage() {
     return () => {
       socketClient.off(`1-question-${id}`);
     };
-  }, []);
+  }, [id]);
 
   function jumpToAnswers() {
-    answersRef.current?.scrollIntoView({ block: 'center' });
+    const scrollableEl = document.getElementById('scrolling-container');
+
+    answersRef.current?.scrollIntoView({ block: 'start' });
+    scrollableEl?.scrollBy(0, -60);
   }
 
   function openInBrowser() {
@@ -98,33 +113,6 @@ export function QuestionDetailsPage() {
       </Flex>
 
       <QuestionDetails question={question} />
-
-      {/*{question.answer_count > 0 ? (*/}
-      {/*  <Box>*/}
-      {/*    <Heading size="md" mb="32px" mt="48px" ref={answersRef}>*/}
-      {/*      {question.answer_count} answers*/}
-      {/*      <ButtonGroup size="xs" isAttached variant="outline" float="right">*/}
-      {/*        <Button mr="-px" onClick={openInBrowser}>*/}
-      {/*          Active*/}
-      {/*        </Button>*/}
-      {/*        <Button onClick={copyUrl}>Oldest</Button>*/}
-      {/*        <Button onClick={copyUrl} isActive>*/}
-      {/*          Votes*/}
-      {/*        </Button>*/}
-      {/*      </ButtonGroup>*/}
-      {/*    </Heading>*/}
-
-      {/*    <Stack spacing="48px">*/}
-      {/*      {!isAnswersLoaded*/}
-      {/*        ? [...Array(question.answer_count)].map((_, index) => <AnswerDetailsSkeleton key={index} />)*/}
-      {/*        : answers.map((answer) => <AnswerDetails answer={answer} key={answer.answer_id} />)}*/}
-      {/*    </Stack>*/}
-      {/*  </Box>*/}
-      {/*) : (*/}
-      {/*  <Text mb="32px" color="gray" mt="48px" textAlign="center" ref={answersRef}>*/}
-      {/*    There are no answers yet.*/}
-      {/*  </Text>*/}
-      {/*)}*/}
 
       {question.answer_count > 0 ? (
         <Box>

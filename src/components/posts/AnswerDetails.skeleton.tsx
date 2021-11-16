@@ -1,7 +1,7 @@
 import { Box, HStack, SkeletonText } from '@chakra-ui/react';
 import { VotingControls } from './VotingControls';
 import { useRef } from 'react';
-import randomRange from '../../unitls/random-range';
+import randomRange from '../../uitls/random-range';
 
 export function AnswerDetailsSkeleton() {
   const lineCount = useRef(randomRange(7, 12));

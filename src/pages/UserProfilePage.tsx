@@ -17,15 +17,16 @@ import {
   Text
 } from '@chakra-ui/react';
 import { UserType } from '../interfaces/UserType';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useParams } from 'react-router-dom';
 import { BackButton } from '../components/layout/BackButton';
-import { kFormatter } from '../unitls/k-formatter';
-import stackoverflow from '../unitls/stackexchange-api';
+import { kFormatter } from '../uitls/k-formatter';
+import stackoverflow from '../uitls/stackexchange-api';
 import { AnswerType } from '../interfaces/AnswerType';
 import { QuestionType } from '../interfaces/QuestionType';
 import parse from 'html-react-parser';
 
 export function UserProfilePage() {
+  const { id } = useParams();
   const location = useLocation();
   const initialUser = location.state as UserType;
   const [isLoaded, setIsLoaded] = useState(false);
@@ -71,8 +72,9 @@ export function UserProfilePage() {
   }
 
   useEffect(() => {
+    // setUser(location.state);
     fetchAdditionalData();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (postType === 'questions') {

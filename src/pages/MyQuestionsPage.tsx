@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
-import stackoverflow from '../unitls/stackexchange-api';
+import stackoverflow from '../uitls/stackexchange-api';
 import { Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { useUser } from '../contexts/use-user';
@@ -29,9 +29,9 @@ export function MyQuestionsPage() {
     <>
       <Stack spacing="8px">
         {/* Skeletons */}
-        {!isLoaded && [...Array(10)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
+        {!isLoaded && [...Array(10)].map((_, index) => <QuestionListItemSkeleton key={index}/>)}
 
-        {isLoaded && questions.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
+        {isLoaded && questions.map((question) => <QuestionListItem item={question} key={question.question_id}/>)}
       </Stack>
     </>
   );

@@ -1,6 +1,6 @@
 import { Box, BoxProps, Flex, FormControl, Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import throttle from '../../unitls/throttle';
+import throttle from '../../uitls/throttle';
 
 export function StickyAnswerForm(props: BoxProps) {
   const [translatePosition, setTranslatePosition] = useState<number>(100); // Percents

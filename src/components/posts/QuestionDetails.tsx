@@ -1,13 +1,14 @@
 import { Box, Heading, HStack, Stack } from '@chakra-ui/react';
 import parse from 'html-react-parser';
-import { TagList } from './TagList';
+import { TagList } from '../tags/TagList';
 import { UserBadge } from './UserBadge';
 import { CommentListItem } from '../comments/CommentListItem';
 import { CommentForm } from '../comments/CommentForm';
 import { useState } from 'react';
 import { VotingControls } from './VotingControls';
-import parseBody from '../../unitls/parse-body';
+import parseBody from '../../uitls/parse-body';
 import { QuestionType } from '../../interfaces/QuestionType';
+import { CommentType } from '../../interfaces/CommentType';
 
 type Props = {
   question: QuestionType;
@@ -15,6 +16,7 @@ type Props = {
 
 export function QuestionDetails({ question }: Props) {
   const [score, setScore] = useState<number>(question.score);
+  const [comments, setComments] = useState<CommentType[]>(question.comments || []);
 
   function handleUpvote() {
     setScore(score + 1);
@@ -22,6 +24,12 @@ export function QuestionDetails({ question }: Props) {
 
   function handleDownvote() {
     setScore(score - 1);
+  }
+
+  function handleCommentAdd(comment: CommentType) {
+    console.log(comment);
+
+    setComments([...comments, comment]);
   }
 
   return (
@@ -46,8 +54,8 @@ export function QuestionDetails({ question }: Props) {
         </HStack>
 
         <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
-          {question.comment_count && question.comments.map((comment) => <CommentListItem comment={comment} key={comment.comment_id} />)}
-          <CommentForm hideControls={!question.comment_count} />
+          {comments.length && comments.map((comment) => <CommentListItem comment={comment} key={comment.comment_id} />)}
+          <CommentForm postId={question.question_id} onComment={handleCommentAdd} hideControls={!comments.length} />
         </Stack>
       </Box>
     </HStack>

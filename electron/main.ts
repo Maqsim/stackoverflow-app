@@ -1,11 +1,14 @@
-import { app, BrowserWindow, clipboard, ipcMain, shell } from 'electron';
-import { auth } from '../src/unitls/stackexchange-auth';
+import { app, BrowserWindow, clipboard, ipcMain, screen, shell } from 'electron';
+import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 
 let mainWindow: BrowserWindow | null;
+let overlayWindow: BrowserWindow | null;
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+declare const OVERLAY_WINDOW_WEBPACK_ENTRY: string;
+declare const OVERLAY_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // const assetsPath =
 //   process.env.NODE_ENV === 'production'
@@ -13,13 +16,16 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 //     : app.getAppPath()
 
 function createWindow() {
+  const display = screen.getPrimaryDisplay();
+
   mainWindow = new BrowserWindow({
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
     width: 1000,
     height: 600,
     show: false,
     title: 'StackOverflow',
-    titleBarStyle: 'hiddenInset',
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 16, y: 13 },
     webPreferences: {
       sandbox: true,
       nodeIntegration: false,
@@ -28,17 +34,35 @@ function createWindow() {
     }
   });
 
+  overlayWindow = new BrowserWindow({
+    title: 'Preview',
+    alwaysOnTop: true,
+    x: display.bounds.x,
+    y: display.bounds.y,
+    width: display.bounds.width,
+    height: display.bounds.height,
+    frame: false,
+    show: false,
+    transparent: true,
+    roundedCorners: true, // TODO make it false, fix app quiting
+    resizable: false,
+    movable: false,
+    minimizable: false,
+    maximizable: false,
+    hasShadow: false,
+    webPreferences: {
+      sandbox: true,
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: OVERLAY_WINDOW_PRELOAD_WEBPACK_ENTRY
+    }
+  });
+
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  // mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-  //   shell.openExternal(url);
-  //
-  //   return { action: 'deny' };
-  // });
 
   mainWindow.webContents.on('dom-ready', () => {
     mainWindow?.show();
@@ -60,10 +84,13 @@ function createWindow() {
 
     shell.openExternal(url);
   });
+
+  overlayWindow.loadURL(OVERLAY_WINDOW_WEBPACK_ENTRY);
 }
 
 async function registerListeners() {
-  // This comes from bridge integration, check bridge.ts
+  // Auth events
+  // ===========
   ipcMain.on('stackexchange-logout', (event) => {
     mainWindow?.webContents.session.cookies.remove('https://stackexchange.com', 'acct').then(() => {
       event.reply('stackexchange-did-logout');
@@ -74,12 +101,32 @@ async function registerListeners() {
     });
   });
 
+  // Overlay events
+  // ==============
+
+  ipcMain.handle(InvokeEnum.OPEN_CODE_IN_PREVIEW, (event, html: string) => {
+    overlayWindow?.webContents.send('init-html', html);
+    overlayWindow?.show();
+  });
+
+  ipcMain.handle(InvokeEnum.OPEN_IMAGE_IN_PREVIEW, (event, url: string) => {
+    overlayWindow?.webContents.send('init-image', url);
+    overlayWindow?.show();
+  });
+
+  ipcMain.handle(InvokeEnum.HIDE_OVERLAY, () => {
+    overlayWindow?.hide();
+  });
+
+  // Misc events
+  // ===========
+
   ipcMain.on('online', (event) => {
-    console.log('online');
+    event.reply('online');
   });
 
   ipcMain.on('offline', (event) => {
-    console.log('offline');
+    event.reply('offline');
   });
 
   ipcMain.handle(InvokeEnum.COPY_TO_CLIPBOARD, (event, text) => {

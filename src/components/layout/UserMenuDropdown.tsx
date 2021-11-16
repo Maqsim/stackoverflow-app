@@ -1,11 +1,11 @@
 import { Box, Center, HStack, Image, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text } from '@chakra-ui/react';
-import stackoverflow from '../../unitls/stackexchange-api';
+import stackoverflow from '../../uitls/stackexchange-api';
 import { useUser } from '../../contexts/use-user';
 import { BsInboxFill } from 'react-icons/bs';
-import { kFormatter } from '../../unitls/k-formatter';
+import { kFormatter } from '../../uitls/k-formatter';
 import { useEffect } from 'react';
-import { socketClient } from '../../unitls/stackexchange-socket-client';
-import { notification } from '../../unitls/notitification';
+import { socketClient } from '../../uitls/stackexchange-socket-client';
+import { notification } from '../../uitls/notitification';
 import { useNavigate } from 'react-router-dom';
 
 export function UserMenuDropdown() {
@@ -56,7 +56,7 @@ export function UserMenuDropdown() {
       >
         <Text fontSize="12px" fontWeight="semibold">
           {kFormatter(user.data.reputation)}
-          <Text as="span" ml="3px" px="3px" mt="1px" bgColor="green.500" color="whiteAlpha.800" rounded="2px">
+          <Text as="span" ml="3px" px="3px" mt="1px" bgColor="green.400" color="whiteAlpha.800" rounded="2px">
             +25
           </Text>
         </Text>

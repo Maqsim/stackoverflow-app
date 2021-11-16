@@ -13,7 +13,7 @@ export const auth = (scb: (token: string, expires: string) => void) => {
 
   const loadAuthUrl = () => {
     authWindow.loadURL(
-      'https://stackexchange.com/oauth/dialog?redirect_uri=https://stackexchange.com/oauth/login_success&client_id=7276&scope=private_info read_inbox'
+      'https://stackexchange.com/oauth/dialog?redirect_uri=https://stackexchange.com/oauth/login_success&client_id=7276&scope=write_access private_info read_inbox'
     );
   };
 

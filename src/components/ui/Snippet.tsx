@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, useBoolean, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, HStack, IconButton, Tooltip, useBoolean, useColorModeValue } from '@chakra-ui/react';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 import { RiFileCopyLine } from 'react-icons/ri';
 
@@ -9,8 +9,16 @@ type Props = {
 const NEW_LINE_REG_EXP = /\r\n|\r|\n/;
 
 export const Snippet = memo(({ children }: Props) => {
-  const lineCount = (children as any).props.children.split(NEW_LINE_REG_EXP).length;
+  const _children = (children as any).props.children;
+
+  if (!_children) {
+    return null;
+  }
+
+  const lineCount = _children.split(NEW_LINE_REG_EXP).length;
   const shouldZip = lineCount > 20;
+  const shouldPreview = lineCount > 40;
+  const previewButtonRef = useRef(null);
   const bgColor = useColorModeValue('#f6f6f6', 'gray.700');
   const [isZipped, setIsZipped] = useBoolean(shouldZip);
   const [scrollPosition, setScrollPosition] = useState<number | undefined>();
@@ -47,6 +55,30 @@ export const Snippet = memo(({ children }: Props) => {
     }
   }, [isZipped]);
 
+  function openInPreview() {
+    window.Main.openCodeInPreview(_children);
+
+    setTimeout(() => {
+      // Unfocus the button to hide the tooltip
+      (previewButtonRef.current as unknown as HTMLButtonElement).blur();
+
+      // Zip when preview is opened
+      if (!isZipped) {
+        setIsZipped.on();
+      }
+    }, 200);
+  }
+
+  function shakePreviewButton() {
+    if (shouldPreview && isZipped && previewButtonRef && previewButtonRef.current) {
+      (previewButtonRef.current as unknown as HTMLButtonElement).classList.add('shake');
+
+      setTimeout(() => {
+        (previewButtonRef.current as unknown as HTMLButtonElement).classList.remove('shake');
+      }, 820); // Sync with .shake animation duration
+    }
+  }
+
   return (
     <Box mb={shouldZip ? '28px' : '16px'} position="relative">
       <Box
@@ -65,17 +97,31 @@ export const Snippet = memo(({ children }: Props) => {
         {children}
       </Box>
 
-      <IconButton
-        aria-label="Copy to clipboard"
-        boxShadow="base"
-        size="sm"
-        position="absolute"
-        onClick={copy}
-        top={lineCount <= 2 ? '3px' : '10px'}
-        right="10px"
-        bgColor="white"
-        icon={<RiFileCopyLine />}
-      />
+      <HStack position="absolute" top={lineCount <= 2 ? '3px' : '10px'} right="10px">
+        {shouldPreview && (
+          <Tooltip label="Open in Preview" placement="top">
+            <Button
+              ref={previewButtonRef}
+              boxShadow="base"
+              size="sm"
+              bgColor="white"
+              onClick={openInPreview}
+              fontFamily="var(--chakra-fonts-body)"
+            >
+              Huge file?
+            </Button>
+          </Tooltip>
+        )}
+
+        <IconButton
+          aria-label="Copy to clipboard"
+          boxShadow="base"
+          size="sm"
+          onClick={copy}
+          bgColor="white"
+          icon={<RiFileCopyLine />}
+        />
+      </HStack>
 
       {shouldZip && (
         <>
@@ -95,6 +141,7 @@ export const Snippet = memo(({ children }: Props) => {
             size="xs"
             position="absolute"
             onClick={toggleZip}
+            onMouseEnter={shakePreviewButton}
             bottom="0"
             left="50%"
             transform="translate(-50%, 50%)"
@@ -102,7 +149,7 @@ export const Snippet = memo(({ children }: Props) => {
             bgColor="white"
             fontFamily="var(--chakra-fonts-body)"
           >
-            {isZipped ? 'Show all' : 'Hide'}
+            {isZipped ? `Show more ${lineCount - 12} lines` : 'Hide'}
           </Button>
         </>
       )}
