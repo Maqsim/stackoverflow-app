@@ -80,7 +80,7 @@ export function Layout() {
             </Box>
           </DarkMode>
         </Stack>
-        <Box overflow={'auto'} p="16px" w="100%" id="scrolling-container">
+        <Box overflow="auto" p="16px" w="100%" id="scrolling-container">
           <ScrollToTop />
           <Routes>
             {/* Global routes */}

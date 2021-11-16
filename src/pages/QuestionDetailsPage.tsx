@@ -11,7 +11,7 @@ import { socketClient } from '../uitls/stackexchange-socket-client';
 import { notification } from '../uitls/notitification';
 import { getItem, setItem } from '../uitls/local-storage';
 
-let tooltipTimerId: NodeJS.Timer;
+let tooltipTimerId: ReturnType<typeof setTimeout>;
 
 export function QuestionDetailsPage() {
   const { id } = useParams();

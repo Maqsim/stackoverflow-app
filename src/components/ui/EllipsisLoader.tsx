@@ -9,7 +9,7 @@ export function EllipsisLoader(props: Props) {
   const [iteration, setIteration] = useState(1);
 
   useEffect(() => {
-    let timerId: NodeJS.Timer;
+    let timerId: ReturnType<typeof setTimeout>;
 
     timerId = setTimeout(() => {
       // console.log(iteration);

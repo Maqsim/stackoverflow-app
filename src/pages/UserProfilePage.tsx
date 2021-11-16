@@ -93,9 +93,7 @@ export function UserProfilePage() {
       <HStack spacing="16px" align="start">
         <Image src={user.profile_image} boxSize="96px" objectFit="cover" borderRadius="5px" />
         <Stack>
-          <Heading size="lg">
-            {user.display_name}
-          </Heading>
+          <Heading size="lg">{user.display_name}</Heading>
           {/*<Text>{user.about_me}</Text>*/}
           <Text>{user.website_url}</Text>
           {/*<Text>{user.location}</Text>*/}
@@ -106,7 +104,7 @@ export function UserProfilePage() {
         <Spinner />
       ) : (
         <HStack spacing="16px" align="start">
-          <Box rounded="5px" border="1px solid" borderColor="gray.200" p="16px" flex="0 0 33%">
+          <Box rounded="5px" borderWidth="1px" p="16px" flex="0 0 33%">
             <StatGroup>
               <Stat>
                 <StatLabel>Reputation</StatLabel>
@@ -132,7 +130,7 @@ export function UserProfilePage() {
             </StatGroup>
           </Box>
 
-          <Box rounded="5px" flexGrow={1} border="1px solid" borderColor="gray.200" p="16px">
+          <Box rounded="5px" flexGrow={1} borderWidth="1px" p="16px">
             <HStack justify="space-between" mb="8px">
               <Heading size="md">Top posts</Heading>
 

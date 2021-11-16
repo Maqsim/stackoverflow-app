@@ -68,7 +68,9 @@ export function UserMenuDropdown() {
           <Image src={user.data.profile_image} boxSize="25px" objectFit="cover" borderRadius="5px" />
         </MenuButton>
         <MenuList zIndex={200}>
-          <MenuItem onClick={goToProfile} command={commandKey(['P'])}>Profile</MenuItem>
+          <MenuItem onClick={goToProfile} command={commandKey(['P'])}>
+            Profile
+          </MenuItem>
           <MenuItem command={commandKey([','])}>Settings</MenuItem>
           <MenuDivider />
           <MenuItem onClick={logout}>Logout</MenuItem>

@@ -19,7 +19,7 @@ export function NavItem({ children, count, to }: Props) {
   return (
     <RouterLink to={to}>
       <HStack
-        userSelect={'none'}
+        userSelect="none"
         color="whiteAlpha.600"
         borderRadius="5px"
         cursor="pointer"

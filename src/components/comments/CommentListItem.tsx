@@ -38,7 +38,13 @@ export function CommentListItem({ comment }: Props) {
           </Flex>
         </HStack>
         <RouterLink to={`/users/${comment.owner.user_id}`} state={comment.owner}>
-          <Image src={comment.owner.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" title={comment.owner.display_name} />
+          <Image
+            src={comment.owner.profile_image}
+            boxSize="24px"
+            objectFit="cover"
+            borderRadius="3px"
+            title={comment.owner.display_name}
+          />
         </RouterLink>
       </HStack>
       <Text alignSelf="center">
