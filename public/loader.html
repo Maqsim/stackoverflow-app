@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'">
+
+  <title>StackOverflow starting…</title>
+  <style>
+    * > {
+      box-sizing: border-box;
+    }
+
+    body {
+      -webkit-app-region: drag;
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    /* TODO use smooth-corners */
+    /*.wrapper {*/
+    /*  background: #2d3748;*/
+    /*  border-radius: 20px;*/
+    /*  height: 100vh;*/
+    /*  overflow: hidden;*/
+    /*  position: absolute;*/
+    /*  width: 100vw;*/
+    /*}*/
+
+    .status {
+      color: rgba(255, 255, 255, 0.9);
+      position: absolute;
+      top: calc(50% + 40px);
+      text-transform: uppercase;
+      width: 100%;
+      text-align: center;
+      font-style: italic;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+<div class="status">
+  Starting…
+</div>
+</body>
+</html>

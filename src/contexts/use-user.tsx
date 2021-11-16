@@ -29,6 +29,8 @@ export const UserProvider = ({ children, LoadingComponent }: Props) => {
 
       setUser(await stackoverflow.getLoggedInUser());
       setIsLoading(false);
+
+      window.Main.send('main-window-ready');
     });
   }, []);
 
