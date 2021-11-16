@@ -1,51 +1,54 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { UserType } from '../interfaces/UserType';
 
-function buildStackOverflowUrl(path: string, parameters?: any) {
+function buildStackOverflowUrl(path: string, parameters?: Record<string, string>) {
   let url = `https://api.stackexchange.com/2.3/${path}`;
 
-  const queryString =
-    parameters &&
-    Object.keys(parameters)
-      .map(function (key) {
-        const value = parameters[key];
-        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-      })
-      .join('&');
-
+  const queryString = parameters && new URLSearchParams(parameters).toString();
   if (queryString) {
-    url = url + '?' + queryString;
+    url = url + '?' + decodeURIComponent(queryString);
   }
 
   return url;
 }
 
-const stackoverflow = {
-  get: (url: string, parameters?: any, options?: AxiosRequestConfig) => {
-    if (parameters) {
-      parameters.site = 'stackoverflow';
-      parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
-      parameters.access_token = localStorage.getItem('token');
-    }
+type ResponseInUser = {
+  items: UserType[];
+};
 
-    return axios(buildStackOverflowUrl(url, parameters), options).then((response) => response.data);
-  },
-  getLoggedInUser: () => {
-    return stackoverflow.get('me', {}).then((response: any) => response.items[0]);
-  },
-  post: (url: string, data: object) => {
-    const formData = new FormData();
-    const payload: any = {
+const stackoverflow = {
+  get tokens() {
+    return {
       site: 'stackoverflow',
       key: 'bdFSxniGkNbU3E*jsj*28w((',
-      access_token: localStorage.getItem('token'),
+      access_token: localStorage.getItem('token')!
+    };
+  },
+  get: <JSON = unknown>(url: string, parameters?: Record<string, string>, options?: AxiosRequestConfig) => {
+    if (parameters) {
+      parameters = {
+        ...stackoverflow.tokens,
+        ...parameters
+      };
+    }
+
+    return axios.get<JSON>(buildStackOverflowUrl(url, parameters), options).then((response) => response.data);
+  },
+  getLoggedInUser: () => {
+    return stackoverflow.get<ResponseInUser>('me', {}).then((response) => response.items[0]);
+  },
+  post: <JSON = unknown>(url: string, data: object) => {
+    const formData = new FormData();
+    const payload = {
+      ...stackoverflow.tokens,
       ...data
     };
 
-    for (const key in payload) {
-      formData.append(key, payload[key]);
+    for (const [key, value] of Object.entries(payload)) {
+      formData.append(key, value);
     }
 
-    return axios.post(buildStackOverflowUrl(url), formData).then((response) => response.data);
+    return axios.post<JSON>(buildStackOverflowUrl(url), formData).then((response) => response.data);
   }
 };
 
