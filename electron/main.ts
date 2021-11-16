@@ -3,10 +3,13 @@ import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 
 let mainWindow: BrowserWindow | null;
+let loaderWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+declare const LOADER_WINDOW_WEBPACK_ENTRY: string;
+declare const LOADER_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const OVERLAY_WINDOW_WEBPACK_ENTRY: string;
 declare const OVERLAY_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
@@ -15,7 +18,7 @@ declare const OVERLAY_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 //     ? process.resourcesPath
 //     : app.getAppPath()
 
-function createWindow() {
+function createWindows() {
   const display = screen.getPrimaryDisplay();
 
   mainWindow = new BrowserWindow({
@@ -31,6 +34,23 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
+    }
+  });
+
+  loaderWindow = new BrowserWindow({
+    width: 300,
+    height: 350,
+    show: true,
+    title: 'StackOverflow starting...',
+    frame: false,
+    resizable: false,
+    closable: false,
+    backgroundColor: '#2d3748',
+    webPreferences: {
+      sandbox: true,
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: LOADER_WINDOW_PRELOAD_WEBPACK_ENTRY
     }
   });
 
@@ -59,14 +79,15 @@ function createWindow() {
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  loaderWindow.loadURL(LOADER_WINDOW_WEBPACK_ENTRY);
+  overlayWindow.loadURL(OVERLAY_WINDOW_WEBPACK_ENTRY);
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  mainWindow.on('close', (event) => {
+    event.preventDefault();
+    mainWindow?.hide();
   });
 
   mainWindow.webContents.on('dom-ready', () => {
-    mainWindow?.show();
-
     auth((token, expires) => {
       mainWindow?.webContents.send('stackexchange:on-auth', {
         token: token,
@@ -84,8 +105,6 @@ function createWindow() {
 
     shell.openExternal(url);
   });
-
-  overlayWindow.loadURL(OVERLAY_WINDOW_WEBPACK_ENTRY);
 }
 
 async function registerListeners() {
@@ -121,6 +140,12 @@ async function registerListeners() {
   // Misc events
   // ===========
 
+  ipcMain.on('main-window-ready', (event) => {
+    mainWindow?.show();
+    loaderWindow?.destroy();
+    loaderWindow = null;
+  });
+
   ipcMain.on('online', (event) => {
     event.reply('online');
   });
@@ -135,7 +160,7 @@ async function registerListeners() {
 }
 
 app
-  .on('ready', createWindow)
+  .on('ready', createWindows)
   .whenReady()
   .then(registerListeners)
   .catch((e) => console.error(e));
@@ -146,8 +171,9 @@ app.on('window-all-closed', () => {
   }
 });
 
+// TODO Implement cmd+q
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+  if (!mainWindow?.isVisible() && !loaderWindow) {
+    mainWindow?.show();
   }
 });
