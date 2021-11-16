@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { socketClient } from '../../uitls/stackexchange-socket-client';
 import { notification } from '../../uitls/notitification';
 import { useNavigate } from 'react-router-dom';
+import { commandKey } from '../../uitls/command-key';
 
 export function UserMenuDropdown() {
   const navigate = useNavigate();
@@ -67,8 +68,8 @@ export function UserMenuDropdown() {
           <Image src={user.data.profile_image} boxSize="25px" objectFit="cover" borderRadius="5px" />
         </MenuButton>
         <MenuList zIndex={200}>
-          <MenuItem onClick={goToProfile}>Profile</MenuItem>
-          <MenuItem command="⌘,">Settings</MenuItem>
+          <MenuItem onClick={goToProfile} command={commandKey(['P'])}>Profile</MenuItem>
+          <MenuItem command={commandKey([','])}>Settings</MenuItem>
           <MenuDivider />
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
