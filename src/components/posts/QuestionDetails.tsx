@@ -1,14 +1,13 @@
-import { Box, Heading, HStack, Stack } from '@chakra-ui/react';
+import { Box, Heading, HStack } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import { TagList } from '../tags/TagList';
 import { UserBadge } from './UserBadge';
-import { CommentListItem } from '../comments/CommentListItem';
-import { CommentForm } from '../comments/CommentForm';
 import { useState } from 'react';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
 import { QuestionType } from '../../interfaces/QuestionType';
 import { CommentType } from '../../interfaces/CommentType';
+import { CommentList } from '../comments/CommentList';
 
 type Props = {
   question: QuestionType;
@@ -27,8 +26,6 @@ export function QuestionDetails({ question }: Props) {
   }
 
   function handleCommentAdd(comment: CommentType) {
-    console.log(comment);
-
     setComments([...comments, comment]);
   }
 
@@ -53,10 +50,7 @@ export function QuestionDetails({ question }: Props) {
           <UserBadge type="question" datetime={question.creation_date} user={question.owner} />
         </HStack>
 
-        <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
-          {comments.length && comments.map((comment) => <CommentListItem comment={comment} key={comment.comment_id} />)}
-          <CommentForm postId={question.question_id} onComment={handleCommentAdd} hideControls={!comments.length} />
-        </Stack>
+        <CommentList comments={comments} postId={question.question_id} onCommentAdd={handleCommentAdd} />
       </Box>
     </HStack>
   );
