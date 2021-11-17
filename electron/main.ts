@@ -3,13 +3,13 @@ import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 
 let mainWindow: BrowserWindow | null;
-let loaderWindow: BrowserWindow | null;
+let splashScreenWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
-declare const LOADER_WINDOW_WEBPACK_ENTRY: string;
-declare const LOADER_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+declare const SPLASH_SCREEN_WINDOW_WEBPACK_ENTRY: string;
+declare const SPLASH_SCREEN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const OVERLAY_WINDOW_WEBPACK_ENTRY: string;
 declare const OVERLAY_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
@@ -37,9 +37,9 @@ function createWindows() {
     }
   });
 
-  loaderWindow = new BrowserWindow({
+  splashScreenWindow = new BrowserWindow({
     width: 300,
-    height: 350,
+    height: 300,
     show: true,
     title: 'StackOverflow starting...',
     frame: false,
@@ -50,7 +50,7 @@ function createWindows() {
       sandbox: true,
       nodeIntegration: false,
       contextIsolation: true,
-      preload: LOADER_WINDOW_PRELOAD_WEBPACK_ENTRY
+      preload: SPLASH_SCREEN_WINDOW_PRELOAD_WEBPACK_ENTRY
     }
   });
 
@@ -79,7 +79,7 @@ function createWindows() {
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  loaderWindow.loadURL(LOADER_WINDOW_WEBPACK_ENTRY);
+  splashScreenWindow.loadURL(SPLASH_SCREEN_WINDOW_WEBPACK_ENTRY);
   overlayWindow.loadURL(OVERLAY_WINDOW_WEBPACK_ENTRY);
 
   mainWindow.on('close', (event) => {
@@ -140,10 +140,10 @@ async function registerListeners() {
   // Misc events
   // ===========
 
-  ipcMain.on('main-window-ready', (event) => {
+  ipcMain.on('main-window-ready', () => {
     mainWindow?.show();
-    loaderWindow?.destroy();
-    loaderWindow = null;
+    splashScreenWindow?.destroy();
+    splashScreenWindow = null;
   });
 
   ipcMain.on('online', (event) => {
@@ -173,7 +173,7 @@ app.on('window-all-closed', () => {
 
 // TODO Implement cmd+q
 app.on('activate', () => {
-  if (!mainWindow?.isVisible() && !loaderWindow) {
+  if (!mainWindow?.isVisible() && !splashScreenWindow) {
     mainWindow?.show();
   }
 });

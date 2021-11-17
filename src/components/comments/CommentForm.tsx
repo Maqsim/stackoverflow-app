@@ -6,13 +6,13 @@ import stackoverflow from '../../uitls/stackexchange-api';
 
 type Props = {
   postId: number;
-  onComment: (comment: CommentType) => void;
+  onCommentAdd: (comment: CommentType) => void;
   hideControls?: boolean;
 };
 
 let timerId: NodeJS.Timeout;
 
-export function CommentForm({ postId, onComment, hideControls }: Props) {
+export function CommentForm({ postId, onCommentAdd, hideControls }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const inputWrapperRef = useRef<HTMLDivElement | null>(null);
   const user = useUser();
@@ -59,7 +59,7 @@ export function CommentForm({ postId, onComment, hideControls }: Props) {
     postedComment.comment_id = Math.round(Math.random() * 1000000);
     postedComment.score = 0;
 
-    onComment(postedComment);
+    onCommentAdd(postedComment);
 
     // Clear state
     setIsSubmitting(false);

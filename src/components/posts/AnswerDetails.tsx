@@ -1,12 +1,11 @@
-import { Box, HStack, Stack } from '@chakra-ui/react';
+import { Box, HStack } from '@chakra-ui/react';
 import { UserBadge } from './UserBadge';
-import { CommentListItem } from '../comments/CommentListItem';
-import { CommentForm } from '../comments/CommentForm';
 import type { AnswerType } from '../../interfaces/AnswerType';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
 import { useState } from 'react';
 import { CommentType } from '../../interfaces/CommentType';
+import { CommentList } from '../comments/CommentList';
 
 type Props = {
   answer: AnswerType;
@@ -42,12 +41,7 @@ export function AnswerDetails({ answer }: Props) {
           <UserBadge type="answer" datetime={answer.creation_date} user={answer.owner} />
         </HStack>
 
-        <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
-          {comments?.map((comment) => (
-            <CommentListItem comment={comment} key={comment.comment_id} />
-          ))}
-          <CommentForm postId={answer.answer_id} onComment={handleCommentAdd} hideControls={!comments?.length} />
-        </Stack>
+        <CommentList comments={comments} postId={answer.answer_id} onCommentAdd={handleCommentAdd} />
       </Box>
     </HStack>
   );

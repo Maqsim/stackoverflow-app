@@ -50,6 +50,11 @@ const totalPlates = 7;
 
 for (let i = 0; i < totalPlates; i++) {
   const plate = PIXI.Sprite.from(PIXI.Texture.WHITE);
+
+  let colorMatrix = new PIXI.filters.ColorMatrixFilter();
+  plate.filters = [colorMatrix];
+  colorMatrix.tint(0xf07f24, false); // StackOverflow orange brand color
+
   plate.position.x = -50; // NB initially render it outside the canvas
   plate.position.y = -50; // NB initially render it outside the canvas
   plate.height = 30;
@@ -62,15 +67,15 @@ for (let i = 0; i < totalPlates; i++) {
 // TODO Change direction from L -> R to L <- R
 const bezier = new PIXI.Graphics();
 const points = [
-  new PIXI.Point(centerX, centerY),
-  new PIXI.Point(centerX + 50, centerY),
+  new PIXI.Point(centerX + 150, centerY),
+  new PIXI.Point(centerX + 100, centerY),
   new PIXI.Point(centerX + 75, centerY + 50),
   new PIXI.Point(centerX + 75, centerY + 75)
 ];
 
 // bezier.lineStyle(2, 0xffffff, 0.2);
-bezier.moveTo(centerX, centerY);
-bezier.bezierCurveTo(centerX + 50, centerY, centerX + 75, centerY + 50, centerX + 75, centerY + 75);
+bezier.moveTo(points[0].x, points[0].y);
+bezier.bezierCurveTo(points[1].x, points[1].y, points[2].x, points[2].y, points[3].x, points[3].y);
 
 app.stage.addChild(bezier);
 
@@ -87,7 +92,15 @@ plates.forEach((plate, i) => {
       useRadians: true
     },
     onUpdate: () => {
-      plate.alpha = tween.progress() * 1.2;
+      const progress = tween.progress();
+
+      // Alpha increasing linear with the progress until 80%
+      // on progress 90-100% alpha is decreasing to 0
+      if (progress < 0.9) {
+        plate.alpha = progress * 1.1;
+      } else {
+        plate.alpha = ((1 - progress) * 10) ** 2;
+      }
     }
   });
 });
