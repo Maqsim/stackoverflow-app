@@ -1,6 +1,6 @@
 import { Box, Center, Text } from '@chakra-ui/react';
 import { SearchBar } from './SearchBar';
-import { UserMenuDropdown } from './UserMenuDropdown';
+import { MenuDropdown } from './MenuDropdown';
 import { useEffect, useState } from 'react';
 
 export function TopBar() {
@@ -34,7 +34,7 @@ export function TopBar() {
           <SearchBar />
         </Box>
         <Box justifySelf="flex-end" flex={1}>
-          <UserMenuDropdown />
+          <MenuDropdown />
         </Box>
       </Center>
 

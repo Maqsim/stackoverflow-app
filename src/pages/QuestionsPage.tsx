@@ -20,6 +20,12 @@ export function QuestionsPage() {
       .then((response) => {
         setQuestions((response as any).items);
         setIsLoaded(true);
+
+        // TODO See if we can remove 300ms delay here
+        // This is needed to show main window and close splash screen
+        setTimeout(() => {
+          window.Main.send('main-window-ready');
+        }, 300);
       });
   }, []);
 

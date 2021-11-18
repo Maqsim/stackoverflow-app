@@ -40,7 +40,7 @@ function createWindows() {
   splashScreenWindow = new BrowserWindow({
     width: 300,
     height: 300,
-    show: true,
+    show: false,
     title: 'StackOverflow starting...',
     frame: false,
     resizable: false,
@@ -87,7 +87,7 @@ function createWindows() {
     mainWindow?.hide();
   });
 
-  mainWindow.webContents.on('dom-ready', () => {
+  mainWindow.on('ready-to-show', () => {
     auth((token, expires) => {
       mainWindow?.webContents.send('stackexchange:on-auth', {
         token: token,
@@ -104,6 +104,10 @@ function createWindows() {
     event.preventDefault();
 
     shell.openExternal(url);
+  });
+
+  splashScreenWindow.on('ready-to-show', () => {
+    splashScreenWindow?.show();
   });
 }
 

@@ -6,8 +6,9 @@ import { BackButton } from '../components/layout/BackButton';
 import stackoverflow from '../uitls/stackexchange-api';
 import { TopPosts } from '../components/profile/TopPosts';
 import { Statistics } from '../components/profile/Statistics';
+import parse from 'html-react-parser';
 
-export function UserProfilePage() {
+export function ProfilePage() {
   const { id } = useParams();
   const location = useLocation();
   const initialUser = location.state as UserType;
@@ -37,7 +38,7 @@ export function UserProfilePage() {
       <HStack spacing="16px" align="start">
         <Image src={user.profile_image} boxSize="96px" objectFit="cover" borderRadius="5px" />
         <Stack>
-          <Heading size="lg">{user.display_name}</Heading>
+          <Heading size="lg">{parse(user.display_name)}</Heading>
           {/*<Text>{user.about_me}</Text>*/}
           <Text>{user.website_url}</Text>
           {/*<Text>{user.location}</Text>*/}
@@ -50,7 +51,7 @@ export function UserProfilePage() {
         </Box>
 
         <Box flexGrow={1}>
-          <TopPosts userId={parseInt(id!, 10)} />
+          <TopPosts user={isLoaded ? user : undefined} />
         </Box>
       </HStack>
     </Stack>

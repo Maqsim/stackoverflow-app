@@ -1,5 +1,5 @@
 import { Box, HStack } from '@chakra-ui/react';
-import { UserBadge } from './UserBadge';
+import { ProfileBadge } from '../profile/ProfileBadge';
 import type { AnswerType } from '../../interfaces/AnswerType';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
@@ -34,11 +34,11 @@ export function AnswerDetails({ answer }: Props) {
       {/* overflow needed here to prevent child has more width than parent */}
       <Box flexGrow={1} overflow="auto" p="2px" m="-2px">
         <Box className="stackoverflow_question-body" fontFamily="Georgia" fontSize="16px">
-          {parseBody(answer.body)}{' '}
+          {parseBody(answer.body)}
         </Box>
 
         <HStack my="24px" align="flex-start" justify="end">
-          <UserBadge type="answer" datetime={answer.creation_date} user={answer.owner} />
+          <ProfileBadge type="answer" datetime={answer.creation_date} user={answer.owner} />
         </HStack>
 
         <CommentList comments={comments} postId={answer.answer_id} onCommentAdd={handleCommentAdd} />

@@ -46,7 +46,7 @@ rect3.endFill();
 app.stage.addChild(rect3);
 
 const plates: PIXI.Sprite[] = [];
-const totalPlates = 7;
+const totalPlates = 6;
 
 for (let i = 0; i < totalPlates; i++) {
   const plate = PIXI.Sprite.from(PIXI.Texture.WHITE);

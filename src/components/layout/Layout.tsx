@@ -10,9 +10,9 @@ import { AiFillTags } from 'react-icons/ai';
 import { MyQuestionsPage } from '../../pages/MyQuestionsPage';
 import { ScrollToTop } from './ScrollToTop';
 import { SponsorWidget } from './SponsorWidget';
-import { UserProfilePage } from '../../pages/UserProfilePage';
+import { ProfilePage } from '../../pages/ProfilePage';
 import { MyBookmarksPage } from '../../pages/MyBookmarksPage';
-import { SidebarContext, useSidebar } from '../../contexts/use-sidebar';
+import { SidebarContext } from '../../contexts/use-sidebar';
 import { TopBar } from './TopBar';
 import { SearchPage } from '../../pages/SearchPage';
 import { TagsPage } from '../../pages/TagsPage';
@@ -88,7 +88,7 @@ export function Layout() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/questions/:id" element={<QuestionDetailsPage />} />
             <Route path="/search/:query" element={<SearchPage />} />
-            <Route path="/users/:id" element={<UserProfilePage />} />
+            <Route path="/users/:id" element={<ProfilePage />} />
             <Route path="/tags" element={<TagsPage />} />
 
             {/* Personal routes */}

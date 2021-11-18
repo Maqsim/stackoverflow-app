@@ -30,11 +30,9 @@ export function NavItem({ children, count, to }: Props) {
         spacing="6px"
       >
         {children}
-        {count && (
-          <Badge display="block" style={{ marginLeft: 'auto' }}>
-            {count}
-          </Badge>
-        )}
+        <Badge display="block" transition="opacity 200ms ease" opacity={count ? 1 : 0} marginLeft="auto !important">
+          {count}
+        </Badge>
       </HStack>
     </RouterLink>
   );

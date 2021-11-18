@@ -8,7 +8,7 @@ import { socketClient } from '../../uitls/stackexchange-socket-client';
 import { notification } from '../../uitls/notitification';
 import { useNavigate } from 'react-router-dom';
 
-export function UserMenuDropdown() {
+export function MenuDropdown() {
   const navigate = useNavigate();
   const user = useUser();
 

@@ -20,7 +20,7 @@ const typeToLabelMap: { [type: string]: string } = {
   edit: 'Edited'
 };
 
-export function UserBadge({ user, type, datetime }: Props) {
+export function ProfileBadge({ user, type, datetime }: Props) {
   const isQuestion = type === 'question';
   const isAnswer = type === 'answer';
   const isEdit = type === 'edit';
