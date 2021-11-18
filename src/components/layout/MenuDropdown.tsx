@@ -9,7 +9,7 @@ import { notification } from '../../uitls/notitification';
 import { useNavigate } from 'react-router-dom';
 import { commandKey } from '../../uitls/command-key';
 
-export function UserMenuDropdown() {
+export function MenuDropdown() {
   const navigate = useNavigate();
   const user = useUser();
 

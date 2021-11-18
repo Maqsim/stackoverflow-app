@@ -1,52 +1,74 @@
-import { Box, Button, ButtonGroup, Center, Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Center, Heading, HStack, Spinner, Stack, Text } from '@chakra-ui/react';
 import { QuestionType } from '../../interfaces/QuestionType';
 import { AnswerType } from '../../interfaces/AnswerType';
 import { memo, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import stackoverflow from '../../uitls/stackexchange-api';
 import parse from 'html-react-parser';
+import { UserType } from '../../interfaces/UserType';
 
 type Props = {
-  userId: number;
-}
+  user?: UserType;
+};
 
-export function TopPosts({ userId }: Props) {
-  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
-  const [postType, setPostType] = useState<'questions' | 'answers'>('questions');
+export function TopPosts({ user }: Props) {
+  const [isInitialLoaded, setIsInitialLoaded] = useState(false);
+  const [isPostsLoaded, setIsPostsLoaded] = useState(true);
+  const [postType, setPostType] = useState<'questions' | 'answers' | undefined>();
 
   const [questions, setQuestions] = useState<QuestionType[]>();
   const [answers, setAnswers] = useState<AnswerType[]>();
 
   useEffect(() => {
-    if (postType === 'questions') {
-      fetchQuestions();
-    } else {
-      fetchAnswers();
+    if (!user) {
+      return;
     }
-  }, [postType]);
+
+    (async () => {
+      if (user.question_count) {
+        await fetchQuestions();
+        setPostType('questions');
+      } else if (user.answer_count) {
+        await fetchAnswers();
+        setPostType('answers');
+      }
+
+      setIsInitialLoaded(true);
+    })();
+  }, [user]);
 
   async function fetchQuestions() {
+    if (postType === 'questions' || !isPostsLoaded) {
+      return;
+    }
+
     setIsPostsLoaded(false);
 
-    const response = (await stackoverflow.get(`users/${userId}/questions`, {
+    const response = (await stackoverflow.get(`users/${user?.user_id}/questions`, {
       sort: 'votes',
       order: 'desc',
       filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
     })) as any;
 
+    setPostType('questions');
     setQuestions(response.items);
     setIsPostsLoaded(true);
   }
 
   async function fetchAnswers() {
+    if (postType === 'answers' || !isPostsLoaded) {
+      return;
+    }
+
     setIsPostsLoaded(false);
 
-    const response = (await stackoverflow.get(`users/${userId}/answers`, {
+    const response = (await stackoverflow.get(`users/${user?.user_id}/answers`, {
       sort: 'votes',
       order: 'desc',
       filter: '!LJbtD(0QAN3VMHtITzTNgH'
     })) as any;
 
+    setPostType('answers');
     setAnswers(response.items);
     setIsPostsLoaded(true);
   }
@@ -56,21 +78,35 @@ export function TopPosts({ userId }: Props) {
       <HStack justify="space-between" mb="8px">
         <Heading size="md">Top posts</Heading>
 
-        <ButtonGroup size="xs" isAttached variant="outline">
-          <Button isActive={postType === 'questions'} onClick={() => setPostType('questions')} mr="-px">
-            Questions
-          </Button>
-          <Button isActive={postType === 'answers'} onClick={() => setPostType('answers')}>
-            Answers
-          </Button>
-        </ButtonGroup>
+        {isInitialLoaded && (user?.question_count || user?.answer_count) && (
+          <ButtonGroup size="xs" isAttached variant="outline">
+            <Button
+              isDisabled={!user?.question_count}
+              isActive={postType === 'questions'}
+              onClick={fetchQuestions}
+              mr="-px"
+            >
+              Questions
+            </Button>
+            <Button isDisabled={!user?.answer_count} isActive={postType === 'answers'} onClick={fetchAnswers}>
+              Answers
+            </Button>
+          </ButtonGroup>
+        )}
       </HStack>
 
-      <Stack spacing="4px">
-        {(postType === 'questions' ? questions : answers)?.map((item) => (
-          <PostItem item={item} type={postType} key={item.question_id}/>
-        ))}
-      </Stack>
+      {!isInitialLoaded ? (
+        <Center h="70px">
+          <Spinner />
+        </Center>
+      ) : (
+        <Stack spacing="4px" sx={{ opacity: isPostsLoaded ? 1 : 0.5, pointerEvents: isPostsLoaded ? 'auto' : 'none' }}>
+          {isInitialLoaded &&
+            (postType === 'questions' ? questions : answers)?.map((item) => (
+              <PostItem item={item} type={postType!} key={item.question_id} />
+            ))}
+        </Stack>
+      )}
     </Box>
   );
 }
