@@ -81,11 +81,11 @@ export function QuestionListItem({ item }: Props) {
             {parse(item.title)}
           </Text>
 
-          <Box mt="8px" h="24px">
+          <Box mt="8px" h="24px" overflow="hidden">
             <HStack display="inline-flex" h="24px" spacing="10px" fontSize="13px" mr="10px">
               <Text
                 opacity={hasLittleText ? 1 : 0.3}
-                title={hasLittleText ? 'Low reading time of the question' : undefined}
+                title={hasLittleText ? 'Low reading time' : undefined}
               >
                 <IoTimerOutline />
               </Text>
