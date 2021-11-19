@@ -36,8 +36,9 @@ export function MenuDropdown() {
   }
 
   return (
-    <HStack justify="end" align="stretch" mr="16px" spacing={0} sx={{ WebkitAppRegion: 'no-drag' }}>
+    <HStack justify="end" align="stretch" mr="16px" spacing={0}>
       <Center
+        sx={{ WebkitAppRegion: 'no-drag' }}
         px="8px"
         rounded="3px"
         _hover={{ color: 'whiteAlpha.700', bgColor: 'whiteAlpha.50' }}
@@ -49,6 +50,7 @@ export function MenuDropdown() {
         <Box boxSize="6px" bgColor="red.500" rounded="full" position="relative" ml="-1px" top="-6px" />
       </Center>
       <Center
+        sx={{ WebkitAppRegion: 'no-drag' }}
         px="8px"
         rounded="3px"
         _hover={{ color: 'whiteAlpha.700', bgColor: 'whiteAlpha.50' }}
@@ -63,7 +65,11 @@ export function MenuDropdown() {
       </Center>
 
       <Menu>
-        <MenuButton marginStart="10px !important" _hover={{ filter: 'brightness(1.1)' }}>
+        <MenuButton
+          marginStart="10px !important"
+          _hover={{ filter: 'brightness(1.1)' }}
+          sx={{ WebkitAppRegion: 'no-drag' }}
+        >
           <Image src={user.user.profile_image} boxSize="25px" objectFit="cover" borderRadius="5px" />
         </MenuButton>
         <MenuList zIndex={200}>

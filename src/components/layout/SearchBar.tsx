@@ -49,8 +49,9 @@ export function SearchBar() {
   }
 
   return (
-    <Box position="relative" w="350px">
+    <Box position="relative" w="350px" sx={{ WebkitAppRegion: 'no-drag' }}>
       <Center
+        userSelect="none"
         display={isInputVisible ? 'none' : 'flex'}
         onClick={showInput}
         rounded="5px"

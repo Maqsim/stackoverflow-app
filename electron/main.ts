@@ -98,6 +98,9 @@ function createWindows() {
       // Fetch current user
       const user = await stackoverflow.getLoggedInUser(token);
 
+      // Fetch user privileges
+      // const userPrivileges = await stackoverflow.get('privileges', { token });
+
       // Fetch sidebar counts
       const sidebarCounts = await stackoverflow.getSidebarCounts(user.user_id, token);
 

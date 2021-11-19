@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import stackoverflow from '../uitls/stackexchange-api';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, ButtonGroup, Flex, Heading, HStack, Stack, Text, Tooltip, useToast } from '@chakra-ui/react';
+import { useLocation, useParams } from 'react-router-dom';
+import { Box, Button, ButtonGroup, Flex, Heading, HStack, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { BackButton } from '../components/layout/BackButton';
 import { RiEarthFill, RiFileCopyFill } from 'react-icons/ri';
@@ -16,8 +16,6 @@ let tooltipTimerId: NodeJS.Timer;
 
 export function QuestionDetailsPage() {
   const { id } = useParams();
-  const toast = useToast();
-  const navigate = useNavigate();
   const location = useLocation();
   const initialQuestion = location.state as QuestionType;
   const [question, setQuestion] = useState(initialQuestion);
@@ -44,14 +42,7 @@ export function QuestionDetailsPage() {
         .then((response) => {
           const question = (response as any).items[0];
 
-          if (question) {
-            setQuestion(question);
-          } else {
-            goBackWithError('This question was removed');
-          }
-        })
-        .catch(() => {
-          goBackWithError('The question was not found');
+          setQuestion(question);
         });
     }
 
@@ -63,17 +54,6 @@ export function QuestionDetailsPage() {
       socketClient.off(`1-question-${id}`);
     };
   }, [id]);
-
-  function goBackWithError(errorMessage: string) {
-    navigate(-1);
-    toast({
-      position: 'top',
-      description: errorMessage,
-      status: 'error',
-      duration: 3000,
-      isClosable: false
-    });
-  }
 
   function jumpToAnswers() {
     const scrollableEl = document.getElementById('scrolling-container');

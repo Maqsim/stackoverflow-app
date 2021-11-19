@@ -5,6 +5,9 @@ import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 
 gsap.registerPlugin(PixiPlugin, MotionPathPlugin);
 
+PIXI.settings.FILTER_RESOLUTION = window.devicePixelRatio;
+PIXI.settings.RESOLUTION = window.devicePixelRatio;
+
 export type Options = {
   element: HTMLElement;
   width: number;
@@ -22,7 +25,6 @@ export function renderLoader({ element, width, height, backgroundColor = 0x2d374
     height,
     antialias: true,
     autoDensity: true,
-    resolution: 2,
     backgroundColor
   });
 
@@ -58,12 +60,8 @@ export function renderLoader({ element, width, height, backgroundColor = 0x2d374
   for (let i = 0; i < totalPlates; i++) {
     const plate = PIXI.Sprite.from(PIXI.Texture.WHITE);
 
-    let colorMatrix = new PIXI.filters.ColorMatrixFilter();
-    plate.filters = [colorMatrix];
-    colorMatrix.tint(color, false);
-
-    plate.position.x = -50; // NB initially render it outside the canvas
-    plate.position.y = -50; // NB initially render it outside the canvas
+    plate.tint = color;
+    plate.alpha = 0;
     plate.height = 30;
     plate.width = 5;
     plate.anchor.set(0.5);
@@ -90,7 +88,7 @@ export function renderLoader({ element, width, height, backgroundColor = 0x2d374
       duration: 2,
       repeat: 50,
       delay: i * 0.15,
-      ease: 'cubic-bezier(0,.95,.95,.05)',
+      ease: 'cubic-bezier(0, 0.95, 0.95, 0.05)',
       motionPath: {
         path: points,
         type: 'cubic',
@@ -102,6 +100,7 @@ export function renderLoader({ element, width, height, backgroundColor = 0x2d374
 
         // Alpha increasing linear with the progress until 80%
         // on progress 90-100% alpha is decreasing to 0
+        // 10(1-x)^2
         if (progress < 0.9) {
           plate.alpha = progress * 1.1;
         } else {

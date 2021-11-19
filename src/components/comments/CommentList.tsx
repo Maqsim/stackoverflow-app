@@ -2,7 +2,9 @@ import { CommentListItem } from './CommentListItem';
 import { CommentForm } from './CommentForm';
 import { CommentType } from '../../interfaces/CommentType';
 import { Box, Button, Stack } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useUser } from '../../contexts/use-user';
+import { FeaturesEnum } from '../../interfaces/FeaturesEnum';
 
 type Props = {
   postId: number;
@@ -13,8 +15,10 @@ type Props = {
 const LIMIT_INCREASE = 5;
 
 export function CommentList({ postId, comments, onCommentAdd }: Props) {
+  const user = useUser();
   const [limit, setLimit] = useState<number | undefined>(LIMIT_INCREASE);
   const shownComments = comments.slice(0, limit);
+  const isCommentingEnabled = useMemo(() => user.isFeatureOn(FeaturesEnum.COMMENT), []);
 
   function handleCommentAdd(comment: CommentType) {
     setLimit(undefined);
@@ -39,7 +43,9 @@ export function CommentList({ postId, comments, onCommentAdd }: Props) {
       )}
 
       {/* Form */}
-      <CommentForm postId={postId} onCommentAdd={handleCommentAdd} hideControls={!comments?.length} />
+      {isCommentingEnabled && (
+        <CommentForm postId={postId} onCommentAdd={handleCommentAdd} hideControls={!comments?.length} />
+      )}
     </Stack>
   );
 }
