@@ -1,6 +1,8 @@
 import { app, BrowserWindow, clipboard, ipcMain, screen, shell } from 'electron';
 import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
+import stackoverflow from '../src/uitls/stackexchange-api';
+import { UserType } from '../src/interfaces/UserType';
 
 let mainWindow: BrowserWindow | null;
 let splashScreenWindow: BrowserWindow | null;
@@ -24,9 +26,9 @@ function createWindows() {
   mainWindow = new BrowserWindow({
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
     width: 1000,
+    height: 600,
     minWidth: 750,
-    height: 750,
-    minHeight: 500,
+    minHeight: 400,
     show: false,
     title: 'StackOverflow',
     titleBarStyle: 'hidden',
@@ -89,12 +91,17 @@ function createWindows() {
     mainWindow?.hide();
   });
 
+  // This is where the app initially fetch data
+  // to allow show main window without fleshing
   mainWindow.on('ready-to-show', () => {
-    auth((token, expires) => {
-      mainWindow?.webContents.send('stackexchange:on-auth', {
-        token: token,
-        expires: expires
-      });
+    auth(async (token, expires) => {
+      // Fetch current user
+      const user = await stackoverflow.getLoggedInUser(token);
+
+      // Fetch sidebar counts
+      const sidebarCounts = await stackoverflow.getSidebarCounts(user.user_id, token);
+
+      mainWindow?.webContents.send('stackexchange:on-auth', { user, sidebarCounts, token });
     });
   });
 

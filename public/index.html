@@ -14,10 +14,15 @@
   <link rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/github-v2.min.css">
 
   <style>
+    #chakra-toast-manager-top {
+      top: 40px !important;
+    }
+
     .stackoverflow_question-body p {
       margin-bottom: 8px;
       max-width: 800px;
     }
+
     .stackoverflow_question-body ol,
     .stackoverflow_question-body ul {
       padding-left: 16px;
@@ -25,14 +30,14 @@
     }
 
     .shake {
-      animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+      animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
       transform: translate3d(0, 0, 0);
       backface-visibility: hidden;
       perspective: 1000px;
     }
 
     .shake-out {
-      animation: shake-out 500ms cubic-bezier(.36,.07,.19,.97);
+      animation: shake-out 500ms cubic-bezier(.36, .07, .19, .97);
       transform: translate3d(0, 0, 0);
       backface-visibility: hidden;
       perspective: 1000px;
@@ -87,11 +92,11 @@
       }
     }
 
-    window.addEventListener('online', updateOnlineStatus)
-    window.addEventListener('offline', updateOnlineStatus)
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
   </script>
 </head>
 <body>
-<div id="root"></div>
+<div id="root" style="height: 100vh;"></div>
 </body>
 </html>
