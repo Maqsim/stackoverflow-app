@@ -3,10 +3,12 @@ import { SidebarCountsType } from '../interfaces/SidebarCountsType';
 import { UserType } from '../interfaces/UserType';
 import { isRenderer } from './is-renderer';
 
-function buildStackOverflowUrl(path: string, parameters?: Record<string, string>) {
+type ParametersType = Record<string, string | number>;
+
+function buildStackOverflowUrl(path: string, parameters?: ParametersType) {
   let url = `https://api.stackexchange.com/2.3/${path}`;
 
-  const queryString = parameters && new URLSearchParams(parameters).toString();
+  const queryString = parameters && new URLSearchParams(parameters as any).toString();
   if (queryString) {
     url = url + '?' + decodeURIComponent(queryString);
   }
@@ -39,7 +41,7 @@ class StackoverflowApi {
 
   async get<JSON = unknown>(
     url: string,
-    parameters?: Record<string, string>,
+    parameters?: ParametersType,
     options?: AxiosRequestConfig
   ): Promise<StackoverflowResponse<JSON>> {
     if (parameters) {
