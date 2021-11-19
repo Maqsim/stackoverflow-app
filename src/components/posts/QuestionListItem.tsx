@@ -20,9 +20,9 @@ export function QuestionListItem({ item }: Props) {
   const hoverBg = useColorModeValue('gray.50', 'gray.700');
   const answersFactoidStyles = item.is_answered
     ? {
-        bgColor: 'green.300',
-        color: 'white'
-      }
+      bgColor: 'green.300',
+      color: 'white'
+    }
     : undefined;
 
   // Helper icons
@@ -84,18 +84,18 @@ export function QuestionListItem({ item }: Props) {
 
           <Box mt="8px" h="24px" overflow="hidden">
             <HStack display="inline-flex" h="24px" spacing="10px" fontSize="13px" mr="10px">
-              <Text opacity={hasLittleText ? 1 : 0.2} title={hasLittleText ? 'Low reading time' : undefined}>
-                <MdSpeed />
+              <Text opacity={hasLittleText ? 1 : 0.2} transform={hasLittleText ? 'none' : 'rotateY(-180deg)'} title={hasLittleText ? 'Low reading time' : undefined}>
+                <MdSpeed/>
               </Text>
               <Text opacity={hasCode ? 1 : 0.2} title={hasCode ? 'Question has code snippets' : undefined}>
-                <IoCodeSlash />
+                <IoCodeSlash/>
               </Text>
               <Text opacity={hasImages ? 1 : 0.2} title={hasImages ? 'Question has images' : undefined}>
-                <IoImageOutline />
+                <IoImageOutline/>
               </Text>
             </HStack>
 
-            <TagList tags={item.tags} />
+            <TagList tags={item.tags}/>
           </Box>
         </Box>
       </Flex>

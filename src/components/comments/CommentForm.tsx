@@ -80,7 +80,7 @@ export function CommentForm({ postId, onCommentAdd, hideControls }: Props) {
   return (
     <HStack align="flex-start" fontSize="13px">
       <Flex w={hideControls ? 'auto' : '66px'} flexShrink={0} justify="end">
-        <Image src={user.data.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" />
+        <Image src={user.user.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" />
       </Flex>
       <Box ref={inputWrapperRef} w="100%" position="relative">
         <Input

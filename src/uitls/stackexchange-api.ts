@@ -1,4 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { SidebarCountsType } from '../interfaces/SidebarCountsType';
+import { UserType } from '../interfaces/UserType';
+import { isRenderer } from './is-renderer';
 
 function buildStackOverflowUrl(path: string, parameters?: any) {
   let url = `https://api.stackexchange.com/2.3/${path}`;
@@ -21,16 +24,16 @@ function buildStackOverflowUrl(path: string, parameters?: any) {
 
 const stackoverflow = {
   get: (url: string, parameters?: any, options?: AxiosRequestConfig) => {
+    const token = isRenderer() ? localStorage.getItem('token') : parameters.token;
+
+    // TODO refactor this
     if (parameters) {
       parameters.site = 'stackoverflow';
       parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
-      parameters.access_token = localStorage.getItem('token');
+      parameters.access_token = token;
     }
 
     return axios(buildStackOverflowUrl(url, parameters), options).then((response) => response.data);
-  },
-  getLoggedInUser: () => {
-    return stackoverflow.get('me', {}).then((response: any) => response.items[0]);
   },
   post: (url: string, data: object) => {
     const formData = new FormData();
@@ -46,6 +49,29 @@ const stackoverflow = {
     }
 
     return axios.post(buildStackOverflowUrl(url), formData).then((response) => response.data);
+  },
+
+  // Aliases
+  // =======
+
+  // Used only on Main
+  getLoggedInUser: (token: string): Promise<UserType> => {
+    return stackoverflow.get('me', { token }).then((response: any) => response.items[0]);
+  },
+
+  // Used only on Main
+  getSidebarCounts: async (userId: number, token: string): Promise<SidebarCountsType> => {
+    const bookmarkCountResponse: any = await stackoverflow.get('me/favorites', { token, filter: 'total' });
+    const questionCountResponse: any = await stackoverflow.get('me/questions', { token, filter: 'total' });
+    const answerCountResponse: any = await stackoverflow.get('me/answers', { token, filter: 'total' });
+    const tagCountResponse: any = await stackoverflow.get('me/tag-preferences', { token });
+
+    return {
+      bookmarks: bookmarkCountResponse.total,
+      questions: questionCountResponse.total,
+      answers: answerCountResponse.total,
+      tags: tagCountResponse.items.length
+    };
   }
 };
 

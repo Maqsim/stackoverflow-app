@@ -12,18 +12,18 @@ import { ScrollToTop } from './ScrollToTop';
 import { SponsorWidget } from './SponsorWidget';
 import { ProfilePage } from '../../pages/ProfilePage';
 import { MyBookmarksPage } from '../../pages/MyBookmarksPage';
-import { SidebarContext } from '../../contexts/use-sidebar';
 import { TopBar } from './TopBar';
 import { SearchPage } from '../../pages/SearchPage';
 import { TagsPage } from '../../pages/TagsPage';
 import { MyTagsPage } from '../../pages/MyTags';
+import { UserContext } from '../../contexts/use-user';
 
 export function Layout() {
   return (
     <>
       <TopBar />
 
-      <Flex h="calc(100vh - 40px)" alignItems={'stretch'}>
+      <Flex h="calc(100% - 40px)" alignItems={'stretch'}>
         <Stack
           bgColor="gray.700"
           color="white"
@@ -49,24 +49,24 @@ export function Layout() {
                 <Divider borderColor="gray.600" />
               </Box>
               <Stack spacing={0}>
-                <SidebarContext.Consumer>
-                  {(sidebar) => (
+                <UserContext.Consumer>
+                  {({ sidebarCounts }) => (
                     <>
-                      <NavItem to="/my-bookmarks" count={sidebar.counts.bookmarks}>
+                      <NavItem to="/my-bookmarks" count={sidebarCounts.bookmarks}>
                         <Text>My bookmarks</Text>
                       </NavItem>
-                      <NavItem to="/my-questions" count={sidebar.counts.questions}>
+                      <NavItem to="/my-questions" count={sidebarCounts.questions}>
                         <Text>My questions</Text>
                       </NavItem>
-                      <NavItem to="/my-answers" count={sidebar.counts.answers}>
+                      <NavItem to="/my-answers" count={sidebarCounts.answers}>
                         <Text>My answers</Text>
                       </NavItem>
-                      <NavItem to="/my-tags" count={sidebar.counts.tags}>
+                      <NavItem to="/my-tags" count={sidebarCounts.tags}>
                         <Text>My tags</Text>
                       </NavItem>
                     </>
                   )}
-                </SidebarContext.Consumer>
+                </UserContext.Consumer>
               </Stack>
             </Box>
 

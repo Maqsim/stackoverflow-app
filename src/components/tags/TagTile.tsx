@@ -9,7 +9,7 @@ import { GoCircleSlash } from 'react-icons/go';
 import { TagPreferenceType } from '../../interfaces/TagPreferenceType';
 import { useMinDuration } from '../../hooks/use-min-duration';
 import parse from 'html-react-parser';
-import { useSidebar } from '../../contexts/use-sidebar';
+import { useUser } from '../../contexts/use-user';
 
 type Props = {
   tag: TagType;
@@ -29,7 +29,7 @@ function isInitialIgnoring(tag: TagType, tagPreferences: TagPreferenceType[]) {
 }
 
 export function TagTile({ tag, tagPreferences }: Props) {
-  const sidebar = useSidebar();
+  const user = useUser();
   const [isLoaded, setIsLoaded] = useState(false);
   const [isWatching, setIsWatching] = useState(isInitialWatching(tag, tagPreferences));
   const [isIgnoring, setIsIgnoring] = useState(isInitialIgnoring(tag, tagPreferences));
@@ -55,9 +55,7 @@ export function TagTile({ tag, tagPreferences }: Props) {
     });
 
     minDuration(foo).then((result) => {
-      if (sidebar.counts.tags) {
-        sidebar.setTagCount(sidebar.counts.tags + (isWatching ? -1 : 1));
-      }
+      user.setSidebarCounts({ ...user.sidebarCounts, tags: user.sidebarCounts.tags + (isWatching ? -1 : 1) });
 
       setIsWatching(!isWatching);
       setIsWatchInProgress(false);
@@ -73,9 +71,7 @@ export function TagTile({ tag, tagPreferences }: Props) {
     });
 
     minDuration(foo).then((result) => {
-      if (sidebar.counts.tags) {
-        sidebar.setTagCount(sidebar.counts.tags + (isIgnoring ? -1 : 1));
-      }
+      user.setSidebarCounts({ ...user.sidebarCounts, tags: user.sidebarCounts.tags + (isIgnoring ? -1 : 1) });
 
       setIsIgnoring(!isIgnoring);
       setIsIgnoreInProgress(false);

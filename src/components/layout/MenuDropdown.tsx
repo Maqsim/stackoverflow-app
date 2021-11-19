@@ -22,17 +22,17 @@ export function MenuDropdown() {
   }
 
   useEffect(() => {
-    socketClient.on(`1-${user.data.user_id}-reputation`, () => {
+    socketClient.on(`1-${user.user.user_id}-reputation`, () => {
       notification('Reputation', '+25');
     });
 
-    socketClient.on(`${user.data.account_id}-inbox`, () => {
+    socketClient.on(`${user.user.account_id}-inbox`, () => {
       notification('Inbox', 'You got new message');
     });
   }, []);
 
   function goToProfile() {
-    navigate(`/users/${user.data.user_id}`, { state: user.data });
+    navigate(`/users/${user.user.user_id}`, { state: user.user });
   }
 
   return (
@@ -55,7 +55,7 @@ export function MenuDropdown() {
         color="whiteAlpha.600"
       >
         <Text fontSize="12px" fontWeight="semibold">
-          {kFormatter(user.data.reputation)}
+          {kFormatter(user.user.reputation)}
           <Text as="span" ml="3px" px="3px" mt="1px" bgColor="green.400" color="whiteAlpha.800" rounded="2px">
             +25
           </Text>
@@ -64,7 +64,7 @@ export function MenuDropdown() {
 
       <Menu>
         <MenuButton marginStart="10px !important" _hover={{ filter: 'brightness(1.1)' }}>
-          <Image src={user.data.profile_image} boxSize="25px" objectFit="cover" borderRadius="5px" />
+          <Image src={user.user.profile_image} boxSize="25px" objectFit="cover" borderRadius="5px" />
         </MenuButton>
         <MenuList zIndex={200}>
           <MenuItem onClick={goToProfile}>Profile</MenuItem>

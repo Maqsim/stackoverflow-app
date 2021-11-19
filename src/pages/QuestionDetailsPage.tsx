@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import stackoverflow from '../uitls/stackexchange-api';
-import { useLocation, useParams } from 'react-router-dom';
-import { Box, Button, ButtonGroup, Flex, Heading, HStack, Spinner, Stack, Text, Tooltip } from '@chakra-ui/react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Box, Button, ButtonGroup, Flex, Heading, HStack, Stack, Text, Tooltip, useToast } from '@chakra-ui/react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { BackButton } from '../components/layout/BackButton';
 import { RiEarthFill, RiFileCopyFill } from 'react-icons/ri';
@@ -10,11 +10,14 @@ import { AnswerDetails } from '../components/posts/AnswerDetails';
 import { socketClient } from '../uitls/stackexchange-socket-client';
 import { notification } from '../uitls/notitification';
 import { getItem, setItem } from '../uitls/local-storage';
+import { AppSpinner } from '../components/layout/AppSpinner';
 
 let tooltipTimerId: NodeJS.Timer;
 
 export function QuestionDetailsPage() {
   const { id } = useParams();
+  const toast = useToast();
+  const navigate = useNavigate();
   const location = useLocation();
   const initialQuestion = location.state as QuestionType;
   const [question, setQuestion] = useState(initialQuestion);
@@ -39,7 +42,16 @@ export function QuestionDetailsPage() {
           filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ3LoiM_GpZITfZz5'
         })
         .then((response) => {
-          setQuestion((response as any).items[0]);
+          const question = (response as any).items[0];
+
+          if (question) {
+            setQuestion(question);
+          } else {
+            goBackWithError('This question was removed');
+          }
+        })
+        .catch(() => {
+          goBackWithError('The question was not found');
         });
     }
 
@@ -51,6 +63,17 @@ export function QuestionDetailsPage() {
       socketClient.off(`1-question-${id}`);
     };
   }, [id]);
+
+  function goBackWithError(errorMessage: string) {
+    navigate(-1);
+    toast({
+      position: 'top',
+      description: errorMessage,
+      status: 'error',
+      duration: 3000,
+      isClosable: false
+    });
+  }
 
   function jumpToAnswers() {
     const scrollableEl = document.getElementById('scrolling-container');
@@ -75,7 +98,7 @@ export function QuestionDetailsPage() {
   }
 
   if (!question) {
-    return <Spinner />;
+    return <AppSpinner />;
   }
 
   return (

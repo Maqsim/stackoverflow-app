@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { TagPreferenceType } from '../interfaces/TagPreferenceType';
 import stackoverflow from '../uitls/stackexchange-api';
 import { EditableTagList } from '../components/tags/EditableTagList';
-import { useSidebar } from '../contexts/use-sidebar';
+import { useUser } from '../contexts/use-user';
 
 export function MyTagsPage() {
-  const sidebar = useSidebar();
+  const user = useUser();
   const [isLoaded, setIsLoaded] = useState(false);
   const [watchingTags, setWatchingTags] = useState<string[]>([]);
   const [ignoringTags, setIgnoringTags] = useState<string[]>([]);
@@ -41,7 +41,7 @@ export function MyTagsPage() {
       return;
     }
 
-    sidebar.setTagCount(watchingTags.concat(ignoringTags).length);
+    user.setSidebarCounts({ ...user.sidebarCounts, tags: watchingTags.concat(ignoringTags).length });
 
     stackoverflow.post(`me/tag-preferences/edit`, {
       favorite_tags: watchingTags.join(';'),
