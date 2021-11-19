@@ -1,11 +1,15 @@
-import { createContext, ReactNode, useContext, useLayoutEffect, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { UserType } from '../interfaces/UserType';
 import { socketClient } from '../uitls/stackexchange-socket-client';
 import { SidebarCountsType } from '../interfaces/SidebarCountsType';
 import { IPCOnAuthResponseType } from '../interfaces/ipc-events/IPCOnAuthResponseType';
+import { FeaturesEnum } from '../interfaces/FeaturesEnum';
+import { makeFeatureList } from '../uitls/is-feature-enabled';
 
 export type UserContextState = {
   user: UserType;
+  features: FeaturesEnum[];
+  isFeatureOn: (feature: FeaturesEnum) => boolean;
   sidebarCounts: SidebarCountsType;
   setSidebarCounts: (counts: SidebarCountsType) => void;
 };
@@ -20,6 +24,7 @@ type Props = {
 export const UserProvider = ({ children, LoadingComponent }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserType>({} as UserType);
+  const [features, setFeatures] = useState<FeaturesEnum[]>([]);
   const [sidebarCounts, setSidebarCounts] = useState<SidebarCountsType>({
     bookmarks: 0,
     questions: 0,
@@ -27,8 +32,17 @@ export const UserProvider = ({ children, LoadingComponent }: Props) => {
     tags: 0
   });
 
+  const isFeatureOn = useCallback(
+    (feature: FeaturesEnum) => {
+      return features.includes(feature);
+    },
+    [features]
+  );
+
   const sharedState: UserContextState = {
-    user: user,
+    user,
+    features,
+    isFeatureOn,
     sidebarCounts,
     setSidebarCounts
   };
@@ -39,6 +53,7 @@ export const UserProvider = ({ children, LoadingComponent }: Props) => {
       socketClient.connect();
 
       setUser(user);
+      setFeatures(makeFeatureList(user.reputation));
       setSidebarCounts(sidebarCounts);
       setIsLoading(false);
     });

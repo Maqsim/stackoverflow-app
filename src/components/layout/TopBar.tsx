@@ -39,6 +39,7 @@ export function TopBar() {
       </Center>
 
       <Center
+        userSelect="none"
         position="absolute"
         transitionProperty="transform background-color"
         transitionDuration="200ms"

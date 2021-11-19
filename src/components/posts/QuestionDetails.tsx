@@ -2,20 +2,27 @@ import { Box, Heading, HStack } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import { TagList } from '../tags/TagList';
 import { ProfileBadge } from '../profile/ProfileBadge';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
 import { QuestionType } from '../../interfaces/QuestionType';
 import { CommentType } from '../../interfaces/CommentType';
 import { CommentList } from '../comments/CommentList';
+import { useUser } from '../../contexts/use-user';
+import { FeaturesEnum } from '../../interfaces/FeaturesEnum';
 
 type Props = {
   question: QuestionType;
 };
 
 export function QuestionDetails({ question }: Props) {
+  const user = useUser();
   const [score, setScore] = useState<number>(question.score);
   const [comments, setComments] = useState<CommentType[]>(question.comments || []);
+
+  useEffect(() => {
+    user.isFeatureOn(FeaturesEnum.EDIT_POSTS)
+  }, []);
 
   function handleUpvote() {
     setScore(score + 1);
