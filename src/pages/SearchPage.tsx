@@ -1,7 +1,7 @@
-import { Heading, Stack, Text } from '@chakra-ui/react';
+import { Heading, Stack } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import stackoverflow from '../uitls/stackexchange-api';
+import { stackoverflow } from '../uitls/stackexchange-api';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
@@ -18,11 +18,11 @@ export function SearchPage() {
   async function search() {
     setIsLoaded(false);
 
-    const response: any = await stackoverflow.get(`search/advanced`, {
+    const response = await stackoverflow.get<QuestionType>(`search/advanced`, {
       order: 'desc',
       sort: 'relevance',
       filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*',
-      q: query
+      q: query!
     });
 
     setQuestions(response.items);

@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { SidebarCountsType } from '../interfaces/SidebarCountsType';
 import { UserType } from '../interfaces/UserType';
+import { isRenderer } from './is-renderer';
 
 function buildStackOverflowUrl(path: string, parameters?: Record<string, string>) {
   let url = `https://api.stackexchange.com/2.3/${path}`;
@@ -13,7 +14,7 @@ function buildStackOverflowUrl(path: string, parameters?: Record<string, string>
   return url;
 }
 
-type StackOverflowResponse<T> = {
+type StackoverflowResponse<T> = {
   items: T[];
   total: number;
   has_more: boolean;
@@ -21,39 +22,42 @@ type StackOverflowResponse<T> = {
   quota_remaining: number;
 };
 
-const stackoverflow = {
-  get tokens() {
-    return {
+class StackoverflowApi {
+  private tokens: {
+    site: string;
+    key: string;
+    access_token: string;
+  };
+
+  constructor(token?: string) {
+    this.tokens = {
       site: 'stackoverflow',
       key: 'bdFSxniGkNbU3E*jsj*28w((',
-      access_token: localStorage.getItem('token')!
+      access_token: isRenderer() ? localStorage.getItem('token')! : token!
     };
-  },
-  get: <JSON = unknown>(url: string, parameters: Record<string, string> = {}, options?: AxiosRequestConfig) => {
+  }
+
+  async get<JSON = unknown>(
+    url: string,
+    parameters?: Record<string, string>,
+    options?: AxiosRequestConfig
+  ): Promise<StackoverflowResponse<JSON>> {
     if (parameters) {
       parameters = {
-        ...stackoverflow.tokens,
+        ...this.tokens,
         ...parameters
       };
     }
 
-    if (parameters.token) {
-      parameters = {
-        ...parameters,
-        access_token: parameters.token
-      };
-
-      delete parameters.token;
-    }
-
     return axios
-      .get<StackOverflowResponse<JSON>>(buildStackOverflowUrl(url, parameters), options)
+      .get<StackoverflowResponse<JSON>>(buildStackOverflowUrl(url, parameters), options)
       .then((response) => response.data);
-  },
-  post: <JSON = unknown>(url: string, data: object) => {
+  }
+
+  async post<JSON = unknown>(url: string, data: object): Promise<StackoverflowResponse<JSON>> {
     const formData = new FormData();
     const payload = {
-      ...stackoverflow.tokens,
+      ...this.tokens,
       ...data
     };
 
@@ -62,24 +66,19 @@ const stackoverflow = {
     }
 
     return axios
-      .post<StackOverflowResponse<JSON>>(buildStackOverflowUrl(url), formData)
+      .post<StackoverflowResponse<JSON>>(buildStackOverflowUrl(url), formData)
       .then((response) => response.data);
-  },
+  }
 
-  // Aliases
-  // =======
+  async getLoggedInUser(): Promise<UserType> {
+    return this.get<UserType>('me', {}).then((response) => response.items[0]);
+  }
 
-  // Used only on Main
-  getLoggedInUser: (token: string): Promise<UserType> => {
-    return stackoverflow.get<UserType>('me', { token }).then((response) => response.items[0]);
-  },
-
-  // Used only on Main
-  getSidebarCounts: async (userId: number, token: string): Promise<SidebarCountsType> => {
-    const bookmarkCountResponse = await stackoverflow.get('me/favorites', { token, filter: 'total' });
-    const questionCountResponse = await stackoverflow.get('me/questions', { token, filter: 'total' });
-    const answerCountResponse = await stackoverflow.get('me/answers', { token, filter: 'total' });
-    const tagCountResponse = await stackoverflow.get('me/tag-preferences', { token });
+  async getSidebarCounts(): Promise<SidebarCountsType> {
+    const bookmarkCountResponse = await this.get('me/favorites', { filter: 'total' });
+    const questionCountResponse = await this.get('me/questions', { filter: 'total' });
+    const answerCountResponse = await this.get('me/answers', { filter: 'total' });
+    const tagCountResponse = await this.get('me/tag-preferences', {});
 
     return {
       bookmarks: bookmarkCountResponse.total,
@@ -88,6 +87,8 @@ const stackoverflow = {
       tags: tagCountResponse.items.length
     };
   }
-};
+}
 
-export default stackoverflow;
+const stackoverflow = new StackoverflowApi();
+export { stackoverflow };
+export default StackoverflowApi;

@@ -2,7 +2,7 @@ import { Box, Flex, HStack, Image, Input } from '@chakra-ui/react';
 import { useUser } from '../../contexts/use-user';
 import { useRef, useState } from 'react';
 import { CommentType } from '../../interfaces/CommentType';
-import stackoverflow from '../../uitls/stackexchange-api';
+import { stackoverflow } from '../../uitls/stackexchange-api';
 
 type Props = {
   postId: number;
@@ -10,7 +10,7 @@ type Props = {
   hideControls?: boolean;
 };
 
-let timerId: NodeJS.Timeout;
+let timerId: ReturnType<typeof setInterval>;
 
 export function CommentForm({ postId, onCommentAdd, hideControls }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -47,7 +47,7 @@ export function CommentForm({ postId, onCommentAdd, hideControls }: Props) {
 
     setIsSubmitting(true);
 
-    const response: any = await stackoverflow.post(`posts/${postId}/comments/add`, {
+    const response = await stackoverflow.post<CommentType>(`posts/${postId}/comments/add`, {
       body: input,
       filter: '!bFsxHu(AR4ev8W',
       preview: true

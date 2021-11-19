@@ -1,7 +1,7 @@
 import { Box, Button, Center, Input, Spinner, Text } from '@chakra-ui/react';
 import { TagList } from './TagList';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import stackoverflow from '../../uitls/stackexchange-api';
+import { stackoverflow } from '../../uitls/stackexchange-api';
 import { TagType } from '../../interfaces/TagType';
 import { TagSkeleton } from './Tag.skeleton';
 import randomRange from '../../uitls/random-range';
@@ -26,8 +26,8 @@ export function EditableTagList({ tags, onAdd, onRemove, showSkeletons }: Props)
 
   const searchTags = useCallback(
     debounce((query: string) => {
-      stackoverflow.get('tags', { inname: query }).then((response: any) => {
-        const filteredTags = response.items.filter((t: TagType) => !tags.includes(t.name));
+      stackoverflow.get<TagType>('tags', { inname: query }).then((response) => {
+        const filteredTags = response.items.filter((t) => !tags.includes(t.name));
 
         setFoundTags(filteredTags);
         setIsDropdownLoading(false);

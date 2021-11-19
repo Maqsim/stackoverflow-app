@@ -1,8 +1,7 @@
 import { app, BrowserWindow, clipboard, ipcMain, screen, shell } from 'electron';
 import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
-import stackoverflow from '../src/uitls/stackexchange-api';
-import { UserType } from '../src/interfaces/UserType';
+import StackoverflowApi from '../src/uitls/stackexchange-api';
 
 let mainWindow: BrowserWindow | null;
 let splashScreenWindow: BrowserWindow | null;
@@ -95,13 +94,19 @@ function createWindows() {
   // to allow show main window without fleshing
   mainWindow.on('ready-to-show', () => {
     auth(async (token, expires) => {
+      const api = new StackoverflowApi(token);
+
       // Fetch current user
-      const user = await stackoverflow.getLoggedInUser(token);
+      const user = await api.getLoggedInUser();
 
       // Fetch sidebar counts
-      const sidebarCounts = await stackoverflow.getSidebarCounts(user.user_id, token);
+      const sidebarCounts = await api.getSidebarCounts();
 
-      mainWindow?.webContents.send('stackexchange:on-auth', { user, sidebarCounts, token });
+      mainWindow!.webContents.send('stackexchange:on-auth', {
+        user,
+        token,
+        sidebarCounts
+      });
     });
   });
 

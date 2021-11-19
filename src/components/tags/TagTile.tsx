@@ -2,7 +2,7 @@ import { Tag } from './Tag';
 import { Box, Button, HStack, SkeletonText, Text } from '@chakra-ui/react';
 import { TagType } from '../../interfaces/TagType';
 import { useEffect, useState } from 'react';
-import stackoverflow from '../../uitls/stackexchange-api';
+import { stackoverflow } from '../../uitls/stackexchange-api';
 import { TagWikiType } from '../../interfaces/TagWikiType';
 import { FiCheck } from 'react-icons/fi';
 import { GoCircleSlash } from 'react-icons/go';
@@ -40,7 +40,7 @@ export function TagTile({ tag, tagPreferences }: Props) {
   const minDuration = useMinDuration(300);
 
   useEffect(() => {
-    stackoverflow.get(`tags/${encodeURIComponent(tag.name)}/wikis`, {}).then((response: any) => {
+    stackoverflow.get<TagWikiType>(`tags/${encodeURIComponent(tag.name)}/wikis`, {}).then((response) => {
       setTagWiki(response.items[0]);
       setIsLoaded(true);
     });

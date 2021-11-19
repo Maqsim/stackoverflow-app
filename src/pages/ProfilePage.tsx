@@ -3,7 +3,7 @@ import { Box, Flex, Heading, HStack, Image, Stack, Text } from '@chakra-ui/react
 import { UserType } from '../interfaces/UserType';
 import { useLocation, useParams } from 'react-router-dom';
 import { BackButton } from '../components/layout/BackButton';
-import stackoverflow from '../uitls/stackexchange-api';
+import { stackoverflow } from '../uitls/stackexchange-api';
 import { TopPosts } from '../components/profile/TopPosts';
 import { Statistics } from '../components/profile/Statistics';
 import parse from 'html-react-parser';
@@ -17,9 +17,9 @@ export function ProfilePage() {
   const [user, setUser] = useState<UserType>(initialUser);
 
   async function fetchAdditionalData() {
-    const response = (await stackoverflow.get(`users/${user.user_id}`, {
+    const response = await stackoverflow.get<UserType>(`users/${user.user_id}`, {
       filter: '!0ZJUgZLp_(o9njLHPL0ZUMahE'
-    })) as any;
+    });
 
     setUser(response.items[0]);
     setIsLoaded(true);

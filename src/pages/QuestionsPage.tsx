@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
-import stackoverflow from '../uitls/stackexchange-api';
+import { stackoverflow } from '../uitls/stackexchange-api';
 import { Box, Button, ButtonGroup, Flex, Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 
@@ -11,14 +11,14 @@ export function QuestionsPage() {
 
   useEffect(() => {
     stackoverflow
-      .get('questions/unanswered/my-tags', {
+      .get<QuestionType>('questions/unanswered/my-tags', {
         order: 'desc',
         sort: 'creation',
-        pagesize: 15,
+        pagesize: '15',
         filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
       })
       .then((response) => {
-        setQuestions((response as any).items);
+        setQuestions(response.items);
         setIsLoaded(true);
 
         // TODO See if we can remove 300ms delay here

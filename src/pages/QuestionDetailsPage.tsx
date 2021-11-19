@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import stackoverflow from '../uitls/stackexchange-api';
+import { stackoverflow } from '../uitls/stackexchange-api';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, ButtonGroup, Flex, Heading, HStack, Stack, Text, Tooltip, useToast } from '@chakra-ui/react';
 import { QuestionType } from '../interfaces/QuestionType';
@@ -38,11 +38,11 @@ export function QuestionDetailsPage() {
 
     if (!question) {
       stackoverflow
-        .get(`questions/${id}`, {
+        .get<QuestionType>(`questions/${id}`, {
           filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ3LoiM_GpZITfZz5'
         })
         .then((response) => {
-          const question = (response as any).items[0];
+          const question = response.items[0];
 
           if (question) {
             setQuestion(question);

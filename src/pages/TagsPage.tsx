@@ -1,6 +1,6 @@
 import { Heading, SimpleGrid } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import stackoverflow from '../uitls/stackexchange-api';
+import { stackoverflow } from '../uitls/stackexchange-api';
 import { TagType } from '../interfaces/TagType';
 import { TagTile } from '../components/tags/TagTile';
 import { TagTileSkeleton } from '../components/tags/TagTile.skeleton';
@@ -13,13 +13,15 @@ export function TagsPage() {
 
   useEffect(() => {
     const getTags = stackoverflow
-      .get(`tags`, {
+      .get<TagType>(`tags`, {
         order: 'desc',
         sort: 'popular'
       })
-      .then((response: any) => response.items);
+      .then((response) => response.items);
 
-    const getTagPreferences = stackoverflow.get(`me/tag-preferences`, {}).then((response: any) => response.items);
+    const getTagPreferences = stackoverflow
+      .get<TagPreferenceType>(`me/tag-preferences`, {})
+      .then((response) => response.items);
 
     Promise.all([getTags, getTagPreferences]).then(([tags, tagPreferences]) => {
       setTags(tags);

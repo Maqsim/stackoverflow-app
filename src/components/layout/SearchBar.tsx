@@ -1,5 +1,5 @@
 import { Box, Center, FormControl, Input, Text } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export function SearchBar() {
@@ -9,9 +9,15 @@ export function SearchBar() {
   const [input, setInput] = useState<string | undefined>('');
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // useEffect(() => {
-  //   setIsPopoverVisible(isInputVisible);
-  // }, [isInputVisible]);
+  useEffect(() => {
+    window.addEventListener('keydown', focusInput);
+  }, []);
+
+  function focusInput(event: globalThis.KeyboardEvent) {
+    if (event.keyCode === 191) {
+      showInput();
+    }
+  }
 
   function showInput() {
     setIsInputVisible(true);
@@ -25,7 +31,7 @@ export function SearchBar() {
   }
 
   // TODO refactor this shit
-  function handleEnter(event: any) {
+  function handleEnter(event: KeyboardEvent<HTMLInputElement>) {
     const isEnter = event.key === 'Enter';
     const isEsc = event.key === 'Escape';
 
@@ -61,7 +67,7 @@ export function SearchBar() {
         w="100%"
         h="25px"
       >
-        <Text>{input ? input : 'Search questions and answers'}</Text>
+        <Text>{input ? input : 'Search questions and answers (press /)'}</Text>
       </Center>
 
       <FormControl display={isInputVisible ? 'block' : 'none'}>

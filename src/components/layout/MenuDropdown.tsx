@@ -1,5 +1,5 @@
 import { Box, Center, HStack, Image, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text } from '@chakra-ui/react';
-import stackoverflow from '../../uitls/stackexchange-api';
+import { stackoverflow } from '../../uitls/stackexchange-api';
 import { useUser } from '../../contexts/use-user';
 import { BsInboxFill } from 'react-icons/bs';
 import { kFormatter } from '../../uitls/k-formatter';
@@ -34,6 +34,10 @@ export function MenuDropdown() {
 
   function goToProfile() {
     navigate(`/users/${user.user.user_id}`, { state: user.user });
+  }
+
+  function goToSettings() {
+    navigate('/settings');
   }
 
   return (
@@ -71,7 +75,9 @@ export function MenuDropdown() {
           <MenuItem onClick={goToProfile} command={commandKey(['P'])}>
             Profile
           </MenuItem>
-          <MenuItem command={commandKey([','])}>Settings</MenuItem>
+          <MenuItem onClick={goToSettings} command={commandKey([','])}>
+            Settings
+          </MenuItem>
           <MenuDivider />
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>

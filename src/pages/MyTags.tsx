@@ -1,7 +1,7 @@
 import { Heading } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { TagPreferenceType } from '../interfaces/TagPreferenceType';
-import stackoverflow from '../uitls/stackexchange-api';
+import { stackoverflow } from '../uitls/stackexchange-api';
 import { EditableTagList } from '../components/tags/EditableTagList';
 import { useUser } from '../contexts/use-user';
 
@@ -12,28 +12,26 @@ export function MyTagsPage() {
   const [ignoringTags, setIgnoringTags] = useState<string[]>([]);
 
   useEffect(() => {
-    stackoverflow
-      .get(`me/tag-preferences`, {})
-      .then((response: any) => response.items)
-      .then((tagPreferences: TagPreferenceType[]) => {
-        const _watchedTags: string[] = [];
-        const _ignoredTags: string[] = [];
+    stackoverflow.get<TagPreferenceType>(`me/tag-preferences`, {}).then((response) => {
+      const tagPreferences = response.items;
+      const _watchedTags: string[] = [];
+      const _ignoredTags: string[] = [];
 
-        tagPreferences.forEach((tagPreference) => {
-          switch (tagPreference.tag_preference_type) {
-            case 'favorite_tag':
-              _watchedTags.push(tagPreference.tag_name);
-              break;
-            case 'ignored_tag':
-              _ignoredTags.push(tagPreference.tag_name);
-              break;
-          }
-        });
-
-        setWatchingTags(_watchedTags);
-        setIgnoringTags(_ignoredTags);
-        setIsLoaded(true);
+      tagPreferences.forEach((tagPreference) => {
+        switch (tagPreference.tag_preference_type) {
+          case 'favorite_tag':
+            _watchedTags.push(tagPreference.tag_name);
+            break;
+          case 'ignored_tag':
+            _ignoredTags.push(tagPreference.tag_name);
+            break;
+        }
       });
+
+      setWatchingTags(_watchedTags);
+      setIgnoringTags(_ignoredTags);
+      setIsLoaded(true);
+    });
   }, []);
 
   useEffect(() => {

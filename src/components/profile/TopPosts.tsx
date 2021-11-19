@@ -3,7 +3,7 @@ import { QuestionType } from '../../interfaces/QuestionType';
 import { AnswerType } from '../../interfaces/AnswerType';
 import { memo, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import stackoverflow from '../../uitls/stackexchange-api';
+import { stackoverflow } from '../../uitls/stackexchange-api';
 import parse from 'html-react-parser';
 import { UserType } from '../../interfaces/UserType';
 
@@ -44,11 +44,11 @@ export function TopPosts({ user }: Props) {
 
     setIsPostsLoaded(false);
 
-    const response = (await stackoverflow.get(`users/${user?.user_id}/questions`, {
+    const response = await stackoverflow.get<QuestionType>(`users/${user?.user_id}/questions`, {
       sort: 'votes',
       order: 'desc',
       filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
-    })) as any;
+    });
 
     setPostType('questions');
     setQuestions(response.items);
@@ -62,11 +62,11 @@ export function TopPosts({ user }: Props) {
 
     setIsPostsLoaded(false);
 
-    const response = (await stackoverflow.get(`users/${user?.user_id}/answers`, {
+    const response = await stackoverflow.get<AnswerType>(`users/${user?.user_id}/answers`, {
       sort: 'votes',
       order: 'desc',
       filter: '!LJbtD(0QAN3VMHtITzTNgH'
-    })) as any;
+    });
 
     setPostType('answers');
     setAnswers(response.items);

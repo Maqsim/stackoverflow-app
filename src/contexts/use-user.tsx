@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useLayoutEffect, useState } from 'react';
 import { UserType } from '../interfaces/UserType';
 import { socketClient } from '../uitls/stackexchange-socket-client';
 import { SidebarCountsType } from '../interfaces/SidebarCountsType';
@@ -25,7 +25,7 @@ export const UserProvider = ({ children, LoadingComponent }: Props) => {
     questions: 0,
     answers: 0,
     tags: 0
-  } as SidebarCountsType);
+  });
 
   const sharedState: UserContextState = {
     user: user,
@@ -33,8 +33,8 @@ export const UserProvider = ({ children, LoadingComponent }: Props) => {
     setSidebarCounts
   };
 
-  useEffect(() => {
-    window.Main.on('stackexchange:on-auth', async ({ token, sidebarCounts, user }: IPCOnAuthResponseType) => {
+  useLayoutEffect(() => {
+    window.Main.on('stackexchange:on-auth', ({ token, sidebarCounts, user }: IPCOnAuthResponseType) => {
       localStorage.setItem('token', token);
       socketClient.connect();
 
