@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react';
 import { UserType } from '../interfaces/UserType';
 import { socketClient } from '../uitls/stackexchange-socket-client';
 import { SidebarCountsType } from '../interfaces/SidebarCountsType';
