@@ -51,9 +51,9 @@ const totalPlates = 6;
 for (let i = 0; i < totalPlates; i++) {
   const plate = PIXI.Sprite.from(PIXI.Texture.WHITE);
 
-  let colorMatrix = new PIXI.filters.ColorMatrixFilter();
-  plate.filters = [colorMatrix];
-  colorMatrix.tint(0xf07f24, false); // StackOverflow orange brand color
+  // let colorMatrix = new PIXI.filters.ColorMatrixFilter();
+  // plate.filters = [colorMatrix];
+  // colorMatrix.tint(0xf07f24, false); // StackOverflow orange brand color
 
   plate.position.x = -50; // NB initially render it outside the canvas
   plate.position.y = -50; // NB initially render it outside the canvas

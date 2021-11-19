@@ -24,9 +24,9 @@ function createWindows() {
   mainWindow = new BrowserWindow({
     // icon: path.join(assetsPath, 'assets', 'icon.png'),
     width: 1000,
+    height: 600,
     minWidth: 750,
-    height: 750,
-    minHeight: 500,
+    minHeight: 400,
     show: false,
     title: 'StackOverflow',
     titleBarStyle: 'hidden',

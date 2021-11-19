@@ -48,6 +48,7 @@ export function QuestionListItemSkeleton() {
       <Box flexGrow={1}>
         <Skeleton h="16px" w={`${titleWidth.current}%`} />
         <Box mt="7px" h="24px">
+          <Skeleton display="inline-flex" mr="10px" h="24px" w="59px" />
           {[...Array(tagsCount.current)].map((_, index) => (
             <TagSkeleton key={index} />
           ))}
