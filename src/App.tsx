@@ -3,7 +3,7 @@ import { Layout } from './components/layout/Layout';
 import { useNavigate } from 'react-router-dom';
 import { UserProvider } from './contexts/use-user';
 import { AppSpinner } from './components/layout/AppSpinner';
-import stackoverflow from './uitls/stackexchange-api';
+import { stackoverflow } from './uitls/stackexchange-api';
 import { useToast } from '@chakra-ui/react';
 
 export function App() {
@@ -23,7 +23,7 @@ export function App() {
             filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ3LoiM_GpZITfZz5'
           })
           .then((response) => {
-            const question = (response as any).items[0];
+            const question = response.items[0];
 
             if (question) {
               navigate(`/questions/${questionId}`, { state: question });
