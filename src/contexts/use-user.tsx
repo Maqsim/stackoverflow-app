@@ -48,7 +48,7 @@ export const UserProvider = ({ children, LoadingComponent }: Props) => {
   };
 
   useLayoutEffect(() => {
-    window.Main.on('stackexchange:on-auth', ({ token, sidebarCounts, user }: IPCOnAuthResponseType) => {
+    window.Main.on('stackexchange:on-auth', ({ user, sidebarCounts, token }: IPCOnAuthResponseType) => {
       localStorage.setItem('token', token);
       socketClient.connect();
 

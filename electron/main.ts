@@ -99,16 +99,17 @@ function createWindows() {
       // Fetch current user
       const user = await api.getLoggedInUser();
 
-      // Fetch user privileges
-      // const userPrivileges = await stackoverflow.get('privileges', { token });
-
       // Fetch sidebar counts
-      const sidebarCounts = await api.getSidebarCounts();
+      const partialSidebarCounts = await api.getSidebarCounts(user.user_id);
 
       mainWindow!.webContents.send('stackexchange:on-auth', {
         user,
-        token,
-        sidebarCounts
+        sidebarCounts: {
+          ...partialSidebarCounts,
+          questions: user.question_count,
+          answers: user.answer_count
+        },
+        token
       });
     });
   });

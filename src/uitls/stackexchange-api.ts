@@ -73,19 +73,17 @@ class StackoverflowApi {
   }
 
   async getLoggedInUser(): Promise<UserType> {
-    return this.get<UserType>('me', {}).then((response) => response.items[0]);
+    return this.get<UserType>('me', {
+      filter: '!LnNkvq0X7-jztJ-eDa1atV'
+    }).then((response) => response.items[0]);
   }
 
-  async getSidebarCounts(): Promise<SidebarCountsType> {
+  async getSidebarCounts(userId: number): Promise<Pick<SidebarCountsType, 'bookmarks' | 'tags'>> {
     const bookmarkCountResponse = await this.get('me/favorites', { filter: 'total' });
-    const questionCountResponse = await this.get('me/questions', { filter: 'total' });
-    const answerCountResponse = await this.get('me/answers', { filter: 'total' });
     const tagCountResponse = await this.get('me/tag-preferences', {});
 
     return {
       bookmarks: bookmarkCountResponse.total,
-      questions: questionCountResponse.total,
-      answers: answerCountResponse.total,
       tags: tagCountResponse.items.length
     };
   }

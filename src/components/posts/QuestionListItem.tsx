@@ -9,6 +9,7 @@ import { getItem } from '../../uitls/local-storage';
 import { IoCodeSlash, IoImageOutline } from 'react-icons/io5';
 import { countInString } from '../../uitls/count-in-string';
 import { MdSpeed } from 'react-icons/md';
+import { pluralize } from '../../uitls/pluralize';
 
 type Props = {
   item: QuestionType;
@@ -20,16 +21,16 @@ export function QuestionListItem({ item }: Props) {
   const hoverBg = useColorModeValue('gray.50', 'gray.700');
   const answersFactoidStyles = item.is_answered
     ? {
-      bgColor: 'green.300',
-      color: 'white'
-    }
+        bgColor: 'green.300',
+        color: 'white'
+      }
     : undefined;
 
   // Helper icons
   // TODO Make analysis more accurate
   const hasLittleText = countInString('</p>', item.body) < 3;
-  const hasCode = countInString('</pre>', item.body);
-  const hasImages = countInString('i.stack.imgur.com', item.body);
+  const hasCode = countInString('</pre>', item.body) > 0;
+  const imageCount = countInString('<img src="https://i.stack.imgur.com', item.body);
 
   return (
     <RouterLink to={`/questions/${item.question_id}`} state={item}>
@@ -84,18 +85,25 @@ export function QuestionListItem({ item }: Props) {
 
           <Box mt="8px" h="24px" overflow="hidden">
             <HStack display="inline-flex" h="24px" spacing="10px" fontSize="13px" mr="10px">
-              <Text opacity={hasLittleText ? 1 : 0.2} transform={hasLittleText ? 'none' : 'rotateY(-180deg)'} title={hasLittleText ? 'Low reading time' : undefined}>
-                <MdSpeed/>
+              <Text
+                opacity={hasLittleText ? 1 : 0.2}
+                transform={hasLittleText ? 'none' : 'rotateY(-180deg)'}
+                title={hasLittleText ? 'Low reading time' : undefined}
+              >
+                <MdSpeed />
               </Text>
               <Text opacity={hasCode ? 1 : 0.2} title={hasCode ? 'Question has code snippets' : undefined}>
-                <IoCodeSlash/>
+                <IoCodeSlash />
               </Text>
-              <Text opacity={hasImages ? 1 : 0.2} title={hasImages ? 'Question has images' : undefined}>
-                <IoImageOutline/>
+              <Text
+                opacity={imageCount ? 1 : 0.2}
+                title={imageCount ? `Question has ${pluralize(imageCount, 'image')}` : undefined}
+              >
+                <IoImageOutline />
               </Text>
             </HStack>
 
-            <TagList tags={item.tags}/>
+            <TagList tags={item.tags} />
           </Box>
         </Box>
       </Flex>

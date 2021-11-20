@@ -7,12 +7,14 @@ import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.s
 import { QuestionListItem } from '../components/posts/QuestionListItem';
 
 export function SearchPage() {
-  const { query } = useParams();
+  const query = useParams().query as string;
   const [isLoaded, setIsLoaded] = useState(false);
   const [questions, setQuestions] = useState<QuestionType[]>([]);
 
   useEffect(() => {
-    search();
+    if (query) {
+      search();
+    }
   }, [query]);
 
   async function search() {

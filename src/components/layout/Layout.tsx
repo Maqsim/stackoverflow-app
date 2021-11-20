@@ -17,6 +17,7 @@ import { SearchPage } from '../../pages/SearchPage';
 import { TagsPage } from '../../pages/TagsPage';
 import { MyTagsPage } from '../../pages/MyTags';
 import { UserContext } from '../../contexts/use-user';
+import { MyAnswersPage } from '../../pages/MyAnswersPage';
 
 export function Layout() {
   return (
@@ -94,6 +95,7 @@ export function Layout() {
             {/* Personal routes */}
             <Route path="/my-bookmarks" element={<MyBookmarksPage />} />
             <Route path="/my-questions" element={<MyQuestionsPage />} />
+            <Route path="/my-answers" element={<MyAnswersPage />} />
             <Route path="/my-tags" element={<MyTagsPage />} />
           </Routes>
         </Box>
