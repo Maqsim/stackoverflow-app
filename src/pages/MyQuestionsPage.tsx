@@ -12,7 +12,6 @@ export function MyQuestionsPage() {
   useEffect(() => {
     stackoverflow
       .get<QuestionType>('search/advanced', {
-        user: user.user.user_id,
         order: 'desc',
         sort: 'creation',
         filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
