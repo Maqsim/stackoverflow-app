@@ -4,6 +4,10 @@ import { App } from './App';
 import { theme } from './styles/theme';
 import { HashRouter as Router } from 'react-router-dom';
 import React from 'react';
+import dayjs from 'dayjs';
+import RelativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(RelativeTime);
 
 ReactDOM.render(
   <>

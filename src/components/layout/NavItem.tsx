@@ -1,5 +1,5 @@
 import { Badge, HStack } from '@chakra-ui/react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useLocation, useMatch, useResolvedPath } from 'react-router-dom';
 
 type Props = {
   to: string;
@@ -8,19 +8,23 @@ type Props = {
 };
 
 export function NavItem({ children, count, to }: Props) {
-  // const routeMatch = useRouteMatch(to);
+  // const prevPathname = getItem('prev-pathname');
+  const location = useLocation();
+  // const isNested = countInString('/', location.pathname) > 1;
+  const resolved = useResolvedPath(to);
+  const match = useMatch({ path: resolved.pathname, end: true });
+    // || (isNested && to === prevPathname);
+
   const hoverStyles = {
-    color: 'whiteAlpha.800',
+    color: match ? 'whiteAlpha.900' : 'whiteAlpha.800',
     bgColor: 'whiteAlpha.50'
   };
-
-  // style={({ isActive }) => ({ color: isActive ? 'green' : 'blue' })}
 
   return (
     <RouterLink to={to}>
       <HStack
         userSelect={'none'}
-        color="whiteAlpha.600"
+        color={match ? 'whiteAlpha.900' : 'whiteAlpha.600'}
         borderRadius="5px"
         cursor="pointer"
         alignItems="center"

@@ -56,20 +56,21 @@ const stackoverflow = {
 
   // Used only on Main
   getLoggedInUser: (token: string): Promise<UserType> => {
-    return stackoverflow.get('me', { token }).then((response: any) => response.items[0]);
+    return stackoverflow
+      .get('me', {
+        token,
+        filter: '!LnNkvq0X7-jztJ-eDa1atV'
+      })
+      .then((response: any) => response.items[0]);
   },
 
   // Used only on Main
-  getSidebarCounts: async (userId: number, token: string): Promise<SidebarCountsType> => {
+  getSidebarCounts: async (userId: number, token: string): Promise<Pick<SidebarCountsType, 'bookmarks' | 'tags'>> => {
     const bookmarkCountResponse: any = await stackoverflow.get('me/favorites', { token, filter: 'total' });
-    const questionCountResponse: any = await stackoverflow.get('me/questions', { token, filter: 'total' });
-    const answerCountResponse: any = await stackoverflow.get('me/answers', { token, filter: 'total' });
     const tagCountResponse: any = await stackoverflow.get('me/tag-preferences', { token });
 
     return {
       bookmarks: bookmarkCountResponse.total,
-      questions: questionCountResponse.total,
-      answers: answerCountResponse.total,
       tags: tagCountResponse.items.length
     };
   }

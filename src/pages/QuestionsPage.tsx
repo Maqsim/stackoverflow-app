@@ -5,6 +5,7 @@ import stackoverflow from '../uitls/stackexchange-api';
 import { Box, Button, ButtonGroup, Flex, Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 
+
 export function QuestionsPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -15,7 +16,7 @@ export function QuestionsPage() {
         order: 'desc',
         sort: 'creation',
         pagesize: 15,
-        filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
+        filter: '!)aHQ9FGlxVZ-FDR26-WVaCfTrj.jxW4cWReTQd3t1kBINL)p.fWrud_U3N_t2YjQQ5EjD.hd-pwLPmJ(vDItMUswte9'
       })
       .then((response) => {
         setQuestions((response as any).items);

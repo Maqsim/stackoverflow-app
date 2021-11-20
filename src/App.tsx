@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Layout } from './components/layout/Layout';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { UserProvider } from './contexts/use-user';
 import { AppSpinner } from './components/layout/AppSpinner';
 import stackoverflow from './uitls/stackexchange-api';
@@ -10,6 +10,7 @@ export function App() {
   const toast = useToast();
   const navigate = useNavigate();
 
+  // TODO Move out of here
   useEffect(() => {
     document.addEventListener('paste', (e) => {
       const clipboardData = e.clipboardData;

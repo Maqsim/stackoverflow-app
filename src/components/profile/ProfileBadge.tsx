@@ -1,12 +1,9 @@
 import { Box, HStack, Image, Text } from '@chakra-ui/react';
 import { UserType } from '../../interfaces/UserType';
 import dayjs from 'dayjs';
-import RelativeTime from 'dayjs/plugin/relativeTime';
 import { kFormatter } from '../../uitls/k-formatter';
 import parse from 'html-react-parser';
 import { NavLink as RouterLink } from 'react-router-dom';
-
-dayjs.extend(RelativeTime);
 
 type Props = {
   datetime: number;

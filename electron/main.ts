@@ -2,7 +2,6 @@ import { app, BrowserWindow, clipboard, ipcMain, screen, shell } from 'electron'
 import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 import stackoverflow from '../src/uitls/stackexchange-api';
-import { UserType } from '../src/interfaces/UserType';
 
 let mainWindow: BrowserWindow | null;
 let splashScreenWindow: BrowserWindow | null;
@@ -98,13 +97,18 @@ function createWindows() {
       // Fetch current user
       const user = await stackoverflow.getLoggedInUser(token);
 
-      // Fetch user privileges
-      // const userPrivileges = await stackoverflow.get('privileges', { token });
-
       // Fetch sidebar counts
-      const sidebarCounts = await stackoverflow.getSidebarCounts(user.user_id, token);
+      const partialSidebarCounts = await stackoverflow.getSidebarCounts(user.user_id, token);
 
-      mainWindow?.webContents.send('stackexchange:on-auth', { user, sidebarCounts, token });
+      mainWindow?.webContents.send('stackexchange:on-auth', {
+        user,
+        sidebarCounts: {
+          ...partialSidebarCounts,
+          questions: user.question_count,
+          answers: user.answer_count
+        },
+        token
+      });
     });
   });
 
