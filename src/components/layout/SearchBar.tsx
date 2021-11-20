@@ -1,4 +1,4 @@
-import { Box, Center, FormControl, Input, Text } from '@chakra-ui/react';
+import { Box, DarkMode, FormControl, Input, Kbd, Text } from '@chakra-ui/react';
 import { useRef, useState, useEffect, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,7 +35,7 @@ export function SearchBar() {
     const isEnter = event.key === 'Enter';
     const isEsc = event.key === 'Escape';
 
-    if ((!isEnter && !isEsc) || !input) {
+    if (!(isEnter || isEsc)) {
       return;
     }
 
@@ -49,16 +49,18 @@ export function SearchBar() {
       }
     }
 
-    if (isEnter) {
+    if (isEnter && input) {
       navigate(`/search/${input}`);
     }
   }
 
   return (
     <Box position="relative" w="350px" sx={{ WebkitAppRegion: 'no-drag' }}>
-      <Center
+      <Box
         userSelect="none"
         display={isInputVisible ? 'none' : 'flex'}
+        justifyContent="space-between"
+        alignItems="center"
         onClick={showInput}
         rounded="5px"
         color="whiteAlpha.600"
@@ -66,10 +68,14 @@ export function SearchBar() {
         transition="all 200ms ease"
         _hover={{ bgColor: 'whiteAlpha.400', color: 'whiteAlpha.800' }}
         w="100%"
+        p="4px 4px 4px 10px"
         h="25px"
       >
-        <Text>{input ? input : 'Search questions and answers (press /)'}</Text>
-      </Center>
+        <Text>{input ? input : 'Search questions and answers '}</Text>
+        <DarkMode>
+          <Kbd borderColor="initial">/</Kbd>
+        </DarkMode>
+      </Box>
 
       <FormControl display={isInputVisible ? 'block' : 'none'}>
         <Input
@@ -77,7 +83,9 @@ export function SearchBar() {
           onChange={(event) => setInput(event.target.value)}
           onBlur={hideInput}
           onKeyDown={handleEnter}
+          color="gray.600"
           bgColor="white"
+          fontSize="14px"
           rounded="5px"
           size="xs"
           h="25px"
