@@ -1,8 +1,10 @@
-import { Center } from '@chakra-ui/react';
+import { Center, useColorModeValue } from '@chakra-ui/react';
 import { memo, useLayoutEffect } from 'react';
 import { renderLoader } from '../../uitls/render-loader';
 
 export const AppSpinner = memo(() => {
+  const color = useColorModeValue(0x2d3748, 0xffffff);
+
   useLayoutEffect(() => {
     const containerEl = document.getElementById('app-loader-container');
 
@@ -11,8 +13,7 @@ export const AppSpinner = memo(() => {
         element: containerEl!,
         width: 200,
         height: 200,
-        backgroundColor: 0xffffff,
-        color: 0x2d3748
+        color
       });
     }
   });

@@ -12,11 +12,10 @@ export type Options = {
   element: HTMLElement;
   width: number;
   height: number;
-  backgroundColor?: number;
-  color?: number;
+  color: number;
 };
 
-export function renderLoader({ element, width, height, backgroundColor = 0x2d3748, color = 0xffffff }: Options) {
+export function renderLoader({ element, width, height, color }: Options) {
   const centerX = width / 2 - 75;
   const centerY = height / 2 - 75;
 
@@ -25,7 +24,7 @@ export function renderLoader({ element, width, height, backgroundColor = 0x2d374
     height,
     antialias: true,
     autoDensity: true,
-    backgroundColor
+    backgroundAlpha: 0
   });
 
   app.view.style.position = 'absolute';

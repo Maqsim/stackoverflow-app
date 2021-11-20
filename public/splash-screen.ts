@@ -8,4 +8,9 @@ gsap.registerPlugin(PixiPlugin, MotionPathPlugin);
 const width = window.innerWidth;
 const height = window.innerHeight;
 
-renderLoader({ element: document.body, width, height });
+renderLoader({
+  width,
+  height,
+  color: 0xffffff,
+  element: document.body
+});
