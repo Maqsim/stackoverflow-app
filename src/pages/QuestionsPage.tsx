@@ -16,7 +16,7 @@ export function QuestionsPage() {
         order: 'desc',
         sort: 'creation',
         pagesize: 15,
-        filter: '!)aHQ9FGlxVZ-FDR26-WVaCfTrj.jxW4cWReTQd3t1kBINL)p.fWrud_U3N_t2YjQQ5EjD.hd-pwLPmJ(vDItMUswte9'
+        filter: '!HzgO6Jg6sME4H_1lyzjHHRxMDpvUVz34FqU_ckIV0XzN3qEw_80oXIpo62fBS4o8q9Wa31mkyd5kX4GFMvlXoA)k1AlLP'
       })
       .then((response) => {
         setQuestions((response as any).items);

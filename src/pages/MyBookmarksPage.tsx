@@ -13,8 +13,8 @@ export function MyBookmarksPage() {
     stackoverflow
       .get('me/favorites', {
         order: 'desc',
-        sort: 'creation',
-        filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
+        sort: 'added',
+        filter: '!)aHQ9FGlxVZ-FDR26-WVaCfTrj.jxW4cWReTQd3t1kBINL)p.fWrud_U3N_t2YjQQ5EjD.hcISk2Lm5)H)jkebfvg)D'
       })
       .then((response) => {
         setQuestions((response as any).items);

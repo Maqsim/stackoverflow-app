@@ -47,7 +47,7 @@ export function TopPosts({ user }: Props) {
     const response = (await stackoverflow.get(`users/${user?.user_id}/questions`, {
       sort: 'votes',
       order: 'desc',
-      filter: '!2lIeW85m7AP2q5(2DO8AHd8vNJAJ.OC6dwg0q)FyXc3)q)1FQtsWrOG)TSOfFUEhv.NB4.T(WdmCieWUDmUVbR0*'
+      filter: '!HzgO6Jg6sME4H_1lyzjHHRxMDpvUVz34FqU_ckIV0XzN3qEw_80oXIpo62fBS4o8q9Wa31mkyd5kX4GFMvlXoA)k1AlLP'
     })) as any;
 
     setPostType('questions');

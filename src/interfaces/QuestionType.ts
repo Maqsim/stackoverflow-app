@@ -8,6 +8,8 @@ export type QuestionType = {
   comment_count: number;
   comments?: CommentType[];
   creation_date: number;
+  favorite_count: number;
+  favorited: boolean;
   is_accepted: boolean;
   is_answered: boolean;
   link: string;

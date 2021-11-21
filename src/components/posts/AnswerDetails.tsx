@@ -29,7 +29,13 @@ export function AnswerDetails({ answer }: Props) {
 
   return (
     <HStack spacing="12px" align="start">
-      <VotingControls score={score} onUpvote={handleUpvote} onDownvote={handleDownvote} />
+      <VotingControls
+        postType="answer"
+        isAccepted={answer.is_accepted}
+        score={score}
+        onUpvote={handleUpvote}
+        onDownvote={handleDownvote}
+      />
 
       {/* overflow needed here to prevent child has more width than parent */}
       <Box flexGrow={1} overflow="auto" p="2px" m="-2px">
