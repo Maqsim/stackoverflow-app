@@ -19,7 +19,7 @@ export function CommentForm({ postId, onCommentAdd, hideControls }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [input, setInput] = useState('');
   const [showError, setShowError] = useState(false);
-  const isInvalid = input.length > 0 && input.length < 15;
+  const isInvalid = input.length >= 0 && input.length < 15;
 
   async function handleSubmit(event: any) {
     if (event.key !== 'Enter' || !inputRef.current) {
