@@ -86,7 +86,7 @@ export function EditableTagList({ tags, onAdd, onRemove, showSkeletons }: Props)
 
       {!showSkeletons && formState === 'button' && (
         <Button ref={buttonRef} size="xs" variant="outline" rounded="3px" mb="4px" onClick={handleAddClick}>
-          Add tag...
+          Add tag…
         </Button>
       )}
       {!showSkeletons && formState === 'input' && (
@@ -97,7 +97,7 @@ export function EditableTagList({ tags, onAdd, onRemove, showSkeletons }: Props)
             onKeyDown={handleEnter}
             w="auto"
             size="xs"
-            placeholder="Enter tag name..."
+            placeholder="Enter tag name…"
           />
           <Box
             display={isDropdownShown ? 'block' : 'none'}

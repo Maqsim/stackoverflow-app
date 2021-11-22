@@ -4,18 +4,19 @@ import { QuestionType } from '../../interfaces/QuestionType';
 import { Link as RouterLink } from 'react-router-dom';
 import { TagList } from '../tags/TagList';
 import { kFormatter } from '../../uitls/k-formatter';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { getItem } from '../../uitls/local-storage';
 import { IoCodeSlash, IoImageOutline } from 'react-icons/io5';
 import { countInString } from '../../uitls/count-in-string';
 import { MdSpeed } from 'react-icons/md';
 import { pluralize } from '../../uitls/pluralize';
+import isEqual from 'react-fast-compare';
 
 type Props = {
   item: QuestionType;
 };
 
-export function QuestionListItem({ item }: Props) {
+export const QuestionListItem = memo(({ item }: Props) => {
   const visitedQuestionIds = (getItem('visited-question-ids') || []) as number[];
   const [isVisited] = useState(visitedQuestionIds.includes(item.question_id));
   const hoverBg = useColorModeValue('gray.50', 'gray.700');
@@ -109,4 +110,4 @@ export function QuestionListItem({ item }: Props) {
       </Flex>
     </RouterLink>
   );
-}
+}, isEqual);

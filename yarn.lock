@@ -9408,7 +9408,7 @@ react-dom@17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-fast-compare@3.2.0:
+react-fast-compare@3.2.0, react-fast-compare@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
@@ -9505,11 +9505,6 @@ react-style-singleton@^2.1.0:
     get-nonce "^1.0.0"
     invariant "^2.2.4"
     tslib "^1.0.0"
-
-react-use-pagination@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-use-pagination/-/react-use-pagination-2.0.1.tgz#debc6322cd3f14a4cdf082d913f7736d5cbed170"
-  integrity sha512-bo7vI2oZ/+PJJozN7DLWPkewrULLoHb8a6WO3dGudJfEKnj8BVZVbJPkvn5jtydhJ5xi0t0W7xI06XlWUe8Jbw==
 
 react@17.0.2:
   version "17.0.2"

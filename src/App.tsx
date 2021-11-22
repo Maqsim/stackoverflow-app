@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Layout } from './components/layout/Layout';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UserProvider } from './contexts/use-user';
 import { AppSpinner } from './components/layout/AppSpinner';
 import stackoverflow from './uitls/stackexchange-api';
@@ -10,8 +10,14 @@ export function App() {
   const toast = useToast();
   const navigate = useNavigate();
 
-  // TODO Move out of here
   useEffect(() => {
+    // TODO See if we can remove 300ms delay here
+    // This is needed to show main window and close splash screen
+    setTimeout(() => {
+      window.Main.send('main-window-ready');
+    }, 300);
+
+    // TODO Move out of here
     document.addEventListener('paste', (e) => {
       const clipboardData = e.clipboardData;
       const pastedText = clipboardData?.getData('text');
@@ -50,8 +56,8 @@ export function App() {
   }
 
   return (
-    <UserProvider LoadingComponent={<AppSpinner />}>
-      <Layout />
+    <UserProvider LoadingComponent={<AppSpinner/>}>
+      <Layout/>
     </UserProvider>
   );
 }

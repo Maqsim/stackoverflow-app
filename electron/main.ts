@@ -44,7 +44,7 @@ function createWindows() {
     width: 300,
     height: 300,
     show: false,
-    title: 'StackOverflow starting...',
+    title: 'StackOverflow starting…',
     frame: false,
     resizable: false,
     closable: false,

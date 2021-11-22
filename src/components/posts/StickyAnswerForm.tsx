@@ -41,7 +41,7 @@ export function StickyAnswerForm(props: BoxProps) {
         }}
       >
         <FormControl>
-          <Input placeholder="Your answer..."/>
+          <Input placeholder="Your answer…"/>
         </FormControl>
       </Box>
     </Flex>

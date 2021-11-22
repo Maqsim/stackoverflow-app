@@ -89,11 +89,11 @@ export function CommentForm({ postId, onCommentAdd, hideControls }: Props) {
           onKeyDown={handleSubmit}
           isDisabled={isSubmitting}
           size="xs"
-          placeholder="Your comment..."
+          placeholder="Your comment…"
         />
 
         {/* Just counter */}
-        {isInvalid && !showError && (
+        {input.length > 0 && isInvalid && !showError && (
           <Box position="absolute" right="10px" top="4px" fontSize="12px" color="gray.500">
             {input.length - 15}
           </Box>

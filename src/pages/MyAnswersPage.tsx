@@ -2,17 +2,22 @@ import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
 import stackoverflow from '../uitls/stackexchange-api';
-import { Stack } from '@chakra-ui/react';
+import { Box, Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { AnswerType } from '../interfaces/AnswerType';
+import { Pagination } from '../components/ui/Pagination';
+import { usePagination } from '../hooks/use-pagination';
 
 export function MyAnswersPage() {
+  const pagination = usePagination();
   const [isLoaded, setIsLoaded] = useState(false);
   const [questions, setQuestions] = useState<QuestionType[]>([]);
 
   useEffect(() => {
     (async () => {
-      const questionIds = await getAnswersQuestionIds();
+      setIsLoaded(false);
+
+      const questionIds = await getAnswersQuestionIds(pagination.page, pagination.perPage);
 
       const response: any = await stackoverflow.get(`questions/${questionIds.join(';')}`, {
         order: 'desc',
@@ -23,27 +28,38 @@ export function MyAnswersPage() {
       setQuestions(response.items);
       setIsLoaded(true);
     })();
-  }, []);
+  }, [pagination.page, pagination.perPage]);
 
-  function getAnswersQuestionIds() {
+  function getAnswersQuestionIds(page: number, perPage: number) {
     return stackoverflow
       .get('me/answers', {
         order: 'desc',
-        limit: 15,
         sort: 'creation',
+        page,
+        pagesize: perPage,
         filter: '!AH)b5JZk)e5p'
       })
-      .then((response) => (response as any).items.map((answer: AnswerType) => answer.question_id));
+      .then((response: any) => {
+        pagination.setTotal(response.total);
+
+        return response.items.map((answer: AnswerType) => answer.question_id);
+      });
   }
 
   return (
     <>
       <Stack spacing="8px">
         {/* Skeletons */}
-        {!isLoaded && [...Array(10)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
+        {!isLoaded && [...Array(pagination.perPage)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
 
         {isLoaded && questions.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
       </Stack>
+
+      {pagination.totalPages > 0 && (
+        <Box my="16px">
+          <Pagination controller={pagination} />
+        </Box>
+      )}
     </>
   );
 }

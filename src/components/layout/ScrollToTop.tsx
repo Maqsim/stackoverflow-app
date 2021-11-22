@@ -5,11 +5,13 @@ import { useLocation } from 'react-router-dom';
 export function ScrollToTop() {
   const location = useLocation();
 
-  useEffect(() => {
-    const scrollableEl = document.getElementById('scrolling-container');
-
-    scrollableEl!.scrollTo(0, 0);
-  }, [location.pathname]);
+  useEffect(scrollToTop, [location.pathname]);
 
   return null;
 }
+
+export const scrollToTop = () => {
+  const scrollableEl = document.getElementById('scrolling-container');
+
+  scrollableEl!.scrollTo(0, 0);
+};

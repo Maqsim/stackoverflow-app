@@ -1,9 +1,9 @@
 import { Box, Center, Flex, HStack, Skeleton, Stack } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import randomRange from '../../uitls/random-range';
 import { TagSkeleton } from '../tags/Tag.skeleton';
 
-export function QuestionListItemSkeleton() {
+export const QuestionListItemSkeleton = memo(() => {
   const titleWidth = useRef(randomRange(30, 100));
   const tagsCount = useRef(Math.ceil(Math.random() * 5));
 
@@ -56,5 +56,4 @@ export function QuestionListItemSkeleton() {
       </Box>
     </Flex>
   );
-}
-
+});
