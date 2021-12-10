@@ -2,18 +2,12 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { SidebarCountsType } from '../interfaces/SidebarCountsType';
 import { UserType } from '../interfaces/UserType';
 import { isRenderer } from './is-renderer';
+import { defaults } from 'lodash';
 
-function buildStackOverflowUrl(path: string, parameters?: any) {
+function buildStackOverflowUrl(path: string, params?: any) {
   let url = `https://api.stackexchange.com/2.3/${path}`;
 
-  const queryString =
-    parameters &&
-    Object.keys(parameters)
-      .map(function (key) {
-        const value = parameters[key];
-        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-      })
-      .join('&');
+  const queryString = new URLSearchParams(params);
 
   if (queryString) {
     url = url + '?' + queryString;
@@ -23,17 +17,19 @@ function buildStackOverflowUrl(path: string, parameters?: any) {
 }
 
 const stackoverflow = {
-  get: (url: string, parameters?: any, options?: AxiosRequestConfig) => {
-    const token = isRenderer() ? localStorage.getItem('token') : parameters.token;
+  get: (url: string, params?: any, options?: AxiosRequestConfig, includeSite = true) => {
+    const token = isRenderer() ? localStorage.getItem('token') : params.token;
 
-    // TODO refactor this
-    if (parameters) {
-      parameters.site = 'stackoverflow';
-      parameters.key = 'bdFSxniGkNbU3E*jsj*28w((';
-      parameters.access_token = token;
+    const _params = defaults(params, {
+      key: 'bdFSxniGkNbU3E*jsj*28w((',
+      access_token: token
+    });
+
+    if (includeSite) {
+      _params.site = 'stackoverflow';
     }
 
-    return axios(buildStackOverflowUrl(url, parameters), options).then((response) => response.data);
+    return axios(buildStackOverflowUrl(url, _params), options).then((response) => response.data);
   },
   post: (url: string, data: object) => {
     const formData = new FormData();
@@ -59,7 +55,7 @@ const stackoverflow = {
     return stackoverflow
       .get('me', {
         token,
-        filter: '!LnNkvq0X7-jztJ-eDa1atV'
+        filter: '!0Z-LvgkK6tuZ6JSTI64262DuR'
       })
       .then((response: any) => response.items[0]);
   },

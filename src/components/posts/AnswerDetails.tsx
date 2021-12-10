@@ -1,5 +1,5 @@
 import { Box, HStack } from '@chakra-ui/react';
-import { ProfileBadge } from '../profile/ProfileBadge';
+import { PostProfileBadge } from '../profile/PostProfileBadge';
 import type { AnswerType } from '../../interfaces/AnswerType';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
@@ -44,7 +44,7 @@ export function AnswerDetails({ answer }: Props) {
         </Box>
 
         <HStack my="24px" align="flex-start" justify="end">
-          <ProfileBadge type="answer" datetime={answer.creation_date} user={answer.owner} />
+          <PostProfileBadge type="answer" datetime={answer.creation_date} user={answer.owner} />
         </HStack>
 
         <CommentList comments={comments} postId={answer.answer_id} onCommentAdd={handleCommentAdd} />

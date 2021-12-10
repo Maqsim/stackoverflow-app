@@ -3,6 +3,7 @@ import { useUser } from '../../contexts/use-user';
 import { useRef, useState } from 'react';
 import { CommentType } from '../../interfaces/CommentType';
 import stackoverflow from '../../uitls/stackexchange-api';
+import { trim } from '../../uitls/trim';
 
 type Props = {
   postId: number;
@@ -71,10 +72,6 @@ export function CommentForm({ postId, onCommentAdd, hideControls }: Props) {
     requestAnimationFrame(() => {
       inputRef.current?.focus();
     });
-  }
-
-  function trim(str: string) {
-    return str.trim().replace(/\s+/g, ' ');
   }
 
   return (

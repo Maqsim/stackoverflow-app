@@ -6,13 +6,16 @@ import dayjs from 'dayjs';
 import { GoTriangleUp } from 'react-icons/go';
 import { useState } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
+import { useUser } from '../../contexts/use-user';
 
 type Props = {
   comment: CommentType;
 };
 
 export function CommentListItem({ comment }: Props) {
+  const user = useUser();
   const [score, setScore] = useState(comment.score);
+  const isMyComment = comment.owner.user_id === user.user.user_id;
 
   function upvote() {
     setScore(score + 1);
@@ -28,6 +31,7 @@ export function CommentListItem({ comment }: Props) {
           <Flex
             fontSize="20px"
             cursor="pointer"
+            visibility={isMyComment ? 'hidden' : 'visible'}
             color="gray.300"
             _hover={{ color: 'gray.400' }}
             userSelect="none"
@@ -38,7 +42,13 @@ export function CommentListItem({ comment }: Props) {
           </Flex>
         </HStack>
         <RouterLink to={`/users/${comment.owner.user_id}`} state={comment.owner}>
-          <Image src={comment.owner.profile_image} boxSize="24px" objectFit="cover" borderRadius="3px" title={comment.owner.display_name} />
+          <Image
+            src={comment.owner.profile_image}
+            boxSize="24px"
+            objectFit="cover"
+            borderRadius="3px"
+            title={comment.owner.display_name}
+          />
         </RouterLink>
       </HStack>
       <Text alignSelf="center">

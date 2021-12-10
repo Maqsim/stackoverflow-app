@@ -34,7 +34,7 @@ export const QuestionListItem = memo(({ item }: Props) => {
   const imageCount = countInString('<img src="https://i.stack.imgur.com', item.body);
 
   return (
-    <RouterLink to={`/questions/${item.question_id}`} state={item}>
+    <RouterLink to={`/questions/${item.question_id}`} state={{ question: item }}>
       <Flex
         borderRadius="5px"
         cursor="pointer"

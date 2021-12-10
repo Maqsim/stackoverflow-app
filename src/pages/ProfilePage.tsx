@@ -51,26 +51,27 @@ export function ProfilePage() {
           {!isLoaded ? (
             <SkeletonText w="50%" noOfLines={2} />
           ) : (
-            <HStack spacing="32px">
-              <Stack spacing={0}>
-                <Text>{user.location}</Text>
-                {user.website_url && (
-                  <ExternalLink href={user.website_url}>{removeProtocolFromUrl(user.website_url)}</ExternalLink>
-                )}
-              </Stack>
+            <HStack spacing="32px" align="start">
               <Stack spacing={0}>
                 <Text>
-                  Member for {' '}
+                  Member for{' '}
                   <Text as="span" fontWeight="semibold">
                     {dayjs().to(dayjs.unix(user.creation_date), true)}
                   </Text>
                 </Text>
                 <Text>
-                  Last seen {' '}
+                  Last seen{' '}
                   <Text as="span" fontWeight="semibold">
                     {dayjs().to(dayjs.unix(user.last_access_date))}
                   </Text>
                 </Text>
+              </Stack>
+
+              <Stack spacing={0}>
+                {user.location && <Text>{user.location}</Text>}
+                {user.website_url && (
+                  <ExternalLink href={user.website_url}>{removeProtocolFromUrl(user.website_url)}</ExternalLink>
+                )}
               </Stack>
             </HStack>
           )}

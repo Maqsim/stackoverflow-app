@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import stackoverflow from '../uitls/stackexchange-api';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, ButtonGroup, Flex, Heading, HStack, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { BackButton } from '../components/layout/BackButton';
@@ -8,22 +8,39 @@ import { RiEarthFill, RiFileCopyFill } from 'react-icons/ri';
 import { QuestionDetails } from '../components/posts/QuestionDetails';
 import { AnswerDetails } from '../components/posts/AnswerDetails';
 import { socketClient } from '../uitls/stackexchange-socket-client';
-import { notification } from '../uitls/notitification';
 import { getItem, setItem } from '../uitls/local-storage';
 import { AppSpinner } from '../components/layout/AppSpinner';
 
 let tooltipTimerId: NodeJS.Timer;
 
 export function QuestionDetailsPage() {
-  const { id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
-  const initialQuestion = location.state as QuestionType;
+  const { id } = useParams();
+  const initialQuestion: QuestionType | undefined = location.state && location.state.question;
+  const postType: 'answer' | 'question' = (location.state && location.state.postType) || 'question';
   const [question, setQuestion] = useState(initialQuestion);
   const [isTooltipShown, setIsTooltipShown] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(Boolean(question));
   const answersRef = useRef<HTMLDivElement>(null);
 
+  // If answer, obtain questionId and reload
   useEffect(() => {
-    if (!id) {
+    if (!id || postType !== 'answer') {
+      return;
+    }
+
+    setIsLoaded(false);
+    (async () => {
+      const questionId = ((await stackoverflow.get(`answers/${id}`, { filter: '!-)QWsbcLyRoQ' })) as any).items[0]
+        .question_id;
+
+      navigate(`/questions/${questionId}`, { replace: true });
+    })();
+  }, [id, postType]);
+
+  useEffect(() => {
+    if (!id || postType !== 'question') {
       return;
     }
 
@@ -34,7 +51,9 @@ export function QuestionDetailsPage() {
       setItem('visited-question-ids', visitedQuestionIds);
     }
 
-    if (!question) {
+    if (!question || question.question_id !== parseInt(id)) {
+      setIsLoaded(false);
+
       stackoverflow
         .get(`questions/${id}`, {
           filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ3LoiM_GpZITfZz5'
@@ -43,17 +62,18 @@ export function QuestionDetailsPage() {
           const question = (response as any).items[0];
 
           setQuestion(question);
+          setIsLoaded(true);
         });
     }
 
     socketClient.on(`1-question-${id}`, () => {
-      notification('Question', 'questions changed');
+      console.log('Question', 'questions changed');
     });
 
     return () => {
       socketClient.off(`1-question-${id}`);
     };
-  }, [id]);
+  }, [id, postType]);
 
   function jumpToAnswers() {
     const scrollableEl = document.getElementById('scrolling-container');
@@ -63,10 +83,18 @@ export function QuestionDetailsPage() {
   }
 
   function openInBrowser() {
+    if (!question) {
+      return;
+    }
+
     window.location.href = question.link;
   }
 
   function copyUrl() {
+    if (!question) {
+      return;
+    }
+
     clearTimeout(tooltipTimerId);
 
     setIsTooltipShown(true);
@@ -77,7 +105,7 @@ export function QuestionDetailsPage() {
     }, 2000);
   }
 
-  if (!question) {
+  if (!isLoaded || !question) {
     return <AppSpinner />;
   }
 
@@ -91,7 +119,7 @@ export function QuestionDetailsPage() {
         m="-16px"
         mb="16px"
         bgColor="white"
-        zIndex={100}
+        zIndex={1}
       >
         <BackButton />
 

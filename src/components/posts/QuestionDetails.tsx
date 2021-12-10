@@ -1,7 +1,7 @@
 import { Box, Heading, HStack } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import { TagList } from '../tags/TagList';
-import { ProfileBadge } from '../profile/ProfileBadge';
+import { PostProfileBadge } from '../profile/PostProfileBadge';
 import { useState } from 'react';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
@@ -82,7 +82,7 @@ export function QuestionDetails({ question }: Props) {
             <TagList tags={question.tags} />
           </Box>
 
-          <ProfileBadge type="question" datetime={question.creation_date} user={question.owner} />
+          <PostProfileBadge type="question" datetime={question.creation_date} user={question.owner} />
         </HStack>
 
         <CommentList comments={comments} postId={question.question_id} onCommentAdd={handleCommentAdd} />

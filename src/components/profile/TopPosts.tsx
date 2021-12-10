@@ -122,7 +122,7 @@ const PostItem = memo(({ item, type }: PostItemsProps) => {
     : { bgColor: 'white', color: 'gray.600', border: '1px solid #ccc' };
 
   return (
-    <NavLink to={`/questions/${item.question_id}`} state={type === 'questions' && item}>
+    <NavLink to={`/questions/${item.question_id}`} state={type === 'questions' && { question: item }}>
       <HStack color={item.is_accepted ? 'green.500' : 'blue.500'} align="start">
         <Center fontWeight="bold" sx={scoreStyles} rounded="5px" w="40px" h="25px" flexShrink={0}>
           {item.score}

@@ -1,19 +1,23 @@
 import { Box, BoxProps, Flex, FormControl, Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import throttle from '../../uitls/throttle';
+import { throttle } from 'lodash';
 
 export function StickyAnswerForm(props: BoxProps) {
   const [translatePosition, setTranslatePosition] = useState<number>(100); // Percents
   let stickyTriggerEl: HTMLElement | null;
 
-  const handleScroll = throttle(() => {
-    const windowHeight = window.innerHeight;
-    const triggerPosition = stickyTriggerEl?.getBoundingClientRect().bottom;
-    const relativePositionInPercent = ((windowHeight - triggerPosition!) / 200) * -100;
-    const translatePosition = Math.min(Math.max(relativePositionInPercent, 0), 100);
+  const handleScroll = throttle(
+    () => {
+      const windowHeight = window.innerHeight;
+      const triggerPosition = stickyTriggerEl?.getBoundingClientRect().bottom;
+      const relativePositionInPercent = ((windowHeight - triggerPosition!) / 200) * -100;
+      const translatePosition = Math.min(Math.max(relativePositionInPercent, 0), 100);
 
-    setTranslatePosition(translatePosition);
-  }, 50);
+      setTranslatePosition(translatePosition);
+    },
+    50,
+    { leading: true, trailing: true }
+  );
 
   useEffect(() => {
     const scrollableEl = document.getElementById('scrolling-container');
@@ -41,7 +45,7 @@ export function StickyAnswerForm(props: BoxProps) {
         }}
       >
         <FormControl>
-          <Input placeholder="Your answer…"/>
+          <Input placeholder="Your answer…" />
         </FormControl>
       </Box>
     </Flex>

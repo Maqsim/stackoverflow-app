@@ -33,7 +33,7 @@ export function App() {
             const question = (response as any).items[0];
 
             if (question) {
-              navigate(`/questions/${questionId}`, { state: question });
+              navigate(`/questions/${questionId}`, { state: { question } });
             } else {
               showErrorToast('This question was removed');
             }

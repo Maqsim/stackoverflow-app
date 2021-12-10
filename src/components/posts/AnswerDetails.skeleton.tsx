@@ -8,7 +8,7 @@ export function AnswerDetailsSkeleton() {
 
   return (
     <HStack spacing="12px" align="start">
-      <VotingControls score={0} />
+      <VotingControls score={0} postType="answer" />
 
       <Box flexGrow={1}>
         <Box>

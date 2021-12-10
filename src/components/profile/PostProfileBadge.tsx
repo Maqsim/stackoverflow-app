@@ -17,7 +17,7 @@ const typeToLabelMap: { [type: string]: string } = {
   edit: 'Edited'
 };
 
-export function ProfileBadge({ user, type, datetime }: Props) {
+export function PostProfileBadge({ user, type, datetime }: Props) {
   const isQuestion = type === 'question';
   const isAnswer = type === 'answer';
   const isEdit = type === 'edit';
@@ -25,7 +25,7 @@ export function ProfileBadge({ user, type, datetime }: Props) {
   return (
     <RouterLink to={`/users/${user.user_id}`} state={user}>
       <Box w="200px" p="8px" borderRadius="3px" bgColor={isQuestion ? 'gray.200' : 'none'} fontSize="13px">
-        <Text color="#777" mb="6px" lineHeight="13px">
+        <Text color="#777" mb="6px" lineHeight="12px" fontSize="12px">
           {typeToLabelMap[type]} {dayjs().to(dayjs.unix(datetime))}
         </Text>
         <HStack>

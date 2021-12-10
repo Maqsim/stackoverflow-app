@@ -1,12 +1,13 @@
 import { Box, Center, FormControl, Input, Text } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { trim } from '../../uitls/trim';
 
 export function SearchBar() {
   const navigate = useNavigate();
   const [isInputVisible, setIsInputVisible] = useState(false);
   // const [isPopoverVisible, setIsPopoverVisible] = useState(false);
-  const [input, setInput] = useState<string | undefined>('');
+  const [input, setInput] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // useEffect(() => {
@@ -28,8 +29,9 @@ export function SearchBar() {
   function handleEnter(event: any) {
     const isEnter = event.key === 'Enter';
     const isEsc = event.key === 'Escape';
+    const sanatizedInput = trim(input);
 
-    if ((!isEnter && !isEsc) || !input) {
+    if ((!isEnter && !isEsc) || !sanatizedInput) {
       return;
     }
 
@@ -44,7 +46,14 @@ export function SearchBar() {
     }
 
     if (isEnter) {
-      navigate(`/search/${input}`);
+      if (sanatizedInput !== input) {
+        setInput(sanatizedInput);
+        if (inputRef.current) {
+          inputRef.current.value = sanatizedInput;
+        }
+      }
+
+      navigate(`/search/${sanatizedInput}`);
     }
   }
 
