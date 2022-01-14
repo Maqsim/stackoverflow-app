@@ -17,7 +17,7 @@
 - React + ChakraUI
 
 **Stay tuned:**
-- Please, upvote a post on [StackApps](stackapps.com/posts/9223)
+- Please, upvote a post on [StackApps](https://stackapps.com/questions/9223)
 - https://www.twitch.tv/jott1
 
 **Interesting to test this app?**
