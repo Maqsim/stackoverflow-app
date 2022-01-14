@@ -25,9 +25,6 @@
 
 ## Some screenshots (19 Nov, 2021)
 
-[![asfasfas][1]][1]
-SO logo is made and animated by Pixie.js
-
 [![enter image description here][2]][2]
 Initial screen is interesting unanswered questions based on your tags
 
