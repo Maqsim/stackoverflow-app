@@ -17,16 +17,13 @@
 - React + ChakraUI
 
 **Stay tuned:**
-- Please, upvote a post on [StackApps](stackapps.com/posts/9223)
+- Please, upvote a post on [StackApps](https://stackapps.com/questions/9223)
 - https://www.twitch.tv/jott1
 
 **Interesting to test this app?**
 - Ping me here [maxdiachenko.com](maxdiachenko.com)
 
 ## Some screenshots (19 Nov, 2021)
-
-[![asfasfas][1]][1]
-SO logo is made and animated by Pixie.js
 
 [![enter image description here][2]][2]
 Initial screen is interesting unanswered questions based on your tags
