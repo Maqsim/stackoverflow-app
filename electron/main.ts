@@ -1,4 +1,4 @@
-import { app, BrowserWindow, clipboard, ipcMain, screen, shell } from 'electron';
+import { app, BrowserWindow, clipboard, ipcMain, screen, session, shell } from 'electron';
 import { auth } from '../src/uitls/stackexchange-auth';
 import { InvokeEnum } from '../src/interfaces/InvokeEnum';
 import stackoverflow from '../src/uitls/stackexchange-api';
@@ -81,9 +81,7 @@ function createWindows() {
     }
   });
 
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  splashScreenWindow.loadURL(SPLASH_SCREEN_WINDOW_WEBPACK_ENTRY);
-  overlayWindow.loadURL(OVERLAY_WINDOW_WEBPACK_ENTRY);
+  initEmptyWindows();
 
   mainWindow.on('close', (event) => {
     event.preventDefault();
@@ -131,12 +129,18 @@ async function registerListeners() {
   // Auth events
   // ===========
   ipcMain.on('stackexchange-logout', (event) => {
-    mainWindow?.webContents.session.cookies.remove('https://stackexchange.com', 'acct').then(() => {
-      event.reply('stackexchange-did-logout');
+    // mainWindow?.webContents.session.cookies.remove('https://stackoverflow.com', 'acct').then(() => {
+    //   event.reply('stackexchange-did-logout');
+    //
+    //   mainWindow?.webContents.session.cookies.get({}).then((value) => {
+    //     console.log(value);
+    //   });
+    // });
 
-      mainWindow?.webContents.session.cookies.get({}).then((value) => {
-        console.log(value);
-      });
+    // TODO Try to remove only acct cookie
+    session.defaultSession.clearStorageData({ storages: ['cookies'] }).then(() => {
+      // event.reply('stackexchange-did-logout');
+      initEmptyWindows();
     });
   });
 
@@ -197,3 +201,9 @@ app.on('activate', () => {
     mainWindow?.show();
   }
 });
+
+function initEmptyWindows() {
+  mainWindow?.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  splashScreenWindow?.loadURL(SPLASH_SCREEN_WINDOW_WEBPACK_ENTRY);
+  overlayWindow?.loadURL(OVERLAY_WINDOW_WEBPACK_ENTRY);
+}

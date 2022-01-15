@@ -59,7 +59,7 @@ export function InboxDropdown() {
                 <Text fontSize="16px">
                   <BsInboxFill />
                 </Text>
-                <Box boxSize="6px" bgColor="red.500" rounded="full" position="relative" ml="-1px" top="-6px"/>
+                <Box boxSize="6px" bgColor="red.500" rounded="full" position="relative" ml="-1px" top="-6px" />
               </Center>
             </PopoverTrigger>
             <PopoverContent maxH="400px" overflowY="auto">
@@ -77,7 +77,7 @@ export function InboxDropdown() {
                     <Link href={item.link} color="blue.500" textDecoration="none !important">
                       <Box fontSize="13px">
                         <Text sx={{ '.chakra-link:hover &': { textDecoration: 'underline' } }}>
-                          <Image w="16px" display="inline" src={item.site.favicon_url}/> {item.title}
+                          <Image w="16px" display="inline" src={item.site.favicon_url} /> {item.title}
                         </Text>
                         <Text color="black">{parse(item.body)}</Text>
                       </Box>

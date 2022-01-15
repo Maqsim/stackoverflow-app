@@ -1,18 +1,17 @@
 import {
   Box,
-  Center,
+  Divider,
   HStack,
   Image,
+  List,
+  ListItem,
   Popover,
   PopoverBody,
   PopoverContent,
-  PopoverTrigger,
-  Text
+  PopoverTrigger
 } from '@chakra-ui/react';
 import stackoverflow from '../../uitls/stackexchange-api';
 import { useUser } from '../../contexts/use-user';
-import { BsInboxFill } from 'react-icons/bs';
-import { kFormatter } from '../../uitls/k-formatter';
 import { useEffect } from 'react';
 import { socketClient } from '../../uitls/stackexchange-socket-client';
 import { notification } from '../../uitls/notitification';
@@ -25,11 +24,8 @@ export function MenuDropdown() {
   const user = useUser();
 
   function logout() {
-    stackoverflow.get(`access-tokens/${localStorage.token}/invalidate`).then(() => {
-      // window.Main.logout();
-      window.Main.on('stackexchange-did-logout', () => {
-        // console.log('LOGOUTED');
-      });
+    stackoverflow.get(`access-tokens/${localStorage.token}/invalidate`, null, {}, false).then(() => {
+      window.Main.logout();
     });
   }
 
@@ -61,10 +57,19 @@ export function MenuDropdown() {
               </Box>
             </PopoverTrigger>
             <PopoverContent>
-              <PopoverBody>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aut consectetur eaque eius impedit labore
-                laudantium magni numquam placeat quaerat, quas repellat sunt ut! Amet dolorem enim laboriosam obcaecati
-                rerum.
+              <PopoverBody px={0} py="5px">
+                <List styleType="none">
+                  <ListItem p="3px 10px" cursor="pointer" _hover={{ bgColor: 'gray.100' }} onClick={goToProfile}>
+                    Profile
+                  </ListItem>
+                  <ListItem p="3px 10px" cursor="pointer" _hover={{ bgColor: 'gray.100' }}>
+                    Settings
+                  </ListItem>
+                  <Divider my="5px" />
+                  <ListItem p="3px 10px" cursor="pointer" _hover={{ bgColor: 'gray.100' }} onClick={logout}>
+                    Log out
+                  </ListItem>
+                </List>
               </PopoverBody>
             </PopoverContent>
           </>

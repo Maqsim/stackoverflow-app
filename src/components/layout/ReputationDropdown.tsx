@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  HStack,
   Popover,
   PopoverBody,
   PopoverContent,
@@ -19,6 +20,7 @@ import { ReputationHistoryItemType } from '../../interfaces/ReputationHistoryIte
 import { kFormatter } from '../../uitls/k-formatter';
 import { uniq } from 'lodash';
 import { useNavigate } from 'react-router-dom';
+import parse from "html-react-parser";
 
 type PostType = {
   title: string;
@@ -81,6 +83,7 @@ export function ReputationDropdown() {
         <PopoverTrigger>
           <Center
             sx={{ WebkitAppRegion: 'no-drag' }}
+            userSelect="none"
             px="8px"
             rounded="3px"
             _hover={{ color: 'whiteAlpha.700', bgColor: 'whiteAlpha.50' }}
@@ -96,7 +99,7 @@ export function ReputationDropdown() {
         </PopoverTrigger>
         <PopoverContent maxH="400px" overflowY="auto">
           <PopoverHeader>
-            Reputation history
+            Reputation
             <Box float="right">
               <Button size="xs" onClick={openReputation}>
                 See all
@@ -106,11 +109,13 @@ export function ReputationDropdown() {
           <PopoverBody>
             <Stack>
               {reputationHistoryItems.map((item, index) => (
-                <Box fontSize="13px" onClick={() => handleItemClick(item)} key={index}>
-                  <Text color="black">
-                    {item.reputation_change} {getTitleById(item.post_id)}
+                <HStack fontSize="13px" onClick={() => handleItemClick(item)} key={index} align="start">
+                  <Text flex="0 0 30px" textAlign="right" color={item.reputation_change > 0 ? 'green.500' : 'red.500'}>
+                    {item.reputation_change > 0 ? '+' : ''}
+                    {item.reputation_change}
                   </Text>
-                </Box>
+                  <Text color="black">{parse(getTitleById(item.post_id))}</Text>
+                </HStack>
               ))}
             </Stack>
           </PopoverBody>
