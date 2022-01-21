@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
 import stackoverflow from '../uitls/stackexchange-api';
-import { Box, Stack } from '@chakra-ui/react';
+import { Box, Center, Stack, Text } from "@chakra-ui/react";
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { AnswerType } from '../interfaces/AnswerType';
 import { Pagination } from '../components/ui/Pagination';
 import { usePagination } from '../hooks/use-pagination';
+import { GoTriangleUp } from "react-icons/go";
 
 export function MyAnswersPage() {
   const pagination = usePagination();
@@ -18,6 +19,11 @@ export function MyAnswersPage() {
       setIsLoaded(false);
 
       const questionIds = await getAnswersQuestionIds(pagination.page, pagination.perPage);
+
+      if (questionIds.length === 0) {
+        setIsLoaded(true);
+        return;
+      }
 
       const response: any = await stackoverflow.get(`questions/${questionIds.join(';')}`, {
         order: 'desc',
@@ -44,6 +50,14 @@ export function MyAnswersPage() {
 
         return response.items.map((answer: AnswerType) => answer.question_id);
       });
+  }
+
+  if (isLoaded && !questions.length) {
+    return (
+      <Center color="gray.500" height="200px">
+        You have no any answers yet.
+      </Center>
+    );
   }
 
   return (

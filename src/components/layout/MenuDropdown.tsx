@@ -57,8 +57,8 @@ export function MenuDropdown() {
               </Box>
             </PopoverTrigger>
             <PopoverContent>
-              <PopoverBody px={0} py="5px">
-                <List styleType="none">
+              <PopoverBody px={0} py="5px" onClick={onClose}>
+                <List>
                   <ListItem p="3px 10px" cursor="pointer" _hover={{ bgColor: 'gray.100' }} onClick={goToProfile}>
                     Profile
                   </ListItem>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { QuestionType } from '../interfaces/QuestionType';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
 import stackoverflow from '../uitls/stackexchange-api';
-import { Box, Stack } from '@chakra-ui/react';
+import { Box, Center, Stack } from "@chakra-ui/react";
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { usePagination } from '../hooks/use-pagination';
@@ -27,6 +27,14 @@ export function MyBookmarksPage() {
         setIsLoaded(true);
       });
   }, [pagination.page, pagination.perPage]);
+
+  if (isLoaded && !questions.length) {
+    return (
+      <Center color="gray.500" height="200px">
+        You have no any bookmarks yet.
+      </Center>
+    );
+  }
 
   return (
     <>

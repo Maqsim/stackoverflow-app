@@ -10,6 +10,9 @@ import { AnswerDetails } from '../components/posts/AnswerDetails';
 import { socketClient } from '../uitls/stackexchange-socket-client';
 import { getItem, setItem } from '../uitls/local-storage';
 import { AppSpinner } from '../components/layout/AppSpinner';
+import { StickyAnswerForm } from '../components/posts/StickyAnswerForm';
+import { AnswerType } from '../interfaces/AnswerType';
+import { clone } from 'lodash';
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -105,6 +108,23 @@ export function QuestionDetailsPage() {
     }, 2000);
   }
 
+  function handleAnswerAdd(answer: AnswerType) {
+    const _question: QuestionType = clone(question!);
+
+    if (!_question?.answers) {
+      _question!.answers = [];
+    }
+
+    _question!.answers.push(answer);
+    _question!.answer_count++;
+
+    console.log(_question);
+
+    setQuestion(_question);
+
+    console.log(question);
+  }
+
   if (!isLoaded || !question) {
     return <AppSpinner />;
   }
@@ -172,7 +192,7 @@ export function QuestionDetailsPage() {
         </Text>
       )}
 
-      {/*<StickyAnswerForm />*/}
+      <StickyAnswerForm questionId={question.question_id} onSuccess={handleAnswerAdd} />
     </>
   );
 }

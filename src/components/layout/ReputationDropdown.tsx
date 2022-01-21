@@ -20,7 +20,7 @@ import { ReputationHistoryItemType } from '../../interfaces/ReputationHistoryIte
 import { kFormatter } from '../../uitls/k-formatter';
 import { uniq } from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import parse from "html-react-parser";
+import parse from 'html-react-parser';
 
 type PostType = {
   title: string;
@@ -34,6 +34,7 @@ export function ReputationDropdown() {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [reputationHistoryItems, setReputationHistoryItems] = useState<ReputationHistoryItemType[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isUnseen, setIsUnseen] = useState(true);
 
   useEffect(() => {
     socketClient.on(`1-${user.user.user_id}-reputation`, () => {
@@ -43,8 +44,14 @@ export function ReputationDropdown() {
     fetchReputationHistory();
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      setIsUnseen(false);
+    }
+  }, [isOpen]);
+
   async function fetchReputationHistory() {
-    const response: any = await stackoverflow.get('me/reputation-history');
+    const response: any = await stackoverflow.get('me/reputation-history/full');
     const items: ReputationHistoryItemType[] = response.items;
 
     // items.reduce(() => {
@@ -55,7 +62,7 @@ export function ReputationDropdown() {
     const postsResponse: any = await stackoverflow.get(`posts/${postsIds}`, { filter: '!az5Wc(MqdIquv2' });
 
     setPosts(postsResponse.items);
-    setReputationHistoryItems(response.items);
+    setReputationHistoryItems(items);
   }
 
   function openReputation() {
@@ -64,10 +71,6 @@ export function ReputationDropdown() {
 
   function getPostById(postId: number) {
     return posts.find((i) => i.post_id === postId)!;
-  }
-
-  function getTitleById(postId: number) {
-    return posts.find((i) => i.post_id === postId)!.title;
   }
 
   async function handleItemClick(item: ReputationHistoryItemType) {
@@ -91,9 +94,12 @@ export function ReputationDropdown() {
           >
             <Text fontSize="12px" fontWeight="semibold">
               {kFormatter(user.user.reputation)}
-              <Text as="span" ml="3px" px="3px" mt="1px" bgColor="green.400" color="whiteAlpha.800" rounded="2px">
-                +25
-              </Text>
+
+              {isUnseen && (
+                <Text as="span" ml="3px" px="3px" mt="1px" bgColor="green.400" color="whiteAlpha.800" rounded="2px">
+                  +25
+                </Text>
+              )}
             </Text>
           </Center>
         </PopoverTrigger>
@@ -108,15 +114,27 @@ export function ReputationDropdown() {
           </PopoverHeader>
           <PopoverBody>
             <Stack>
-              {reputationHistoryItems.map((item, index) => (
-                <HStack fontSize="13px" onClick={() => handleItemClick(item)} key={index} align="start">
-                  <Text flex="0 0 30px" textAlign="right" color={item.reputation_change > 0 ? 'green.500' : 'red.500'}>
-                    {item.reputation_change > 0 ? '+' : ''}
-                    {item.reputation_change}
-                  </Text>
-                  <Text color="black">{parse(getTitleById(item.post_id))}</Text>
-                </HStack>
-              ))}
+              {reputationHistoryItems.map((item, index) => {
+                const post = getPostById(item.post_id);
+
+                if (!post) {
+                  return null;
+                }
+
+                return (
+                  <HStack fontSize="13px" onClick={() => handleItemClick(item)} key={index} align="start">
+                    <Text
+                      flex="0 0 30px"
+                      textAlign="right"
+                      color={item.reputation_change > 0 ? 'green.500' : 'red.500'}
+                    >
+                      {item.reputation_change > 0 ? '+' : ''}
+                      {item.reputation_change}
+                    </Text>
+                    <Text color="black">{parse(post.title)}</Text>
+                  </HStack>
+                );
+              })}
             </Stack>
           </PopoverBody>
         </PopoverContent>

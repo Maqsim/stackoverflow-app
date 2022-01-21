@@ -74,7 +74,7 @@ export function InboxDropdown() {
               <PopoverBody>
                 <Stack>
                   {inboxItems.map((item) => (
-                    <Link href={item.link} color="blue.500" textDecoration="none !important">
+                    <Link href={item.link} color="blue.500" textDecoration="none !important" key={item.creation_date}>
                       <Box fontSize="13px">
                         <Text sx={{ '.chakra-link:hover &': { textDecoration: 'underline' } }}>
                           <Image w="16px" display="inline" src={item.site.favicon_url} /> {item.title}
