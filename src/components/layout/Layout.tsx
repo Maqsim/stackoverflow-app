@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import { QuestionsPage } from '../../pages/QuestionsPage';
 import { QuestionDetailsPage } from '../../pages/QuestionDetailsPage';
 import { RiEarthFill, RiSettings3Fill } from 'react-icons/ri';
-import { SettingsPage } from '../../pages/SettingsPage';
+import { SettingsGeneralPage } from '../../pages/settings/SettingsGeneralPage';
 import { AiFillTags } from 'react-icons/ai';
 import { MyQuestionsPage } from '../../pages/MyQuestionsPage';
 import { ScrollToTop } from './ScrollToTop';
@@ -18,6 +18,12 @@ import { TagsPage } from '../../pages/TagsPage';
 import { MyTagsPage } from '../../pages/MyTags';
 import { UserContext } from '../../contexts/use-user';
 import { MyAnswersPage } from '../../pages/MyAnswersPage';
+import { SettingsPage } from "../../pages/SettingsPage";
+import { SettingsAdvancedPage } from "../../pages/settings/SettingsAdvancedPage";
+import { SettingsAppearancePage } from "../../pages/settings/SettingsAppearancePage";
+import { SettingsNotificationsPage } from "../../pages/settings/SettingsNotificationsPage";
+import { SettingsHotkeysPage } from "../../pages/settings/SettingsHotkeysPage";
+import { SettingsAccessibilityPage } from "../../pages/settings/SettingsAccessibilityPage";
 
 export function Layout() {
   return (
@@ -86,7 +92,6 @@ export function Layout() {
           <Routes>
             {/* Global routes */}
             <Route path="/" element={<QuestionsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/questions/:id" element={<QuestionDetailsPage />} />
             <Route path="/search/:query" element={<SearchPage />} />
             <Route path="/users/:id" element={<ProfilePage />} />
@@ -97,6 +102,16 @@ export function Layout() {
             <Route path="/my-questions" element={<MyQuestionsPage />} />
             <Route path="/my-answers" element={<MyAnswersPage />} />
             <Route path="/my-tags" element={<MyTagsPage />} />
+
+            {/* Settings routes */}
+            <Route path="/settings" element={<SettingsPage />}>
+              <Route index element={<SettingsGeneralPage />} />
+              <Route path="appearance" element={<SettingsAppearancePage />} />
+              <Route path="notifications" element={<SettingsNotificationsPage />} />
+              <Route path="hotkeys" element={<SettingsHotkeysPage />} />
+              <Route path="accessibility" element={<SettingsAccessibilityPage />} />
+              <Route path="advanced" element={<SettingsAdvancedPage />} />
+            </Route>
           </Routes>
         </Box>
       </Flex>
