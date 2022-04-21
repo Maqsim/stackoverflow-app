@@ -72,16 +72,17 @@ export function QuestionDetailsPage() {
         switch (data.a) {
           case 'score': // Score changed
             if (isQuestionUpdating) {
-              setTimeout(async () => {
-                const updatedQuestion = await getQuestionById(id);
-
-                setQuestion({
-                  ...question,
-                  score: data.score,
-                  upvoted: updatedQuestion.upvoted,
-                  downvoted: updatedQuestion.downvoted
-                });
-              }, 500);
+              // TODO
+              // setTimeout(async () => {
+              //   const updatedQuestion = await getQuestionById(id);
+              //
+              //   setQuestion({
+              //     ...question,
+              //     score: data.score,
+              //     upvoted: updatedQuestion.upvoted,
+              //     downvoted: updatedQuestion.downvoted
+              //   });
+              // }, 500);
             } else {
               const _question = clone(question);
               const answer = _question.answers.find((a) => a.answer_id === data.id);

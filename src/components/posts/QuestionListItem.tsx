@@ -1,6 +1,5 @@
 import parse from 'html-react-parser';
 import { Box, Flex, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
-import { QuestionType } from '../../interfaces/QuestionType';
 import { Link as RouterLink } from 'react-router-dom';
 import { TagList } from '../tags/TagList';
 import { kFormatter } from '../../uitls/k-formatter';
@@ -11,6 +10,7 @@ import { countInString } from '../../uitls/count-in-string';
 import { MdSpeed } from 'react-icons/md';
 import { pluralize } from '../../uitls/pluralize';
 import isEqual from 'react-fast-compare';
+import { QuestionType } from "../../models/question-store/question";
 
 type Props = {
   item: QuestionType;

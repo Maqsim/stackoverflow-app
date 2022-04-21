@@ -1,16 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Layout } from './components/layout/Layout';
 import { useNavigate } from 'react-router-dom';
 import { UserProvider } from './contexts/use-user';
 import { AppSpinner } from './components/layout/AppSpinner';
 import stackoverflow from './uitls/stackexchange-api';
 import { useToast } from '@chakra-ui/react';
+import { RootStore, RootStoreProvider, setupRootStore } from './models';
 
 export function App() {
+  const [rootStore, setRootStore] = useState<RootStore | undefined>(undefined);
   const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
+    (async () => {
+      await setupRootStore().then(setRootStore);
+    })();
+
     // TODO See if we can remove 300ms delay here
     // This is needed to show main window and close splash screen
     setTimeout(() => {
@@ -45,6 +51,10 @@ export function App() {
     });
   }, []);
 
+  if (!rootStore) {
+    return null;
+  }
+
   function showErrorToast(errorMessage: string) {
     toast({
       position: 'top',
@@ -56,8 +66,10 @@ export function App() {
   }
 
   return (
-    <UserProvider LoadingComponent={<AppSpinner/>}>
-      <Layout/>
-    </UserProvider>
+    <RootStoreProvider value={rootStore}>
+      <UserProvider LoadingComponent={<AppSpinner />}>
+        <Layout />
+      </UserProvider>
+    </RootStoreProvider>
   );
 }

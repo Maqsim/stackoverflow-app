@@ -25,7 +25,7 @@ import { SettingsNotificationsPage } from '../../pages/settings/SettingsNotifica
 import { SettingsHotkeysPage } from '../../pages/settings/SettingsHotkeysPage';
 import { SettingsAccessibilityPage } from '../../pages/settings/SettingsAccessibilityPage';
 
-export function Layout() {
+export const Layout = () => {
   return (
     <>
       <TopBar />
@@ -117,4 +117,4 @@ export function Layout() {
       </Flex>
     </>
   );
-}
+};
