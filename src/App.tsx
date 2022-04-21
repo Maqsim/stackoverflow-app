@@ -27,7 +27,7 @@ export function App() {
 
         stackoverflow
           .get(`questions/${questionId}`, {
-            filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ3LoiM_GpZITfZz5'
+            filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ)UMRPTuNScvYNba'
           })
           .then((response) => {
             const question = (response as any).items[0];

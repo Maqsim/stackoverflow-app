@@ -13,7 +13,7 @@ export function NavItem({ children, count, to }: Props) {
   // const isNested = countInString('/', location.pathname) > 1;
   const resolved = useResolvedPath(to);
   const match = useMatch({ path: resolved.pathname, end: true });
-    // || (isNested && to === prevPathname);
+  // || (isNested && to === prevPathname);
 
   const hoverStyles = {
     color: match ? 'whiteAlpha.900' : 'whiteAlpha.800',

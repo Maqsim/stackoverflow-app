@@ -57,26 +57,59 @@ export function QuestionDetailsPage() {
     if (!question || question.question_id !== parseInt(id)) {
       setIsLoaded(false);
 
-      stackoverflow
-        .get(`questions/${id}`, {
-          filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ3LoiM_GpZITfZz5'
-        })
-        .then((response) => {
-          const question = (response as any).items[0];
-
-          setQuestion(question);
-          setIsLoaded(true);
-        });
+      getQuestionById(id).then((question) => {
+        setQuestion(question);
+        setIsLoaded(true);
+      });
     }
 
-    socketClient.on(`1-question-${id}`, () => {
-      console.log('Question', 'questions changed');
-    });
+    if (question) {
+      socketClient.on(`1-question-${id}`, (data: any) => {
+        const isQuestionUpdating = data.id === question.question_id;
+
+        // TODO parse action
+        // TODO listen for more actions
+        switch (data.a) {
+          case 'score': // Score changed
+            if (isQuestionUpdating) {
+              setTimeout(async () => {
+                const updatedQuestion = await getQuestionById(id);
+
+                setQuestion({
+                  ...question,
+                  score: data.score,
+                  upvoted: updatedQuestion.upvoted,
+                  downvoted: updatedQuestion.downvoted
+                });
+              }, 500);
+            } else {
+              const _question = clone(question);
+              const answer = _question.answers.find((a) => a.answer_id === data.id);
+
+              if (answer) {
+                answer.score = data.score;
+                setQuestion(_question);
+              }
+            }
+            break;
+        }
+
+        console.log('Question', 'questions changed', data);
+      });
+    }
 
     return () => {
       socketClient.off(`1-question-${id}`);
     };
   }, [id, postType]);
+
+  function getQuestionById(id: string) {
+    return stackoverflow
+      .get(`questions/${id}`, {
+        filter: '!9MyMg2qFPpNbuLMPVtF3UyZX-N4MWSjZwlQ(VqCZ)UMRPTuNScvYNba'
+      })
+      .then((response) => (response as any).items[0]);
+  }
 
   function jumpToAnswers() {
     const scrollableEl = document.getElementById('scrolling-container');
@@ -118,11 +151,7 @@ export function QuestionDetailsPage() {
     _question!.answers.push(answer);
     _question!.answer_count++;
 
-    console.log(_question);
-
     setQuestion(_question);
-
-    console.log(question);
   }
 
   if (!isLoaded || !question) {

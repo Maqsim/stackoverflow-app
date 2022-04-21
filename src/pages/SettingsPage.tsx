@@ -3,7 +3,7 @@ import { MdPowerSettingsNew } from 'react-icons/md';
 import { BsBell, BsEye } from 'react-icons/bs';
 import { FaRegKeyboard } from 'react-icons/fa';
 import { RiSettings3Line } from 'react-icons/ri';
-import { IoAccessibilityOutline } from "react-icons/io5";
+import { IoAccessibilityOutline } from 'react-icons/io5';
 import { Link, matchPath, Outlet, useLocation } from 'react-router-dom';
 import { IconType } from 'react-icons';
 
@@ -54,7 +54,7 @@ function NavItem({ link, icon, title }: NavItemProps) {
         _hover={isActive ? undefined : { bgColor: 'gray.100' }}
         rounded="5px"
       >
-        <ListIcon as={icon} />
+        <ListIcon as={icon} position="relative" top="-1px" />
         {title}
       </ListItem>
     </Link>

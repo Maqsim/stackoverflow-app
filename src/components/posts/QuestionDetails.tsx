@@ -2,7 +2,7 @@ import { Box, Heading, HStack } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import { TagList } from '../tags/TagList';
 import { PostProfileBadge } from '../profile/PostProfileBadge';
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
 import { QuestionType } from '../../interfaces/QuestionType';
@@ -21,13 +21,77 @@ export function QuestionDetails({ question }: Props) {
   const [isBookmarked, setIsBookmarked] = useState(question.favorited);
   const [bookmarkCount, setBookmarkCount] = useState(question.favorite_count);
   const [comments, setComments] = useState<CommentType[]>(question.comments || []);
+  const [isUpvoted, setIsUpvoted] = useState<boolean>(question.upvoted);
+  const [isDownvoted, setIsDownvoted] = useState<boolean>(question.downvoted);
 
-  function handleUpvote() {
+  useEffect(() => {
+    setScore(question.score);
+    setIsUpvoted(question.upvoted);
+    setIsDownvoted(question.downvoted);
+  }, [question.score]);
+
+  async function handleUpvote() {
+    if (isDownvoted) {
+      await handleUndownvote();
+    }
+
     setScore(score + 1);
+    setIsUpvoted(true);
+
+    const response: QuestionType = await stackoverflow
+      .post(`questions/${question.question_id}/upvote`, {
+        filter: '!)fHrHyZKQR.5Q9a'
+      })
+      .then((r: any) => r.items[0]);
+
+    setIsUpvoted(response.upvoted);
+    setScore(response.score);
   }
 
-  function handleDownvote() {
+  async function handleUnupvote() {
     setScore(score - 1);
+    setIsUpvoted(false);
+
+    const response: QuestionType = await stackoverflow
+      .post(`questions/${question.question_id}/upvote/undo`, {
+        filter: '!)fHrHyZKQR.5Q9a'
+      })
+      .then((r: any) => r.items[0]);
+
+    setIsUpvoted(response.upvoted);
+    setScore(response.score);
+  }
+
+  async function handleDownvote() {
+    if (isUpvoted) {
+      await handleUnupvote();
+    }
+
+    setScore(score - 1);
+    setIsDownvoted(true);
+
+    const response: QuestionType = await stackoverflow
+      .post(`questions/${question.question_id}/downvote`, {
+        filter: '!)fHrHyZKQR.5Q9a'
+      })
+      .then((r: any) => r.items[0]);
+
+    setIsDownvoted(response.downvoted);
+    setScore(response.score);
+  }
+
+  async function handleUndownvote() {
+    setScore(score + 1);
+    setIsDownvoted(false);
+
+    const response: QuestionType = await stackoverflow
+      .post(`questions/${question.question_id}/downvote/undo`, {
+        filter: '!)fHrHyZKQR.5Q9a'
+      })
+      .then((r: any) => r.items[0]);
+
+    setIsDownvoted(response.downvoted);
+    setScore(response.score);
   }
 
   function handleToggleBookmark() {
@@ -63,8 +127,12 @@ export function QuestionDetails({ question }: Props) {
         isBookmarked={isBookmarked}
         bookmarkCount={bookmarkCount}
         score={score}
+        isUpvoted={isUpvoted}
+        isDownvoted={isDownvoted}
         onUpvote={handleUpvote}
+        onUnupvote={handleUnupvote}
         onDownvote={handleDownvote}
+        onUndownvote={handleUndownvote}
         onToggleBookmark={handleToggleBookmark}
       />
 

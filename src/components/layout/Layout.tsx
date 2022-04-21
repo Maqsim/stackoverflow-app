@@ -1,5 +1,5 @@
 import { Box, DarkMode, Divider, Flex, Image, Stack, Text } from '@chakra-ui/react';
-import Logo from '../../../assets/stackoverflow-logo.png';
+import Logo from '../../../assets/stackoverflow-logo.svg';
 import { NavItem } from './NavItem';
 import { Route, Routes } from 'react-router-dom';
 import { QuestionsPage } from '../../pages/QuestionsPage';
@@ -18,12 +18,12 @@ import { TagsPage } from '../../pages/TagsPage';
 import { MyTagsPage } from '../../pages/MyTags';
 import { UserContext } from '../../contexts/use-user';
 import { MyAnswersPage } from '../../pages/MyAnswersPage';
-import { SettingsPage } from "../../pages/SettingsPage";
-import { SettingsAdvancedPage } from "../../pages/settings/SettingsAdvancedPage";
-import { SettingsAppearancePage } from "../../pages/settings/SettingsAppearancePage";
-import { SettingsNotificationsPage } from "../../pages/settings/SettingsNotificationsPage";
-import { SettingsHotkeysPage } from "../../pages/settings/SettingsHotkeysPage";
-import { SettingsAccessibilityPage } from "../../pages/settings/SettingsAccessibilityPage";
+import { SettingsPage } from '../../pages/SettingsPage';
+import { SettingsAdvancedPage } from '../../pages/settings/SettingsAdvancedPage';
+import { SettingsAppearancePage } from '../../pages/settings/SettingsAppearancePage';
+import { SettingsNotificationsPage } from '../../pages/settings/SettingsNotificationsPage';
+import { SettingsHotkeysPage } from '../../pages/settings/SettingsHotkeysPage';
+import { SettingsAccessibilityPage } from '../../pages/settings/SettingsAccessibilityPage';
 
 export function Layout() {
   return (
@@ -41,7 +41,7 @@ export function Layout() {
         >
           <DarkMode>
             <Box>
-              <Image mt="8px" mb="16px" ml="10px" src={Logo} h="20px" />
+              <Image mt="8px" mb="16px" ml="10px" src={Logo} h="25px" />
               <Stack spacing={0}>
                 <NavItem to="/">
                   <RiEarthFill />

@@ -19,5 +19,6 @@ export type QuestionType = {
   tags: string[];
   title: string;
   upvoted: boolean;
+  downvoted: boolean;
   view_count: number;
 };

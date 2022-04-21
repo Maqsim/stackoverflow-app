@@ -6,8 +6,12 @@ import { BsBookmarkStar, BsFillBookmarkCheckFill } from 'react-icons/bs';
 type Props = {
   score: number;
   bookmarkCount?: number;
+  isUpvoted?: boolean;
+  isDownvoted?: boolean;
   onUpvote?: () => void;
+  onUnupvote?: () => void;
   onDownvote?: () => void;
+  onUndownvote?: () => void;
   onToggleBookmark?: () => void;
   postType: 'question' | 'answer';
   isAccepted?: boolean;
@@ -15,24 +19,28 @@ type Props = {
 };
 
 export function VotingControls({
+  isUpvoted,
+  isDownvoted,
   isAccepted,
   isBookmarked,
   postType,
   score,
   bookmarkCount,
   onUpvote,
+  onUnupvote,
   onDownvote,
+  onUndownvote,
   onToggleBookmark
 }: Props) {
   return (
     <Stack spacing="8px" mt="-5px">
       <Center
         fontSize="35px"
-        color="gray.300"
+        color={isUpvoted ? 'orange.400' : 'gray.300'}
         cursor="pointer"
-        _hover={{ color: 'gray.400' }}
+        _hover={isUpvoted ? undefined : { color: 'gray.400' }}
         userSelect="none"
-        onClick={onUpvote}
+        onClick={isUpvoted ? onUnupvote : onUpvote}
       >
         <GoTriangleUp />
       </Center>
@@ -41,11 +49,11 @@ export function VotingControls({
       </Text>
       <Center
         fontSize="35px"
-        color="gray.300"
+        color={isDownvoted ? 'orange.400' : 'gray.300'}
         cursor="pointer"
-        _hover={{ color: 'gray.400' }}
+        _hover={isDownvoted ? undefined : { color: 'gray.400' }}
         userSelect="none"
-        onClick={onDownvote}
+        onClick={isDownvoted ? onUndownvote : onDownvote}
       >
         <GoTriangleDown />
       </Center>

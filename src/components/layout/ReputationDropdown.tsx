@@ -44,19 +44,9 @@ export function ReputationDropdown() {
     fetchReputationHistory();
   }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      setIsUnseen(false);
-    }
-  }, [isOpen]);
-
   async function fetchReputationHistory() {
-    const response: any = await stackoverflow.get('me/reputation-history/full');
+    const response: any = await stackoverflow.get('me/reputation-history');
     const items: ReputationHistoryItemType[] = response.items;
-
-    // items.reduce(() => {
-    //
-    // }, )
 
     const postsIds = uniq(items.map((i) => i.post_id)).join(';');
     const postsResponse: any = await stackoverflow.get(`posts/${postsIds}`, { filter: '!az5Wc(MqdIquv2' });
@@ -73,16 +63,21 @@ export function ReputationDropdown() {
     return posts.find((i) => i.post_id === postId)!;
   }
 
+  function close() {
+    setIsUnseen(false);
+    setIsOpen(false);
+  }
+
   async function handleItemClick(item: ReputationHistoryItemType) {
     const post = getPostById(item.post_id);
 
-    setIsOpen(false);
+    close();
     navigate(`/questions/${item.post_id}`, { state: { postType: post.post_type } });
   }
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={() => setIsOpen(false)} onOpen={() => setIsOpen(true)}>
+      <Popover isOpen={isOpen} onClose={close} onOpen={() => setIsOpen(true)}>
         <PopoverTrigger>
           <Center
             sx={{ WebkitAppRegion: 'no-drag' }}
