@@ -21,7 +21,7 @@
 - https://www.twitch.tv/jott1
 
 **Interesting to test this app?**
-- Ping me here [maxdiachenko.com](maxdiachenko.com)
+- Ping me here [maxdiachenko.com](https://maxdiachenko.com)
 
 ## Some screenshots (19 Nov, 2021)
 
