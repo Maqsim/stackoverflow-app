@@ -4,38 +4,33 @@ import parse, { domToReact, Element } from 'html-react-parser';
 import { Code } from '../ui/Code';
 import dayjs from 'dayjs';
 import { GoTriangleUp } from 'react-icons/go';
-import { useState } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { useUser } from '../../contexts/use-user';
 
 type Props = {
   comment: CommentType;
+  onUpvote: () => void;
 };
 
-export function CommentListItem({ comment }: Props) {
+export function CommentListItem({ comment, onUpvote }: Props) {
   const user = useUser();
-  const [score, setScore] = useState(comment.score);
   const isMyComment = comment.owner.user_id === user.user.user_id;
-
-  function upvote() {
-    setScore(score + 1);
-  }
 
   return (
     <HStack align="flex-start" fontSize="13px">
       <HStack flexShrink={0} spacing="4px">
         <HStack spacing="2px">
           <Text fontSize="12px" color="gray.500" lineHeight="12px" w="16px" textAlign="right">
-            {score || ''}
+            {comment.score || ''}
           </Text>
           <Flex
             fontSize="20px"
             cursor="pointer"
             visibility={isMyComment ? 'hidden' : 'visible'}
-            color="gray.300"
-            _hover={{ color: 'gray.400' }}
+            color={comment.upvoted ? 'orange.400' : 'gray.300'}
+            _hover={{ color: comment.upvoted ? 'orange.400' : 'gray.400' }}
             userSelect="none"
-            onClick={upvote}
+            onClick={onUpvote}
             mt="-2px !important"
           >
             <GoTriangleUp />

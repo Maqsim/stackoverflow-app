@@ -6,6 +6,7 @@ import { usePagination } from '../hooks/use-pagination';
 import { Pagination } from '../components/ui/Pagination';
 import { useStores } from '../models';
 import { observer } from 'mobx-react-lite';
+import { getSnapshot } from 'mobx-state-tree';
 
 export const QuestionsPage = observer(() => {
   const { questionStore } = useStores();
@@ -29,11 +30,13 @@ export const QuestionsPage = observer(() => {
 
       <Stack spacing="8px">
         {/* Skeletons */}
-        {questionStore.isFetching &&
+        {questionStore.isQuestionsFetching &&
           [...Array(pagination.perPage)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
 
-        {!questionStore.isFetching &&
-          questionStore.questions.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
+        {!questionStore.isQuestionsFetching &&
+          questionStore.questions.map((question) => (
+            <QuestionListItem item={getSnapshot(question)} key={question.question_id} />
+          ))}
       </Stack>
 
       {pagination.totalPages > 0 && (

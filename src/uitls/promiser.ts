@@ -1,3 +1,3 @@
-export const promiser = (promise: Promise<unknown>) => {
-  return promise.then((data) => [data, null]).catch((error) => [null, error]);
-};
+export function promiser<T>(promise: Promise<unknown>) {
+  return promise.then((data) => [<T>data, null]).catch((error) => [null, error?.response ?? error]);
+}

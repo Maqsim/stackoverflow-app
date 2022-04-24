@@ -58,21 +58,16 @@ export const Pagination = memo(({ doScrollToTop = true, size = 'sm', controller 
         size={size}
         variant="outline"
         width="auto"
+        value={controller.perPage}
         flexGrow={0}
         onChange={(event) => {
           controller.setPage(1);
           controller.setPerPage(parseInt(event.target.value));
         }}
       >
-        <option value="15" selected={controller.perPage === 15}>
-          15
-        </option>
-        <option value="30" selected={controller.perPage === 30}>
-          30
-        </option>
-        <option value="45" selected={controller.perPage === 45}>
-          45
-        </option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
       </Select>
     </HStack>
   );

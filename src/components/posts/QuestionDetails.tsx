@@ -1,8 +1,8 @@
-import { Box, Heading, HStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, useToast } from "@chakra-ui/react";
 import parse from 'html-react-parser';
 import { TagList } from '../tags/TagList';
 import { PostProfileBadge } from '../profile/PostProfileBadge';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
 import { QuestionType } from '../../interfaces/QuestionType';
@@ -10,12 +10,17 @@ import { CommentType } from '../../interfaces/CommentType';
 import { CommentList } from '../comments/CommentList';
 import { useUser } from '../../contexts/use-user';
 import stackoverflow from '../../uitls/stackexchange-api';
+import { clone } from 'lodash';
+import { promiser } from '../../uitls/promiser';
+import { ResponseType } from '../../interfaces/Response';
+import { decodeEntity } from '../../uitls/decode-entities';
 
 type Props = {
   question: QuestionType;
 };
 
 export function QuestionDetails({ question }: Props) {
+  const toast = useToast();
   const user = useUser();
   const [score, setScore] = useState<number>(question.score);
   const [isBookmarked, setIsBookmarked] = useState(question.favorited);
@@ -108,6 +113,42 @@ export function QuestionDetails({ question }: Props) {
     setComments([...comments, comment]);
   }
 
+  // TODO move this to MST
+  async function handleCommentUpvote(comment: CommentType) {
+    const oldComment = clone(comment);
+    const action = comment.upvoted ? 'upvote/undo' : 'upvote';
+
+    // Optimistic UI
+    updateComment(
+      comment,
+      comment.upvoted ? { score: comment.score - 1, upvoted: false } : { score: comment.score + 1, upvoted: true }
+    );
+
+    // Pessimistic UI
+    const [response, error] = await promiser<ResponseType<CommentType>>(
+      stackoverflow.post(`comments/${comment.comment_id}/${action}`)
+    );
+
+    updateComment(comment, error ? oldComment : response.items[0]);
+
+    if (error?.data?.error_message) {
+      toast({
+        position: 'top',
+        description: decodeEntity(error.data.error_message),
+        status: 'error',
+        duration: 3000
+      });
+    }
+  }
+
+  function updateComment(comment: CommentType, data: Partial<CommentType> = {}) {
+    const _comments = clone(comments);
+    const foundComment = _comments.find((c) => c.comment_id === comment.comment_id) as CommentType;
+    Object.assign(foundComment, data);
+
+    setComments(_comments);
+  }
+
   function updateSidebarCount(isBookmarked: boolean) {
     user.setSidebarCounts({ ...user.sidebarCounts, bookmarks: user.sidebarCounts.bookmarks + (isBookmarked ? 1 : -1) });
   }
@@ -153,7 +194,12 @@ export function QuestionDetails({ question }: Props) {
           <PostProfileBadge type="question" datetime={question.creation_date} user={question.owner} />
         </HStack>
 
-        <CommentList comments={comments} postId={question.question_id} onCommentAdd={handleCommentAdd} />
+        <CommentList
+          comments={comments}
+          postId={question.question_id}
+          onAdd={handleCommentAdd}
+          onUpvote={handleCommentUpvote}
+        />
       </Box>
     </HStack>
   );

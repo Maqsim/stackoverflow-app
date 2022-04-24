@@ -9,12 +9,13 @@ import { FeaturesEnum } from '../../interfaces/FeaturesEnum';
 type Props = {
   postId: number;
   comments: CommentType[];
-  onCommentAdd: (comment: CommentType) => void;
+  onAdd: (comment: CommentType) => void;
+  onUpvote: (comment: CommentType) => void;
 };
 
 const LIMIT_INCREASE = 5;
 
-export function CommentList({ postId, comments, onCommentAdd }: Props) {
+export function CommentList({ postId, comments, onAdd, onUpvote }: Props) {
   const user = useUser();
   const [limit, setLimit] = useState<number | undefined>(LIMIT_INCREASE);
   const shownComments = comments.slice(0, limit);
@@ -23,14 +24,14 @@ export function CommentList({ postId, comments, onCommentAdd }: Props) {
   function handleCommentAdd(comment: CommentType) {
     setLimit(undefined);
 
-    onCommentAdd(comment);
+    onAdd(comment);
   }
 
   return (
     <Stack spacing="8px" borderTop="1px solid" borderColor="gray.200" pt="8px">
       {/* List */}
       {shownComments?.map((comment) => (
-        <CommentListItem comment={comment} key={comment.comment_id} />
+        <CommentListItem comment={comment} onUpvote={() => onUpvote(comment)} key={comment.comment_id} />
       ))}
 
       {/* Show more button */}

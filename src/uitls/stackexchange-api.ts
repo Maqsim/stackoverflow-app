@@ -31,7 +31,7 @@ const stackoverflow = {
 
     return axios(buildStackOverflowUrl(url, _params), options).then((response) => response.data);
   },
-  post: (url: string, data: object) => {
+  post: (url: string, data = {}) => {
     const formData = new FormData();
     const payload: any = {
       site: 'stackoverflow',

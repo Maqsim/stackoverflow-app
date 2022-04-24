@@ -3,7 +3,7 @@ import { QuestionModel, QuestionType } from './question';
 import stackoverflow from '../../uitls/stackexchange-api';
 import { PaginationController } from '../../hooks/use-pagination';
 import { promiser } from '../../uitls/promiser';
-// import { QuestionType } from "../../interfaces/QuestionType";
+import { ResponseType } from '../../interfaces/Response';
 
 export const AllQuestionsFilter =
   '!HzgO6Jg6sME4H_1lyzjHHRxMDpvUVz34FqU_ckIV0XzN3qEw_80oXIpo62fBS4o8q9Wa31mkyd5kX4GFMvlXoA)k1AlLP';
@@ -11,22 +11,23 @@ export const AllQuestionsFilter =
 export const QuestionStoreModel = types
   .model('QuestionStore')
   .props({
-    isFetching: false,
-    questions: types.optional(types.array(QuestionModel), [])
+    isQuestionsFetching: false,
+    questions: types.optional(types.array(QuestionModel), []),
+    myQuestions: types.optional(types.array(QuestionModel), [])
   })
   .actions((self) => ({
     setQuestions(questions: QuestionType[]) {
       self.questions.replace(questions);
     },
-    setFetching(state: boolean) {
-      self.isFetching = state;
+    setIsQuestionsFetching(state: boolean) {
+      self.isQuestionsFetching = state;
     }
   }))
   .actions((self) => ({
     async getQuestions(pagination: PaginationController) {
-      self.setFetching(true);
+      self.setIsQuestionsFetching(true);
 
-      const [response, error] = await promiser(
+      const [response, error] = await promiser<ResponseType<QuestionType>>(
         stackoverflow.get('questions/unanswered/my-tags', {
           order: 'desc',
           sort: 'creation',
@@ -38,7 +39,7 @@ export const QuestionStoreModel = types
 
       self.setQuestions(response.items);
       pagination.setTotal(response.total);
-      self.setFetching(false);
+      self.setIsQuestionsFetching(false);
     }
   }));
 

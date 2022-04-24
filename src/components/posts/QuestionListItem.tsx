@@ -10,10 +10,10 @@ import { countInString } from '../../uitls/count-in-string';
 import { MdSpeed } from 'react-icons/md';
 import { pluralize } from '../../uitls/pluralize';
 import isEqual from 'react-fast-compare';
-import { QuestionType } from "../../models/question-store/question";
+import { QuestionSnapshot } from '../../models/question-store/question';
 
 type Props = {
-  item: QuestionType;
+  item: QuestionSnapshot;
 };
 
 export const QuestionListItem = memo(({ item }: Props) => {
