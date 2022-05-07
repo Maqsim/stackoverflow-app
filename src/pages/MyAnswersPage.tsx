@@ -28,7 +28,7 @@ export function MyAnswersPage() {
       const response: any = await stackoverflow.get(`questions/${questionIds.join(';')}`, {
         order: 'desc',
         sort: 'creation',
-        filter: '!HzgO6Jg6sME4H_1lyzjHHRxMDpvUVz34FqU_ckIV0XzN3qEw_80oXIpo62fBS4o8q9Wa31mkyd5kX4GFMvlXoA)k1AlLP'
+        filter: '!HzgO6Jg6sME4H_1lyzjHHRxMDyjoWkuK(8Xe125IMyd4rNGmzV(xVm79voQW*H7_CY)rZkEokE8LKn2_KZ4TJ5F0.2rZ1'
       });
 
       setQuestions(response.items);

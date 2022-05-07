@@ -13,18 +13,33 @@ export const QuestionsPage = observer(() => {
   const pagination = usePagination();
 
   useEffect(() => {
-    questionStore.getQuestions(pagination);
-  }, [pagination.page, pagination.perPage]);
+    questionStore.getQuestions(questionStore.questionsFilter, pagination);
+  }, [questionStore.questionsFilter, pagination.page, pagination.perPage]);
 
   return (
     <>
       <Flex justify="space-between" mb="16px">
         <ButtonGroup size="xs" isAttached variant="outline">
-          <Button isActive mr="-px">
+          <Button
+            isActive={questionStore.questionsFilter === 'interesting'}
+            onClick={() => questionStore.setQuestionsFilter('interesting')}
+            mr="-px"
+          >
             Interesting
           </Button>
-          <Button mr="-px">Bountied</Button>
-          <Button>Hot</Button>
+          <Button
+            isActive={questionStore.questionsFilter === 'bountied'}
+            onClick={() => questionStore.setQuestionsFilter('bountied')}
+            mr="-px"
+          >
+            Bountied
+          </Button>
+          <Button
+            isActive={questionStore.questionsFilter === 'hot'}
+            onClick={() => questionStore.setQuestionsFilter('hot')}
+          >
+            Hot
+          </Button>
         </ButtonGroup>
       </Flex>
 

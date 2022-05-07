@@ -1,12 +1,10 @@
-import { Box, Heading, HStack, useToast } from "@chakra-ui/react";
+import { Box, Heading, HStack, useToast } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import { TagList } from '../tags/TagList';
 import { PostProfileBadge } from '../profile/PostProfileBadge';
 import { useEffect, useState } from 'react';
 import { VotingControls } from './VotingControls';
 import parseBody from '../../uitls/parse-body';
-import { QuestionType } from '../../interfaces/QuestionType';
-import { CommentType } from '../../interfaces/CommentType';
 import { CommentList } from '../comments/CommentList';
 import { useUser } from '../../contexts/use-user';
 import stackoverflow from '../../uitls/stackexchange-api';
@@ -14,6 +12,11 @@ import { clone } from 'lodash';
 import { promiser } from '../../uitls/promiser';
 import { ResponseType } from '../../interfaces/Response';
 import { decodeEntity } from '../../uitls/decode-entities';
+import { QuestionType } from '../../models/question-store/question';
+import { CommentType } from '../../models/comment-store/comment';
+import { Callout } from '../ui/Callout';
+import { Bounty } from '../ui/Bounty';
+import dayjs from 'dayjs';
 
 type Props = {
   question: QuestionType;
@@ -26,8 +29,8 @@ export function QuestionDetails({ question }: Props) {
   const [isBookmarked, setIsBookmarked] = useState(question.favorited);
   const [bookmarkCount, setBookmarkCount] = useState(question.favorite_count);
   const [comments, setComments] = useState<CommentType[]>(question.comments || []);
-  const [isUpvoted, setIsUpvoted] = useState<boolean>(question.upvoted);
-  const [isDownvoted, setIsDownvoted] = useState<boolean>(question.downvoted);
+  const [isUpvoted, setIsUpvoted] = useState<boolean | undefined>(question.upvoted);
+  const [isDownvoted, setIsDownvoted] = useState<boolean | undefined>(question.downvoted);
 
   useEffect(() => {
     setScore(question.score);
@@ -182,6 +185,14 @@ export function QuestionDetails({ question }: Props) {
         <Heading size="md" mb="12px" maxWidth="800px">
           {parse(question.title)}
         </Heading>
+
+        {question.bounty_amount && (
+          <Callout>
+            The bounty expires <b>{dayjs().to(dayjs.unix(question.bounty_closes_date!))}</b>. Answers to this question
+            are eligible for a <Bounty amount={question.bounty_amount} /> reputation bounty.
+          </Callout>
+        )}
+
         <Box className="stackoverflow_question-body" fontFamily="Georgia" fontSize="16px">
           {parseBody(question.body)}
         </Box>

@@ -1,11 +1,11 @@
 import { Flex, HStack, Image, Text } from '@chakra-ui/react';
-import { CommentType } from '../../interfaces/CommentType';
 import parse, { domToReact, Element } from 'html-react-parser';
 import { Code } from '../ui/Code';
 import dayjs from 'dayjs';
 import { GoTriangleUp } from 'react-icons/go';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { useUser } from '../../contexts/use-user';
+import { CommentType } from '../../models/comment-store/comment';
 
 type Props = {
   comment: CommentType;

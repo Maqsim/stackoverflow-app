@@ -6,12 +6,16 @@ import { promiser } from '../../uitls/promiser';
 import { ResponseType } from '../../interfaces/Response';
 
 export const AllQuestionsFilter =
-  '!HzgO6Jg6sME4H_1lyzjHHRxMDpvUVz34FqU_ckIV0XzN3qEw_80oXIpo62fBS4o8q9Wa31mkyd5kX4GFMvlXoA)k1AlLP';
+  '!HzgO6Jg6sME4H_1lyzjHHRxMDyjoWkuK(8Xe125IMyd4rNGmzV(xVm79voQW*H7_CY)rZkEokE8LKn2_KZ4TJ5F0.2rZ1';
 
 export const QuestionStoreModel = types
   .model('QuestionStore')
   .props({
     isQuestionsFetching: false,
+    questionsFilter: types.optional(
+      types.enumeration('QuestionsFilter', ['interesting', 'bountied', 'hot']),
+      'interesting'
+    ),
     questions: types.optional(types.array(QuestionModel), []),
     myQuestions: types.optional(types.array(QuestionModel), [])
   })
@@ -21,14 +25,24 @@ export const QuestionStoreModel = types
     },
     setIsQuestionsFetching(state: boolean) {
       self.isQuestionsFetching = state;
+    },
+    setQuestionsFilter(filter: 'interesting' | 'bountied' | 'hot') {
+      self.questionsFilter = filter;
     }
   }))
   .actions((self) => ({
-    async getQuestions(pagination: PaginationController) {
+    async getQuestions(filter: 'interesting' | 'bountied' | 'hot', pagination: PaginationController) {
       self.setIsQuestionsFetching(true);
 
+      // Compose question API url based on filter
+      let url = 'questions/unanswered/my-tags';
+
+      if (filter === 'bountied') {
+        url = 'questions/featured';
+      }
+
       const [response, error] = await promiser<ResponseType<QuestionType>>(
-        stackoverflow.get('questions/unanswered/my-tags', {
+        stackoverflow.get(url, {
           order: 'desc',
           sort: 'creation',
           page: pagination.page,
@@ -45,6 +59,7 @@ export const QuestionStoreModel = types
 
 type QuestionStoreType = Instance<typeof QuestionStoreModel>;
 
-export interface QuestionStore extends QuestionStoreType {}
+export interface QuestionStore extends QuestionStoreType {
+}
 
 export const createAuthStoreDefaultModel = () => types.optional(QuestionStoreModel, {});

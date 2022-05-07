@@ -1,10 +1,10 @@
 import { CommentListItem } from './CommentListItem';
 import { CommentForm } from './CommentForm';
-import { CommentType } from '../../interfaces/CommentType';
 import { Box, Button, Stack } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { useUser } from '../../contexts/use-user';
 import { FeaturesEnum } from '../../interfaces/FeaturesEnum';
+import { CommentType } from '../../models/comment-store/comment';
 
 type Props = {
   postId: number;

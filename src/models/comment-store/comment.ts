@@ -11,6 +11,6 @@ export const CommentModel = types.model({
   upvoted: types.boolean
 });
 
-type CommentType = Instance<typeof CommentModel>;
+export type CommentType = Instance<typeof CommentModel>;
 
 export interface Comment extends CommentType {}

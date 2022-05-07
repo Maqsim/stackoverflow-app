@@ -10,10 +10,11 @@ import { countInString } from '../../uitls/count-in-string';
 import { MdSpeed } from 'react-icons/md';
 import { pluralize } from '../../uitls/pluralize';
 import isEqual from 'react-fast-compare';
-import { QuestionSnapshot } from '../../models/question-store/question';
+import { QuestionType } from '../../models/question-store/question';
+import { Bounty } from '../ui/Bounty';
 
 type Props = {
-  item: QuestionSnapshot;
+  item: QuestionType;
 };
 
 export const QuestionListItem = memo(({ item }: Props) => {
@@ -26,6 +27,7 @@ export const QuestionListItem = memo(({ item }: Props) => {
         color: 'white'
       }
     : undefined;
+  const hasBounty = Boolean(item.bounty_amount);
 
   // Helper icons
   // TODO Make analysis more accurate
@@ -81,6 +83,8 @@ export const QuestionListItem = memo(({ item }: Props) => {
         </HStack>
         <Box flexGrow={1}>
           <Text fontWeight="bold" color={isVisited ? 'gray.400' : 'black'}>
+            {hasBounty && <Bounty amount={item.bounty_amount!} mr="6px" />}
+
             {parse(item.title)}
           </Text>
 
