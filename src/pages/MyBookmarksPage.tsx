@@ -1,34 +1,20 @@
-import { useEffect, useState } from 'react';
-import { QuestionType } from '../interfaces/QuestionType';
+import { useEffect } from 'react';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
-import stackoverflow from '../uitls/stackexchange-api';
-import { Box, Center, Stack } from "@chakra-ui/react";
+import { Box, Center, Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { usePagination } from '../hooks/use-pagination';
+import { useStores } from '../models';
 
 export function MyBookmarksPage() {
+  const { questionStore } = useStores();
   const pagination = usePagination();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [questions, setQuestions] = useState<QuestionType[]>([]);
 
   useEffect(() => {
-    stackoverflow
-      .get('me/favorites', {
-        order: 'desc',
-        sort: 'added',
-        page: pagination.page,
-        pagesize: pagination.perPage,
-        filter: '!HzgO6Jg6sME4H_1lyzjHHRxMDyjoWkuK(8Xe125IMyd4rNGmzV(xVm79voQW*H7_CY)rZkEokE8LKn2_KZ4TJ5F0.2rZ1'
-      })
-      .then((response) => {
-        pagination.setTotal((response as any).total);
-        setQuestions((response as any).items);
-        setIsLoaded(true);
-      });
+    questionStore.getBookmarks(pagination);
   }, [pagination.page, pagination.perPage]);
 
-  if (isLoaded && !questions.length) {
+  if (!questionStore.isBookmarksFetching && !questionStore.myBookmarks.length) {
     return (
       <Center color="gray.500" height="200px">
         You have no any bookmarks yet.
@@ -40,9 +26,11 @@ export function MyBookmarksPage() {
     <>
       <Stack spacing="8px">
         {/* Skeletons */}
-        {!isLoaded && [...Array(pagination.perPage)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
+        {questionStore.isBookmarksFetching &&
+          [...Array(pagination.perPage)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
 
-        {isLoaded && questions.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
+        {!questionStore.isBookmarksFetching &&
+          questionStore.myBookmarks.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
       </Stack>
 
       {pagination.totalPages > 0 && (

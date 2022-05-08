@@ -12,19 +12,26 @@ export const QuestionStoreModel = types
   .model('QuestionStore')
   .props({
     isQuestionsFetching: false,
+    isBookmarksFetching: false,
     questionsFilter: types.optional(
       types.enumeration('QuestionsFilter', ['interesting', 'bountied', 'hot']),
       'interesting'
     ),
     questions: types.optional(types.array(QuestionModel), []),
-    myQuestions: types.optional(types.array(QuestionModel), [])
+    myBookmarks: types.optional(types.array(QuestionModel), [])
   })
   .actions((self) => ({
     setQuestions(questions: QuestionType[]) {
       self.questions.replace(questions);
     },
+    setMyBookmarks(questions: QuestionType[]) {
+      self.myBookmarks.replace(questions);
+    },
     setIsQuestionsFetching(state: boolean) {
       self.isQuestionsFetching = state;
+    },
+    setIsBookmarksFetching(state: boolean) {
+      self.isBookmarksFetching = state;
     },
     setQuestionsFilter(filter: 'interesting' | 'bountied' | 'hot') {
       self.questionsFilter = filter;
@@ -57,12 +64,28 @@ export const QuestionStoreModel = types
       self.setQuestions(response.items);
       pagination.setTotal(response.total);
       self.setIsQuestionsFetching(false);
+    },
+    async getBookmarks(pagination: PaginationController) {
+      self.setIsBookmarksFetching(true);
+
+      const [response, error] = await promiser<ResponseType<QuestionType>>(
+        stackoverflow.get('me/favorites', {
+          order: 'desc',
+          sort: 'added',
+          page: pagination.page,
+          pagesize: pagination.perPage,
+          filter: '!HzgO6Jg6sME4H_1lyzjHHRxMDyjoWkuK(8Xe125IMyd4rNGmzV(xVm79voQW*H7_CY)rZkEokE8LKn2_KZ4TJ5F0.2rZ1'
+        })
+      );
+
+      self.setMyBookmarks(response.items);
+      pagination.setTotal(response.total);
+      self.setIsBookmarksFetching(false);
     }
   }));
 
 type QuestionStoreType = Instance<typeof QuestionStoreModel>;
 
-export interface QuestionStore extends QuestionStoreType {
-}
+export interface QuestionStore extends QuestionStoreType {}
 
 export const createAuthStoreDefaultModel = () => types.optional(QuestionStoreModel, {});
