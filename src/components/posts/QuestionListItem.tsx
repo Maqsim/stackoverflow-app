@@ -12,6 +12,7 @@ import { pluralize } from '../../uitls/pluralize';
 import isEqual from 'react-fast-compare';
 import { QuestionType } from '../../models/question-store/question';
 import { Bounty } from '../ui/Bounty';
+import { getSnapshot } from 'mobx-state-tree';
 
 type Props = {
   item: QuestionType;
@@ -36,7 +37,7 @@ export const QuestionListItem = memo(({ item }: Props) => {
   const imageCount = countInString('<img src="https://i.stack.imgur.com', item.body);
 
   return (
-    <RouterLink to={`/questions/${item.question_id}`} state={{ question: item }}>
+    <RouterLink to={`/questions/${item.question_id}`} state={{ question: getSnapshot(item) }}>
       <Flex
         borderRadius="5px"
         cursor="pointer"

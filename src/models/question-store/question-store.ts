@@ -36,20 +36,23 @@ export const QuestionStoreModel = types
 
       // Compose question API url based on filter
       let url = 'questions/unanswered/my-tags';
+      const params = {
+        order: 'desc',
+        sort: 'creation',
+        page: pagination.page,
+        pagesize: pagination.perPage,
+        filter: AllQuestionsFilter
+      };
 
       if (filter === 'bountied') {
         url = 'questions/featured';
+        params.sort = 'activity';
+      } else if (filter === 'hot') {
+        url = 'questions';
+        params.sort = 'hot';
       }
 
-      const [response, error] = await promiser<ResponseType<QuestionType>>(
-        stackoverflow.get(url, {
-          order: 'desc',
-          sort: 'creation',
-          page: pagination.page,
-          pagesize: pagination.perPage,
-          filter: AllQuestionsFilter
-        })
-      );
+      const [response, error] = await promiser<ResponseType<QuestionType>>(stackoverflow.get(url, params));
 
       self.setQuestions(response.items);
       pagination.setTotal(response.total);

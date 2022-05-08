@@ -50,7 +50,7 @@ export const QuestionsPage = observer(() => {
 
         {!questionStore.isQuestionsFetching &&
           questionStore.questions.map((question) => (
-            <QuestionListItem item={getSnapshot(question)} key={question.question_id} />
+            <QuestionListItem item={question} key={question.question_id} />
           ))}
       </Stack>
 
