@@ -1,5 +1,5 @@
 import { Badge, HStack } from '@chakra-ui/react';
-import { NavLink as RouterLink, useLocation, useMatch, useResolvedPath } from 'react-router-dom';
+import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 
 type Props = {
   to: string;
