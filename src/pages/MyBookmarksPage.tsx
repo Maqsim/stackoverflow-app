@@ -11,10 +11,10 @@ export function MyBookmarksPage() {
   const pagination = usePagination();
 
   useEffect(() => {
-    questionStore.getBookmarks(pagination);
+    questionStore.getMyBookmarks(pagination);
   }, [pagination.page, pagination.perPage]);
 
-  if (!questionStore.isBookmarksFetching && !questionStore.myBookmarks.length) {
+  if (!questionStore.isMyBookmarksFetching && !questionStore.myBookmarks.length) {
     return (
       <Center color="gray.500" height="200px">
         You have no any bookmarks yet.
@@ -26,10 +26,10 @@ export function MyBookmarksPage() {
     <>
       <Stack spacing="8px">
         {/* Skeletons */}
-        {questionStore.isBookmarksFetching &&
+        {questionStore.isMyBookmarksFetching &&
           [...Array(pagination.perPage)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
 
-        {!questionStore.isBookmarksFetching &&
+        {!questionStore.isMyBookmarksFetching &&
           questionStore.myBookmarks.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
       </Stack>
 

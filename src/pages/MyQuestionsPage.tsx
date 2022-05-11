@@ -1,34 +1,21 @@
-import { useEffect, useState } from 'react';
-import { QuestionType } from '../interfaces/QuestionType';
+import { useEffect } from 'react';
 import { QuestionListItem } from '../components/posts/QuestionListItem';
-import stackoverflow from '../uitls/stackexchange-api';
-import { Box, Center, Stack } from "@chakra-ui/react";
+import { Box, Center, Stack } from '@chakra-ui/react';
 import { QuestionListItemSkeleton } from '../components/posts/QuestionListItem.skeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { usePagination } from '../hooks/use-pagination';
+import { observer } from 'mobx-react-lite';
+import { useStores } from '../models';
 
-export function MyQuestionsPage() {
+export const MyQuestionsPage = observer(() => {
+  const { questionStore } = useStores();
   const pagination = usePagination();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [questions, setQuestions] = useState<QuestionType[]>([]);
 
   useEffect(() => {
-    stackoverflow
-      .get('me/questions', {
-        order: 'desc',
-        sort: 'creation',
-        page: pagination.page,
-        pagesize: pagination.perPage,
-        filter: '!HzgO6Jg6sME4H_1lyzjHHRxMDyjoWkuK(8Xe125IMyd4rNGmzV(xVm79voQW*H7_CY)rZkEokE8LKn2_KZ4TJ5F0.2rZ1'
-      })
-      .then((response) => {
-        pagination.setTotal((response as any).total);
-        setQuestions((response as any).items);
-        setIsLoaded(true);
-      });
+    questionStore.getMyQuestions(pagination);
   }, [pagination.page, pagination.perPage]);
 
-  if (isLoaded && !questions.length) {
+  if (!questionStore.isMyQuestionsFetching && !questionStore.myQuestions.length) {
     return (
       <Center color="gray.500" height="200px">
         You have no any questions yet.
@@ -40,9 +27,11 @@ export function MyQuestionsPage() {
     <>
       <Stack spacing="8px">
         {/* Skeletons */}
-        {!isLoaded && [...Array(10)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
+        {questionStore.isMyQuestionsFetching &&
+          [...Array(10)].map((_, index) => <QuestionListItemSkeleton key={index} />)}
 
-        {isLoaded && questions.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
+        {!questionStore.isMyQuestionsFetching &&
+          questionStore.myQuestions.map((question) => <QuestionListItem item={question} key={question.question_id} />)}
       </Stack>
 
       {pagination.totalPages > 0 && (
@@ -52,4 +41,4 @@ export function MyQuestionsPage() {
       )}
     </>
   );
-}
+});
