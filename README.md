@@ -1,4 +1,4 @@
-![logo](http://www.freelogovectors.net/wp-content/uploads/2013/06/stackoverflow_logo.jpg)
+<img src="assets/screenshots/readme_logo.png" width="431" />
 
 ## StackOverflow desktop app (MacOS, Windows, Linux)
 
@@ -12,9 +12,10 @@
 - and more...
 
 **Technology stack:**
-- TypeScript
 - Electron
-- React + ChakraUI
+- React + TypeScript
+- mobx-state-tree
+- ChakraUI
 
 **Stay tuned:**
 - Please, upvote a post on [StackApps](https://stackapps.com/questions/9223)
@@ -23,41 +24,48 @@
 **Interesting to test this app?**
 - Ping me here [maxdiachenko.com](https://maxdiachenko.com)
 
-## Some screenshots (19 Nov, 2021)
+## Some screens (11 May, 2022)
+
+<img src="assets/screenshots/app-icon.png" width="274" />
+
+
+[![enter image description here][1]][1]
+App launching
 
 [![enter image description here][2]][2]
-Initial screen is interesting unanswered questions based on your tags
+Question details screen
 
 [![enter image description here][3]][3]
-Question details
+Question details screen 2
 
 [![enter image description here][4]][4]
-Comments section
+Bountied questions screen
 
 [![enter image description here][5]][5]
-Profile page
+Profile screen
 
 [![enter image description here][6]][6]
-All tags page
+My tags screen
 
 [![enter image description here][7]][7]
-My tags page
+All tags screen
 
 [![enter image description here][8]][8]
-Search results page
+Dropdowns
 
 
-[1]: https://i.stack.imgur.com/UtuUY.jpg
-[2]: https://i.stack.imgur.com/ohC4h.jpg
-[3]: https://i.stack.imgur.com/yhTyd.jpg
-[4]: https://i.stack.imgur.com/dyLoV.jpg
-[5]: https://i.stack.imgur.com/unYJh.jpg
-[6]: https://i.stack.imgur.com/pfxJA.jpg
-[7]: https://i.stack.imgur.com/Ff6Bv.jpg
-[8]: https://i.stack.imgur.com/mHY5A.jpg
+[1]: assets/screenshots/Loading.gif
+[2]: assets/screenshots/Question%20details.gif
+[3]: assets/screenshots/Question%20details%202.gif
+[4]: assets/screenshots/Bountied.gif
+[5]: assets/screenshots/Profile.gif
+[6]: assets/screenshots/My%20tags.gif
+[7]: assets/screenshots/Tags.gif
+[8]: assets/screenshots/Dropdowns.gif
+[9]: assets/screenshots/App%20Icon.png
 
 ### MacOS
-Download [StackOverflow.dmg]() (TBD)
+TBD
 
 ### Windows
 TBD
