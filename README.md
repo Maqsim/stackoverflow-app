@@ -1,4 +1,4 @@
-<img src="assets/screenshots/readme_logo.png" width="431" />
+<img src="assets/screenshots/readme_logo.png" width="405" />
 
 ## StackOverflow desktop app (MacOS, Windows, Linux)
 
