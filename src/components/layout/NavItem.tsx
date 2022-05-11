@@ -1,16 +1,17 @@
-import { Badge, HStack } from '@chakra-ui/react';
+import { Badge, Box, HStack } from "@chakra-ui/react";
 import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 
 type Props = {
-  to: string;
+  to?: string;
+  externalLink?: string;
   count?: number;
   children: any;
 };
 
-export function NavItem({ children, count, to }: Props) {
+export function NavItem({ children, count, to, externalLink }: Props) {
   const location = useLocation();
 
-  let isMatch;
+  let isMatch: boolean;
 
   if (location.pathname === to && location.pathname === '/') {
     isMatch = true;
@@ -23,8 +24,8 @@ export function NavItem({ children, count, to }: Props) {
     bgColor: 'whiteAlpha.50'
   };
 
-  return (
-    <RouterLink to={to}>
+  function Content() {
+    return (
       <HStack
         userSelect={'none'}
         color={isMatch ? 'whiteAlpha.900' : 'whiteAlpha.600'}
@@ -41,6 +42,20 @@ export function NavItem({ children, count, to }: Props) {
           {count}
         </Badge>
       </HStack>
+    );
+  }
+
+  if (externalLink) {
+    return (
+      <Box onClick={() => window.location.href = externalLink}>
+        <Content />
+      </Box>
+    );
+  }
+
+  return (
+    <RouterLink to={to!}>
+      <Content />
     </RouterLink>
   );
 }

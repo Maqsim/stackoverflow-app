@@ -9,7 +9,6 @@ import { SettingsGeneralPage } from '../../pages/settings/SettingsGeneralPage';
 import { AiFillTags } from 'react-icons/ai';
 import { MyQuestionsPage } from '../../pages/MyQuestionsPage';
 import { ScrollToTop } from './ScrollToTop';
-import { SponsorWidget } from './SponsorWidget';
 import { ProfilePage } from '../../pages/ProfilePage';
 import { MyBookmarksPage } from '../../pages/MyBookmarksPage';
 import { TopBar } from './TopBar';
@@ -24,6 +23,7 @@ import { SettingsAppearancePage } from '../../pages/settings/SettingsAppearanceP
 import { SettingsNotificationsPage } from '../../pages/settings/SettingsNotificationsPage';
 import { SettingsHotkeysPage } from '../../pages/settings/SettingsHotkeysPage';
 import { SettingsAccessibilityPage } from '../../pages/settings/SettingsAccessibilityPage';
+import { BiCoffeeTogo } from 'react-icons/bi';
 
 export const Layout = () => {
   return (
@@ -78,7 +78,10 @@ export const Layout = () => {
             </Box>
 
             <Box>
-              <SponsorWidget mb="32px" />
+              <NavItem externalLink="https://www.buymeacoffee.com/maxdiachenko">
+                <BiCoffeeTogo />
+                <Text>Buy me a Coffee</Text>
+              </NavItem>
 
               <NavItem to="/settings">
                 <RiSettings3Fill />
