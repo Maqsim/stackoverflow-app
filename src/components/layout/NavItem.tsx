@@ -8,15 +8,18 @@ type Props = {
 };
 
 export function NavItem({ children, count, to }: Props) {
-  // const prevPathname = getItem('prev-pathname');
   const location = useLocation();
-  // const isNested = countInString('/', location.pathname) > 1;
-  const resolved = useResolvedPath(to);
-  const match = useMatch({ path: resolved.pathname, end: true });
-  // || (isNested && to === prevPathname);
+
+  let isMatch;
+
+  if (location.pathname === to && location.pathname === '/') {
+    isMatch = true;
+  } else if (to !== '/') {
+    isMatch = new RegExp('^' + to).test(location.pathname);
+  }
 
   const hoverStyles = {
-    color: match ? 'whiteAlpha.900' : 'whiteAlpha.800',
+    color: isMatch ? 'whiteAlpha.900' : 'whiteAlpha.800',
     bgColor: 'whiteAlpha.50'
   };
 
@@ -24,7 +27,7 @@ export function NavItem({ children, count, to }: Props) {
     <RouterLink to={to}>
       <HStack
         userSelect={'none'}
-        color={match ? 'whiteAlpha.900' : 'whiteAlpha.600'}
+        color={isMatch ? 'whiteAlpha.900' : 'whiteAlpha.600'}
         borderRadius="5px"
         cursor="pointer"
         alignItems="center"
