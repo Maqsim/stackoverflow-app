@@ -12,7 +12,9 @@ import { getItem, setItem } from '../uitls/local-storage';
 import { AppSpinner } from '../components/layout/AppSpinner';
 import { StickyAnswerForm } from '../components/posts/StickyAnswerForm';
 import { AnswerType } from '../interfaces/AnswerType';
-import { clone } from 'lodash';
+import { clone, orderBy } from "lodash";
+
+type AnswerSortingType = 'score' | 'oldest' | 'active';
 
 let tooltipTimerId: NodeJS.Timer;
 
@@ -24,6 +26,7 @@ export function QuestionDetailsPage() {
   const postType: 'answer' | 'question' = (location.state && location.state.postType) || 'question';
   const [question, setQuestion] = useState(initialQuestion);
   const [isTooltipShown, setIsTooltipShown] = useState(false);
+  const [answerSorting, setAnswerSorting] = useState<AnswerSortingType>('score');
   const [isLoaded, setIsLoaded] = useState(Boolean(question));
   const answersRef = useRef<HTMLDivElement>(null);
 
@@ -104,6 +107,24 @@ export function QuestionDetailsPage() {
     };
   }, [id, postType]);
 
+  // TODO implement server-side pagination
+  useEffect(() => {
+    if (!question || question.answer_count === 0) {
+      return;
+    }
+
+    const sortingMap = {
+      score: [['score'], ['desc']],
+      oldest: [['creation_date'], ['asc']],
+      active: [['creation_date'], ['desc']]
+    };
+
+    const _question = clone(question);
+    _question.answers = orderBy(_question.answers, ...sortingMap[answerSorting]);
+
+    setQuestion(_question);
+  }, [answerSorting]);
+
   function getQuestionById(id: string) {
     return stackoverflow
       .get(`questions/${id}`, {
@@ -115,8 +136,7 @@ export function QuestionDetailsPage() {
   function jumpToAnswers() {
     const scrollableEl = document.getElementById('scrolling-container');
 
-    answersRef.current?.scrollIntoView({ block: 'start' });
-    scrollableEl?.scrollBy(0, -60);
+    scrollableEl?.scrollBy(0, answersRef.current!.getBoundingClientRect().top - 100);
   }
 
   function openInBrowser() {
@@ -153,6 +173,10 @@ export function QuestionDetailsPage() {
     _question!.answer_count++;
 
     setQuestion(_question);
+  }
+
+  function handleAnswersSort(sorting: AnswerSortingType) {
+    setAnswerSorting(sorting);
   }
 
   if (!isLoaded || !question) {
@@ -200,12 +224,14 @@ export function QuestionDetailsPage() {
           <Heading size="md" mb="32px" mt="48px" ref={answersRef}>
             {question.answer_count} answers
             <ButtonGroup size="xs" isAttached variant="outline" float="right">
-              <Button mr="-px" onClick={openInBrowser}>
+              <Button mr="-px" onClick={() => handleAnswersSort('active')} isActive={answerSorting === 'active'}>
                 Active
               </Button>
-              <Button onClick={copyUrl}>Oldest</Button>
-              <Button onClick={copyUrl} isActive>
-                Votes
+              <Button onClick={() => handleAnswersSort('oldest')} isActive={answerSorting === 'oldest'}>
+                Oldest
+              </Button>
+              <Button onClick={() => handleAnswersSort('score')} isActive={answerSorting === 'score'}>
+                Score
               </Button>
             </ButtonGroup>
           </Heading>
