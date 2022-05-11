@@ -22,6 +22,17 @@ export function PostProfileBadge({ user, type, datetime }: Props) {
   const isAnswer = type === 'answer';
   const isEdit = type === 'edit';
 
+  if (user.user_type === 'does_not_exist') {
+    return (
+      <Box w="200px" p="8px" borderRadius="3px" bgColor={isQuestion ? 'red.100' : 'none'} fontSize="13px">
+        <Text color="#777" mb="6px" lineHeight="12px" fontSize="12px">
+          {typeToLabelMap[type]} {dayjs().to(dayjs.unix(datetime))}
+        </Text>
+        <Text>Deleted account</Text>
+      </Box>
+    );
+  }
+
   return (
     <RouterLink to={`/users/${user.user_id}`} state={user}>
       <Box w="200px" p="8px" borderRadius="3px" bgColor={isQuestion ? 'gray.200' : 'none'} fontSize="13px">
@@ -34,7 +45,7 @@ export function PostProfileBadge({ user, type, datetime }: Props) {
             <Text lineHeight="13px" my="1px" isTruncated>
               {parse(user.display_name)}
             </Text>
-            <Text fontWeight="bold">{kFormatter(user.reputation)}</Text>
+            <Text fontWeight="bold">{kFormatter(user.reputation!)}</Text>
           </Box>
         </HStack>
       </Box>
